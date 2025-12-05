@@ -5,9 +5,9 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: supersecret
+      MONGO_INITDB_DATABASE: don5
     volumes:
       - don_project_mongo_data:/data/db
   
@@ -18,8 +18,8 @@ services:
       - "8081:8081"
     environment:
       ME_CONFIG_BASICAUTH: false
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: supersecret
       ME_CONFIG_MONGODB_SERVER: mongodb
     depends_on:
       - mongodb
@@ -31,12 +31,20 @@ services:
       - "7474:7474" # for Neo4j’s web interface
       - "7687:7687" # for backend app
     environment:
-      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD}
+      - NEO4J_AUTH=neo4j/supersecret
       - NEO4J_dbms_security_auth__enabled=true
       - NEO4J_PLUGINS=["apoc"]
     volumes:
       - don_project_neo4j_data:/data
       - don_project_neo4j_logs:/logs
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - don_project_redis_data:/data
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.0.1 
@@ -54,4 +62,5 @@ volumes:
   don_project_mongo_data:
   don_project_neo4j_data:
   don_project_neo4j_logs:
+  don_project_redis_data:
   don_project_es_data:
