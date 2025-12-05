@@ -1,0 +1,57 @@
+services:
+  mongodb:
+    image: mongo:8.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - don_project_mongo_data:/data/db
+  
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_BASICAUTH: false
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    depends_on:
+      - mongodb
+  
+  neo4j:
+    image: neo4j:5.26
+    container_name: neo4j
+    ports:
+      - "7474:7474" # for Neo4j’s web interface
+      - "7687:7687" # for backend app
+    environment:
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD}
+      - NEO4J_dbms_security_auth__enabled=true
+      - NEO4J_PLUGINS=["apoc"]
+    volumes:
+      - don_project_neo4j_data:/data
+      - don_project_neo4j_logs:/logs
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.1 
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+     - discovery.type=single-node
+     - xpack.security.enabled=false # disabled for local dev
+     - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+    volumes:
+      - don_project_es_data:/usr/share/elasticsearch/data
+
+volumes:
+  don_project_mongo_data:
+  don_project_neo4j_data:
+  don_project_neo4j_logs:
+  don_project_es_data:
