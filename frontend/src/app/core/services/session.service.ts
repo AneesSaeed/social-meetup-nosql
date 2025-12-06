@@ -1,39 +1,43 @@
-// stores logged user
+// Handles storing and retrieving the logged-in user
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
 
-// This makes the service available everywhere in the app.
-// Angular will create only ONE instance of this service (singleton).
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
 
-  // BehaviorSubject stores a value and allows components to listen for changes.
-  // It starts with "null" because no user is logged in initially.
-  private userSubject = new BehaviorSubject<User | null>(null);
+  // Holds the current user and emits updates
+  private userSubject = new BehaviorSubject<User | null>(this.loadUser());
 
-  // Expose the BehaviorSubject as an observable so components can subscribe.
-  // Components will be notified whenever the user changes.
-  user$ = this.userSubject.asObservable(); // the $ in user$ is a naming convention, The $ tells anyone reading the code that user$ is an observable stream, not a normal value.
+  // Observable for components to react to user changes
+  user$ = this.userSubject.asObservable();
 
-  // Update the current user (e.g., after login)
+  // Load user from localStorage on startup
+  private loadUser(): User | null {
+    const data = localStorage.getItem('user');
+    return data ? JSON.parse(data) : null;
+  }
+
+  // Save user to localStorage and update stream
   setUser(user: User) {
+    localStorage.setItem('user', JSON.stringify(user));
     this.userSubject.next(user);
   }
 
-  // Remove the current user (e.g., after logout)
+  // Remove user from localStorage and reset stream
   clearUser() {
+    localStorage.removeItem('user');
     this.userSubject.next(null);
   }
 
-  // Get the current user value synchronously
+  // Synchronous access to current user
   get currentUser(): User | null {
     return this.userSubject.value;
   }
 
-  // Returns true if a user is logged in, false otherwise
+  // Check if a user is logged in
   isLoggedIn(): boolean {
     return !!this.userSubject.value;
   }
