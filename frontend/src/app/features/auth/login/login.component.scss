@@ -1,0 +1,100 @@
+@use '../../../styles/variables' as v;
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: v.$color-surface-alt;
+}
+
+/* CARD */
+.auth-card {
+  background: v.$color-surface;
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: v.$shadow-card;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* TITLE */
+.auth-card h2 {
+  font-size: 1.6rem;
+  text-align: center;
+  color: v.$color-text;
+  margin-bottom: 12px;
+}
+
+/* LABEL */
+label {
+  font-weight: 400;
+  margin-top: 8px;
+  color: v.$color-text-light;
+}
+
+/* INPUT FIELDS */
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 4px;          // SAME SPACING AS BUTTON SECTION
+  border: 1px solid v.$color-border;
+  border-radius: 8px;
+  font-size: 14px;
+  background: v.$color-surface-alt;
+  transition: border-color 0.2s, background 0.2s;
+  box-sizing: border-box;   // MATCHES BUTTON EXACTLY
+
+  &:focus {
+    outline: none;
+    border-color: v.$color-primary;
+    background: #fff;
+  }
+}
+
+input::placeholder {
+  color: v.$color-text-light;
+  opacity: 0.7;
+}
+
+/* SUBMIT BUTTON (SAME SIZE AS INPUT) */
+button[type='submit'],
+.submit-btn {
+  width: 100%;
+  padding: 12px;           // SAME AS INPUT
+  margin-top: 4px;         // MATCH INPUT SPACING
+  border: none;
+  border-radius: 8px;      // SAME AS INPUT
+  font-size: 14px;         // SAME AS INPUT
+  box-sizing: border-box;  // SAME BEHAVIOR
+  background: v.$color-primary;
+  color: v.$color-surface;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-primary-light;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+  }
+
+  &:disabled {
+    background: v.$color-border;
+    cursor: not-allowed;
+  }
+}
+
+/* LINK */
+.auth-card a {
+  text-align: center;
+  color: v.$color-primary-dark;
+  font-weight: 500;
+  transition: color 0.2s;
+
+  &:hover {
+    color: v.$color-primary;
+  }
+}
