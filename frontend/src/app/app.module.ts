@@ -14,7 +14,6 @@ import { RegisterComponent } from './features/auth/register/register.component';
 import { HomeComponent } from './features/home/home.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { SearchComponent } from './features/search/search.component';
-import { NavbarComponent } from './features/navbar/navbar.component';
 import { HeaderComponent } from './features/header/header.component';
 
 @NgModule({
@@ -26,7 +25,6 @@ import { HeaderComponent } from './features/header/header.component';
     HomeComponent,
     ProfileComponent,
     SearchComponent,
-    NavbarComponent,
     HeaderComponent,
   ],
   imports: [
