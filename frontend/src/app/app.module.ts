@@ -15,6 +15,7 @@ import { HomeComponent } from './features/home/home.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { SearchComponent } from './features/search/search.component';
 import { NavbarComponent } from './features/navbar/navbar.component';
+import { HeaderComponent } from './features/header/header.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { NavbarComponent } from './features/navbar/navbar.component';
     ProfileComponent,
     SearchComponent,
     NavbarComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,

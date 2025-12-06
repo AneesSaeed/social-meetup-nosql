@@ -6,6 +6,7 @@ $color-primary-dark: #0891B2;   // Deep teal-blue
 $color-secondary: #EC4899;      // Magenta pink
 $color-secondary-dark: #BE185D; // Dark rose
 
+$color-danger: #EF4444;
 
 // NEUTRAL COLORS
 $color-text: #1F2937;
@@ -22,4 +23,5 @@ $color-hover: #EEF2FF;   // not used yet but ok to keep
 
 
 // SHADOWS
+$shadow-header: 0 2px 6px rgba(0, 0, 0, 0.12);
 $shadow-card: 0 4px 14px rgba(0, 0, 0, 0.08);
