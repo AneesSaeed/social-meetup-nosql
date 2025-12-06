@@ -22,7 +22,8 @@ export class AuthService {
   }
 
   // Sends a POST request to /register
-  // Returns an Observable that will emit a User when the server responds
+  // Returns an Observable that will emit a User
+  // when the server responds
   register(name: string, email: string, bio: string, interests: string[]): Observable<User> {
     return this.http.post<User>(`${this.baseUrl}/register`, {
       name,

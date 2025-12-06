@@ -32,7 +32,7 @@
 
 /* LABEL */
 label {
-  font-weight: 600;
+  font-weight: 400;
   margin-top: 8px;
   color: v.$color-text-light;
 }
@@ -57,12 +57,17 @@ textarea {
   }
 }
 
+input::placeholder {
+  color: v.$color-text-light;
+  opacity: 0.7;
+}
+
 /* SUBMIT BUTTON (same size as input/textarea) */
 button[type='submit'],
 .submit-btn {
   width: 100%;
   padding: 12px;                 /* matches input */
-  margin-top: 4px;               /* matches input spacing */
+  margin-top: 30px;               /* matches input spacing */
   border: none;
   border-radius: 8px;            /* matches input */
   font-size: 14px;               /* matches input */
@@ -142,4 +147,12 @@ button[type='submit'],
   &:hover {
     color: v.$color-primary;
   }
+}
+
+
+.error-msg {
+  text-align: center;
+  color: red;
+  margin-top: 8px;
+  font-weight: 500;
 }

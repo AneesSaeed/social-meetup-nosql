@@ -98,3 +98,10 @@ button[type='submit'],
     color: v.$color-primary;
   }
 }
+
+.error-msg {
+  text-align: center;
+  color: red;
+  margin-top: 8px;
+  font-weight: 500;
+}

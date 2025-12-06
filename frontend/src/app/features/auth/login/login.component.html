@@ -13,6 +13,8 @@
         Login
       </button>
 
+      <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
+
     </form>
 
     <a routerLink="/register">Create an account</a>

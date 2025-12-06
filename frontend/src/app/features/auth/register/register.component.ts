@@ -13,6 +13,8 @@ import { SessionService } from 'src/app/core/services/session.service';
 })
 export class RegisterComponent {
 
+  errorMessage: string | null = null;
+
   // Inject services needed by this component:
   // - FormBuilder: to build forms easily
   // - AuthService: to call the /register API
@@ -23,6 +25,7 @@ export class RegisterComponent {
     private auth: AuthService,
     private session: SessionService,
     private router: Router
+
   ) {}
 
   // Create a reactive form with fields: name, email, bio, and an array of interests.
@@ -59,13 +62,14 @@ export class RegisterComponent {
     // Call the API to register the user
     // register(...) returns an Observable<User>.
     // subscribe(...) waits for the backend response.
-    this.auth.register(name!, email!, bio!, interests as string[])
-      .subscribe(user => {
-        // Save the user session so the app knows the user is logged in
+    this.auth.register(name!, email!, bio!, interests as string[]).subscribe({
+      next: user => {
         this.session.setUser(user);
-
-        // Navigate to the home page after successful registration
         this.router.navigate(['/home']);
-      });
+      },
+      error: err => {
+        this.errorMessage = err.error?.message || "Something went wrong";
+      }
+    });
   }
 }
