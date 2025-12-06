@@ -9,7 +9,7 @@
   padding: 20px;
 }
 
-/* CARD WITH ELEVATION */
+/* CARD */
 .auth-card {
   background: v.$color-surface;
   width: 100%;
@@ -37,7 +37,7 @@ label {
   color: v.$color-text-light;
 }
 
-/* INPUT FIELDS */
+/* INPUT + TEXTAREA (same size rules) */
 input,
 textarea {
   width: 100%;
@@ -47,6 +47,7 @@ textarea {
   border-radius: 8px;
   font-size: 14px;
   background: v.$color-surface-alt;
+  box-sizing: border-box;         /* Ensures exact matching size with button */
   transition: border-color 0.2s, background 0.2s;
 
   &:focus {
@@ -56,16 +57,18 @@ textarea {
   }
 }
 
-/* SUBMIT BUTTON */
+/* SUBMIT BUTTON (same size as input/textarea) */
 button[type='submit'],
 .submit-btn {
   width: 100%;
-  padding: 12px;
-  margin-top: 12px;
+  padding: 12px;                 /* matches input */
+  margin-top: 4px;               /* matches input spacing */
   border: none;
-  border-radius: 8px;
+  border-radius: 8px;            /* matches input */
+  font-size: 14px;               /* matches input */
+  box-sizing: border-box;        /* ensures height alignment */
   background: v.$color-primary;
-  color: v.$color-surface; // FIXED HERE
+  color: v.$color-surface;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s;
@@ -106,10 +109,14 @@ button[type='submit'],
   }
 }
 
-/* ADD INTEREST SECTION */
+/* INTEREST INPUT ROW */
 .interest-input {
   display: flex;
   gap: 8px;
+
+  input {
+    flex: 1; /* Does not stretch past its container */
+  }
 
   button {
     background: v.$color-secondary;
