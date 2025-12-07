@@ -12,7 +12,7 @@ export class AppComponent {
   constructor(private testService: TestService) {}
 
   callTest() {
-    this.testService.getTest().subscribe(res => {
+   this.testService.getTest().subscribe((res: string) => {
       this.result = res;
     });
   }
