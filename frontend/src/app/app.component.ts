@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { TestService } from './test.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -7,13 +8,14 @@ import { TestService } from './test.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  result = '';
+  hideHeader = false;
 
-  constructor(private testService: TestService) {}
-
-  callTest() {
-   this.testService.getTest().subscribe((res: string) => {
-      this.result = res;
-    });
+  constructor(private router: Router) {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(event => {
+        const nav = event as NavigationEnd;
+        this.hideHeader = ['/login', '/register'].includes(nav.urlAfterRedirects);
+      });
   }
 }

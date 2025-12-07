@@ -1,2 +1,3 @@
-<button (click)="callTest()">Call /test</button>
-<p>{{ result }}</p>
+<app-header *ngIf="!hideHeader"></app-header>
+
+<router-outlet></router-outlet>

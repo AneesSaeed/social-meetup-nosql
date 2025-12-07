@@ -1,0 +1,43 @@
+<header class="header-container">
+
+  <div class="logo">
+    <span>MeetUp</span>
+  </div>
+
+  <div class="header-search">
+    <app-search></app-search>
+  </div>
+
+  <div class="user-section" (click)="toggleMenu()">
+    <div class="user-info" *ngIf="user$ | async as user">
+      <span class="user-name">{{ user.name }}</span>
+      <div class="avatar">
+        {{ user.name[0] }}
+      </div>
+    </div>
+
+    <div class="dropdown" *ngIf="isMenuOpen" (click)="$event.stopPropagation()">
+
+      <!-- USER STATS -->
+      <div class="user-stats" *ngIf="user$ | async as user">
+        <div class="points">
+          <span class="label">Total Points</span>
+          <span class="value">{{ user.totalPoints }}</span>
+        </div>
+
+        <div class="interests">
+          <span class="label">Interests</span>
+          <div class="badges">
+            <span class="badge" *ngFor="let interest of user.interests">
+              {{ interest }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <button (click)="logout()">Logout</button>
+
+    </div>
+  </div>
+
+</header>
