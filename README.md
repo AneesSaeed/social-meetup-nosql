@@ -1,25 +1,49 @@
 # 5DON4D Project
 
-## Run
+## Démarrage du Projet
 
-To run the project, respect the following steps :
+Le projet peut être démarré facilement en utilisant le script `run.sh` ou manuellement.
 
-### Step 1 : Backend
+### Prérequis
 
-```bash
-cd backend
-docker compose up -d
-mvn clean spring-boot:run
-```
+Pour exécuter le projet, les outils suivants doivent être installés et accessibles :
 
-### Step 2 : Frontend
+* **Docker**
+* **Maven** (`mvn`)
+* **Angular CLI** (`ng`)
 
-```bash
-cd ../frontend
-ng serve
-```
+---
 
-## Info
+### Lancement
 
-- Backend : Spring boot
+Le script `run.sh` automatise le lancement de tous les services backend via Docker et des applications Spring Boot et Angular.
+
+1.  Assurez-vous d'avoir donné les permissions d'exécution au script :
+    ```bash
+    chmod +x run.sh
+    ```
+2.  Lancez le script :
+    ```bash
+    ./run.sh
+    ```
+
+### URLs d'Accès
+Une fois le projet démarré, vous pouvez accéder aux services aux adresses suivantes :
+
+- API Backend (Spring Boot) : http://localhost:8080/
+
+- Application Frontend (Angular) : http://localhost:4200/
+
+- Interface Web MongoDB (Mongo Express) : http://localhost:8081/
+
+- Interface Web Neo4j Browser : http://localhost:7474/
+
+- API Elasticsearch : http://localhost:9200/
+
+
+### Informations Techniques
+- Backend : Spring Boot
+
 - Frontend : Angular 16
+
+- Bases de données : MongoDB, Neo4j, Redis, Elasticsearch
