@@ -86,4 +86,8 @@ public class EventService {
         event.getParticipants().remove(userId);
         return eventRepo.save(event);
     }
+
+    public List<Event> searchEventsByInterest(String interest) {
+        return eventRepo.findByInterestContainingIgnoreCase(interest);
+    }
 }

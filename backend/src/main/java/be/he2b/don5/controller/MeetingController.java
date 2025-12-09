@@ -47,4 +47,9 @@ public class MeetingController {
     public List<Meeting> getMeetingsByUser(@PathVariable String userId) {
         return meetingService.getMeetingsByUser(userId);
     }
+
+    @GetMapping("/search")
+    public List<Meeting> searchMeetingsByInterest(@RequestParam String interest) {
+        return meetingService.searchMeetingsByInterest(interest);
+    }
 }

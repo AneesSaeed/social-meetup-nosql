@@ -70,4 +70,8 @@ public class MeetingService {
     public List<Meeting> getMeetingsByStatus(Completion status) {
         return meetingRepo.findByStatus(status);
     }
+
+    public List<Meeting> searchMeetingsByInterest(String interest) {
+        return meetingRepo.findByInterestContainingIgnoreCase(interest);
+    }
 }

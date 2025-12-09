@@ -57,4 +57,9 @@ public class EventController {
     public Event leaveEvent(@PathVariable String id, @RequestParam String userId) {
         return eventService.leaveEvent(id, userId);
     }
+
+    @GetMapping("/search")
+    public List<Event> searchEventsByInterest(@RequestParam String interest) {
+        return eventService.searchEventsByInterest(interest);
+    }
 }

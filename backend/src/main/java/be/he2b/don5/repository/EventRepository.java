@@ -11,4 +11,6 @@ public interface EventRepository extends MongoRepository<Event, String> {
     List<Event> findByOrganizer(String userId);
     List<Event> findByParticipantsContaining(String userId);
     List<Event> findByStatus(Completion status);
+    List<Event> findByInterest(String interest);
+    List<Event> findByInterestContainingIgnoreCase(String interest);
 }
