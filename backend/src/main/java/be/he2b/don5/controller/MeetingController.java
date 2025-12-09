@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import be.he2b.don5.dto.CreateMeetingRequest;
 import be.he2b.don5.model.Meeting;
+import be.he2b.don5.model.Completion;
 import be.he2b.don5.service.MeetingService;
 
 @RestController
@@ -32,7 +33,7 @@ public class MeetingController {
     @GetMapping
     public List<Meeting> getAllMeetings(@RequestParam(required = false) String status) {
         if (status != null) {
-            return meetingService.getMeetingsByStatus(status);
+            return meetingService.getMeetingsByStatus(Completion.valueOf(status.toUpperCase()));
         }
         return meetingService.getAllMeetings();
     }

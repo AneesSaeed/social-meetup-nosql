@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import be.he2b.don5.dto.CreateEventRequest;
 import be.he2b.don5.model.Event;
+import be.he2b.don5.model.Completion;
 import be.he2b.don5.repository.EventRepository;
 import be.he2b.don5.repository.UserRepository;
 
@@ -21,7 +22,6 @@ public class EventService {
     }
 
     public Event createEvent(CreateEventRequest request) {
-        // Vérifier que l'organisateur existe
         if (!userRepo.existsById(request.getOrganizer())) {
             throw new RuntimeException("Organizer not found");
         }
@@ -53,24 +53,21 @@ public class EventService {
         return eventRepo.findByOrganizer(userId);
     }
 
-    public List<Event> getEventsByStatus(String status) {
+    public List<Event> getEventsByStatus(Completion status) {
         return eventRepo.findByStatus(status);
     }
 
     public Event joinEvent(String eventId, String userId) {
         Event event = getEventById(eventId);
         
-        // Vérifier que l'utilisateur existe
         if (!userRepo.existsById(userId)) {
             throw new RuntimeException("User not found");
         }
 
-        // Vérifier que l'event n'est pas complet
         if (event.getParticipants().size() >= event.getMaxParticipants()) {
             throw new RuntimeException("Event is full");
         }
 
-        // Vérifier que l'utilisateur n'est pas déjà inscrit
         if (event.getParticipants().contains(userId)) {
             throw new RuntimeException("User already joined");
         }
@@ -82,7 +79,6 @@ public class EventService {
     public Event leaveEvent(String eventId, String userId) {
         Event event = getEventById(eventId);
         
-        // L'organisateur ne peut pas quitter son propre event
         if (event.getOrganizer().equals(userId)) {
             throw new RuntimeException("Organizer cannot leave event");
         }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import be.he2b.don5.dto.CreateEventRequest;
 import be.he2b.don5.model.Event;
+import be.he2b.don5.model.Completion;
 import be.he2b.don5.service.EventService;
 
 @RestController
@@ -32,7 +33,7 @@ public class EventController {
     @GetMapping
     public List<Event> getAllEvents(@RequestParam(required = false) String status) {
         if (status != null) {
-            return eventService.getEventsByStatus(status);
+            return eventService.getEventsByStatus(Completion.valueOf(status.toUpperCase()));
         }
         return eventService.getAllEvents();
     }

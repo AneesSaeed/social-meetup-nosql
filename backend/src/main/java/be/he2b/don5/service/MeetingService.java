@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import be.he2b.don5.dto.CreateMeetingRequest;
 import be.he2b.don5.model.Meeting;
 import be.he2b.don5.model.User;
+import be.he2b.don5.model.Completion;
 import be.he2b.don5.repository.MeetingRepository;
 import be.he2b.don5.repository.UserRepository;
 
@@ -23,32 +24,30 @@ public class MeetingService {
         this.userRepo = userRepo;
     }
 
-    @Transactional // pour créer un rollback si jamais une requête échoue
+    @Transactional
     public Meeting createMeeting(CreateMeetingRequest request) {
-        // Vérifier que tous les participants existent
         for (String userId : request.getParticipants()) {
             if (!userRepo.existsById(userId)) {
                 throw new RuntimeException("User " + userId + " not found");
             }
         }
 
-        // Créer le meeting
         Meeting meeting = new Meeting(
             request.getParticipants(),
             request.getDate() != null ? request.getDate() : LocalDateTime.now(),
             request.getLocation(),
             request.getInterest(),
             request.getDescription(),
-            request.getPoints() > 0 ? request.getPoints() : 10 // Par défaut 10 points
+            request.getPoints() > 0 ? request.getPoints() : 10
         );
 
         meeting = meetingRepo.save(meeting);
 
-        // Attribuer les points aux participants et incrémenter totalMeetings
         for (String userId : request.getParticipants()) {
             User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
             user.setTotalPoints(user.getTotalPoints() + meeting.getPoints());
+            user.setTotalMeetings(user.getTotalMeetings() + 1);
             userRepo.save(user);
         }
 
@@ -68,7 +67,7 @@ public class MeetingService {
         return meetingRepo.findByParticipantsContaining(userId);
     }
 
-    public List<Meeting> getMeetingsByStatus(String status) {
+    public List<Meeting> getMeetingsByStatus(Completion status) {
         return meetingRepo.findByStatus(status);
     }
 }
