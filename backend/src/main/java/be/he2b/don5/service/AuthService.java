@@ -4,17 +4,14 @@ import be.he2b.don5.dto.LoginRequest;
 import be.he2b.don5.dto.RegisterRequest;
 import be.he2b.don5.model.User;
 import be.he2b.don5.repository.UserRepository;
+import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
-
+@AllArgsConstructor
 @Service
 public class AuthService {
 
     private final UserRepository userRepo;
-
-    public AuthService(UserRepository userRepo) {
-        this.userRepo = userRepo;
-    }
 
     public User login(LoginRequest request) {
         return userRepo.findByEmail(request.getEmail())
