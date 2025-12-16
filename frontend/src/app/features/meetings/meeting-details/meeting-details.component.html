@@ -1,0 +1,37 @@
+<div class="wrap">
+  <div class="top">
+    <div class="line"><span class="label">When</span> <span>{{ meeting.date | date:'full' }}</span></div>
+    <div class="line"><span class="label">Where</span> <span>{{ meeting.location }}</span></div>
+    <div class="line"><span class="label">Type</span> <span>{{ meeting.eventType }}</span></div>
+    <div class="line"><span class="label">Interest</span> <span>{{ meeting.interest }}</span></div>
+    <div class="line"><span class="label">Participants</span>
+      <span>{{ meeting.participants.length }}/{{ meeting.maxParticipants }}</span>
+    </div>
+  </div>
+
+  <p class="desc" *ngIf="meeting.description">{{ meeting.description }}</p>
+
+  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+  <div class="actions">
+    <button type="button" (click)="close(false)">Close</button>
+
+    <button
+      type="button"
+      *ngIf="session.isLoggedIn() && !isParticipant"
+      [disabled]="busy || isFull"
+      (click)="join()">
+      {{ isFull ? 'Full' : (busy ? 'Joining...' : 'Join') }}
+    </button>
+
+    <button
+      type="button"
+      *ngIf="session.isLoggedIn() && isParticipant"
+      [disabled]="busy"
+      (click)="leave()">
+      {{ busy ? 'Leaving...' : 'Leave' }}
+    </button>
+
+    <button type="button" class="primary" (click)="close(true)">Done</button>
+  </div>
+</div>

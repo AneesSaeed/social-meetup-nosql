@@ -8,8 +8,8 @@ import be.he2b.don5.model.Meeting;
 import be.he2b.don5.model.Completion;
 
 public interface MeetingRepository extends MongoRepository<Meeting, String> {
-    List<Meeting> findByParticipantsContaining(String userId);
     List<Meeting> findByStatus(Completion status);
-    List<Meeting> findByInterest(String interest);
+    List<Meeting> findByOrganizer(String organizer);
+    List<Meeting> findByParticipantsContaining(String userId);
     List<Meeting> findByInterestContainingIgnoreCase(String interest);
 }

@@ -1,0 +1,45 @@
+.home {
+  position: relative;
+  min-height: calc(100vh - 64px); // adjust if header height differs
+  padding: 24px;
+}
+
+.content {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+
+  display: grid;
+  gap: 18px;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  overflow: visible;
+}
+
+.panel-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+}
+
+.panel-body {
+  padding: 16px;
+}
+
+.placeholder {
+  color: #666;
+}
+
+.fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1200;
+}

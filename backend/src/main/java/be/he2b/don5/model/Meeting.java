@@ -1,6 +1,7 @@
 package be.he2b.don5.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -10,9 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Meetings are past event
- */
 @Document(collection = "meetings")
 @Data
 @NoArgsConstructor
@@ -20,26 +18,40 @@ import lombok.NoArgsConstructor;
 public class Meeting {
     @Id
     private String id;
-    
-    private List<String> participants; // Liste d'IDs de users
+
+    // "Event" fields
+    private String title;
+    private String description;
+    private String eventType;        // sport, culture, food, ...
     private LocalDateTime date;
     private String location;
-    private String interest; // Centre d'intérêt commun
-    private String description;
-    private int points; // Points attribués pour cette rencontre
-    private Completion status; // "completed", "cancelled"
+    private String organizer;        // user id
+    private List<String> participants;
+    private int maxParticipants;
+    private String interest;         // tag / interest
+
+    // "Meeting" fields
+    private int points;              // points granted when completed (0 if upcoming)
+    private Completion status;       // UPCOMING / COMPLETED / CANCELLED
     private LocalDateTime createdAt;
 
-    // Constructeur pour création
-    public Meeting(List<String> participants, LocalDateTime date, String location, 
-                   String interest, String description, int points) {
-        this.participants = participants;
+    // Constructor for creation (UPCOMING by default)
+    public Meeting(String title, String description, String eventType, LocalDateTime date,
+                   String location, String organizer, int maxParticipants, String interest) {
+        this.title = title;
+        this.description = description;
+        this.eventType = eventType;
         this.date = date;
         this.location = location;
+        this.organizer = organizer;
+        this.maxParticipants = maxParticipants;
         this.interest = interest;
-        this.description = description;
-        this.points = points;
-        this.status = Completion.COMPLETED;
+
+        this.participants = new ArrayList<>();
+        this.participants.add(organizer);
+
+        this.status = Completion.UPCOMING;
+        this.points = 0;
         this.createdAt = LocalDateTime.now();
     }
 }

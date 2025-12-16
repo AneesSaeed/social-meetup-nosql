@@ -43,9 +43,24 @@ public class MeetingController {
         return meetingService.getMeetingById(id);
     }
 
+    @GetMapping("/organizer/{userId}")
+    public List<Meeting> getMeetingsByOrganizer(@PathVariable String userId) {
+        return meetingService.getMeetingsByOrganizer(userId);
+    }
+
     @GetMapping("/user/{userId}")
     public List<Meeting> getMeetingsByUser(@PathVariable String userId) {
         return meetingService.getMeetingsByUser(userId);
+    }
+
+    @PostMapping("/{id}/join")
+    public Meeting joinMeeting(@PathVariable String id, @RequestParam String userId) {
+        return meetingService.joinMeeting(id, userId);
+    }
+
+    @PostMapping("/{id}/leave")
+    public Meeting leaveMeeting(@PathVariable String id, @RequestParam String userId) {
+        return meetingService.leaveMeeting(id, userId);
     }
 
     @GetMapping("/search")

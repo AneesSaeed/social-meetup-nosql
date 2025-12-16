@@ -8,24 +8,32 @@ import { CommonModule } from '@angular/common';
 
 
 import { AppComponent } from './app.component';
-import { BaseModalComponent } from './shared/components/base-modal/base-modal.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { HomeComponent } from './features/home/home.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { SearchComponent } from './features/search/search.component';
 import { HeaderComponent } from './features/header/header.component';
+import { BaseModalComponent } from './shared/modal/base-modal.component';
+import { MeetingCreateFormComponent } from './features/meetings/meeting-create-form/meeting-create-form.component';
+import { CreateMeetingButtonComponent } from './features/meetings/create-meeting-button/create-meeting-button.component';
+import { UpcomingMeetingsRowComponent } from './features/meetings/upcoming-meetings-row/upcoming-meetings-row.component';
+import { MeetingDetailsComponent } from './features/meetings/meeting-details/meeting-details.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BaseModalComponent,
     LoginComponent,
     RegisterComponent,
     HomeComponent,
     ProfileComponent,
     SearchComponent,
     HeaderComponent,
+    BaseModalComponent,
+    MeetingCreateFormComponent,
+    CreateMeetingButtonComponent,
+    UpcomingMeetingsRowComponent,
+    MeetingDetailsComponent
   ],
   imports: [
     BrowserModule,
