@@ -29,7 +29,7 @@ label {
   color: rgba(0, 0, 0, 0.60);
 }
 
-/* Cleaner inputs: subtle fill + stronger focus ring */
+/* Inputs */
 input,
 textarea {
   width: 100%;
@@ -137,6 +137,93 @@ textarea:focus {
   &:focus-visible {
     outline: 2px solid rgba(0, 0, 0, 0.35);
     outline-offset: 2px;
+  }
+}
+
+/* ---------- Interests (improved) ---------- */
+
+.interest-input {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+
+  /* keep meeting-form input look, but feel more "grouped" */
+  input {
+    border-radius: 12px;
+  }
+
+  button {
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+}
+
+.interests-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 7px 10px;
+  border-radius: 999px;
+
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  color: v.$color-text;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  transition: background 0.15s, border-color 0.15s, transform 0.08s;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+    border-color: rgba(0, 0, 0, 0.14);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  /* if you keep your current HTML (no inner spans/classes), this still works */
+  button {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 0;
+
+    background: rgba(0, 0, 0, 0.10);
+    color: v.$color-text;
+
+    cursor: pointer;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+
+    transition: background 0.15s, transform 0.08s;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(0, 0, 0, 0.35);
+      outline-offset: 2px;
+    }
   }
 }
 

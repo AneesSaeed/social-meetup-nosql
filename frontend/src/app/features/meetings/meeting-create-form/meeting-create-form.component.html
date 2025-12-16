@@ -32,27 +32,31 @@
 
     <!-- INTERESTS -->
     <div class="field span-2">
-      <label>Add Interest</label>
+      <label for="interestInput">Interests</label>
 
-      <div class="interest-input">
+      <div class="interest-input" role="group" aria-label="Add an interest">
         <input
+          id="interestInput"
           #interestField
           type="text"
           placeholder="e.g. football, cooking, coding"
           (keydown.enter)="addInterest(interestField.value); interestField.value=''; $event.preventDefault();" />
-        <button type="button" (click)="addInterest(interestField.value); interestField.value=''">
+        <button type="button" class="btn btn-ghost" (click)="addInterest(interestField.value); interestField.value=''">
           Add
         </button>
       </div>
 
-      <div class="interests-list" *ngIf="interestsArray.length > 0">
+      <div class="interests-list" *ngIf="interestsArray.length > 0" aria-label="Selected interests">
         <span *ngFor="let ctrl of interestsArray.controls; let i = index" class="badge">
-          {{ ctrl.value }}
-          <button type="button" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
+          <span class="badge__text">{{ ctrl.value }}</span>
+          <button type="button" class="badge__remove" (click)="removeInterest(i)" aria-label="Remove interest">
+            ×
+          </button>
         </span>
       </div>
     </div>
   </div>
+
 
   <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
 
