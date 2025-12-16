@@ -5,7 +5,6 @@
   gap: 12px;
 }
 
-/* Header */
 .section-header {
   display: flex;
   align-items: center;
@@ -25,11 +24,9 @@
   cursor: pointer;
   padding: 6px 10px;
   border-radius: 10px;
-
   color: v.$color-primary-dark;
   font-weight: 600;
   font-size: 13px;
-
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 
   &:hover {
@@ -39,64 +36,30 @@
   }
 }
 
-/* Distinct "lane" behind the cards */
-.row-wrap {
-  background: v.$color-surface-alt;
-  border: 1px solid v.$color-border;
-  border-radius: 14px;
-  padding: 10px;
-
-  /* subtle inner line so the lane reads clearly */
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
-}
-
-/* Horizontal row of cards */
-.row {
+/* Wrapping layout (no horizontal scroll) */
+.grid {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(260px, 320px);
+  justify-content: center;
   gap: 12px;
-
-  overflow-x: auto;
-  padding-bottom: 8px;
-
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-
-  &::-webkit-scrollbar {
-    height: 10px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: v.$color-border;
-    border-radius: 999px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+  justify-content: start;
 }
 
-/* Cards */
 .card {
-  scroll-snap-align: start;
-
   text-align: left;
-  border: 1px solid rgba(0, 0, 0, 0.12); /* stronger than v.$color-border */
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 16px;
   background: v.$color-surface;
-
   padding: 14px;
   cursor: pointer;
-
   display: grid;
   gap: 10px;
-
-  /* lighter than big "card shadow" since we're inside a lane */
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   transition: transform 0.12s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
-    border-color: rgba(59, 130, 246, 0.35); /* primary-ish without relying on a var */
+    border-color: rgba(59, 130, 246, 0.35);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
   }
 
@@ -129,11 +92,9 @@
   font-size: 12px;
   background: v.$color-surface-alt;
   color: v.$color-text;
-
   padding: 4px 10px;
   border-radius: 999px;
   width: fit-content;
-
   border: 1px solid v.$color-border;
 }
 
