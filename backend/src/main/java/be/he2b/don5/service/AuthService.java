@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserRepository userRepo;
+    private final SearchService searchService;
 
     public User login(LoginRequest request) {
         return userRepo.findByEmail(request.getEmail())
@@ -23,14 +24,15 @@ public class AuthService {
         if (userRepo.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered");
         }
-
+        searchService.syncAllUsersToElasticsearch();
         User newUser = new User(
                 request.getName(),
                 request.getEmail(),
                 request.getBio(),
                 request.getInterests()
         );
-
-        return userRepo.save(newUser);
+        User savedUser = userRepo.save(newUser);
+        searchService.syncUserToElasticsearch(savedUser);
+        return savedUser;
     }
 }
