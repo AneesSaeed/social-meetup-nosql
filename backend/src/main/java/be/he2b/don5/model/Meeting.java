@@ -28,7 +28,7 @@ public class Meeting {
     private String organizer;        // user id
     private List<String> participants;
     private int maxParticipants;
-    private String interest;         // tag / interest
+    private List<String> interests; // mulitple interests
 
     // "Meeting" fields
     private int points;              // points granted when completed (0 if upcoming)
@@ -37,7 +37,7 @@ public class Meeting {
 
     // Constructor for creation (UPCOMING by default)
     public Meeting(String title, String description, String eventType, LocalDateTime date,
-                   String location, String organizer, int maxParticipants, String interest) {
+                   String location, String organizer, int maxParticipants, List<String> interests) {
         this.title = title;
         this.description = description;
         this.eventType = eventType;
@@ -45,7 +45,7 @@ public class Meeting {
         this.location = location;
         this.organizer = organizer;
         this.maxParticipants = maxParticipants;
-        this.interest = interest;
+        this.interests = interests;
 
         this.participants = new ArrayList<>();
         this.participants.add(organizer);

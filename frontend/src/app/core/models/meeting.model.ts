@@ -14,7 +14,7 @@ export interface Meeting {
   participants: string[];
 
   maxParticipants: number;
-  interest: string;
+  interests: string[];
 
   status: Completion;
   points: number;          // 0 for upcoming, >0 when completed
@@ -31,5 +31,5 @@ export interface CreateMeetingRequest {
 
   organizer: string;
   maxParticipants: number;
-  interest: string;
+  interests: string[];
 }

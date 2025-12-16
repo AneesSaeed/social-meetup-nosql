@@ -1,6 +1,7 @@
 package be.he2b.don5.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Data;
 
@@ -13,5 +14,5 @@ public class CreateMeetingRequest {
     private String location;
     private String organizer;      // user id
     private int maxParticipants;
-    private String interest;
+    private List<String> interests;
 }

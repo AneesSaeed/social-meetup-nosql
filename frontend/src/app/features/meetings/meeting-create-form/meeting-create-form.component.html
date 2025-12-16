@@ -1,17 +1,64 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <label>Title <input type="text" formControlName="title" /></label>
-  <label>Description <textarea rows="3" formControlName="description"></textarea></label>
-  <label>Type <input type="text" formControlName="eventType" /></label>
-  <label>Date & time <input type="datetime-local" formControlName="date" /></label>
-  <label>Location <input type="text" formControlName="location" /></label>
-  <label>Max participants <input type="number" formControlName="maxParticipants" /></label>
-  <label>Interest <input type="text" formControlName="interest" /></label>
+<form class="meeting-form" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="grid">
+    <div class="field span-2">
+      <label for="title">Title</label>
+      <input id="title" type="text" formControlName="title" placeholder="e.g. Coffee chat" />
+    </div>
 
-  <p *ngIf="errorMsg">{{ errorMsg }}</p>
+    <div class="field span-2">
+      <label for="description">Description</label>
+      <textarea id="description" rows="3" formControlName="description" placeholder="What’s this meeting about?"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="eventType">Type</label>
+      <input id="eventType" type="text" formControlName="eventType" placeholder="e.g. Casual / Workshop" />
+    </div>
+
+    <div class="field">
+      <label for="date">Date & time</label>
+      <input id="date" type="datetime-local" formControlName="date" />
+    </div>
+
+    <div class="field">
+      <label for="location">Location</label>
+      <input id="location" type="text" formControlName="location" placeholder="e.g. Brussels, Central Station" />
+    </div>
+
+    <div class="field">
+      <label for="maxParticipants">Max participants</label>
+      <input id="maxParticipants" type="number" formControlName="maxParticipants" min="1" placeholder="e.g. 8" />
+    </div>
+
+    <!-- INTERESTS -->
+    <div class="field span-2">
+      <label>Add Interest</label>
+
+      <div class="interest-input">
+        <input
+          #interestField
+          type="text"
+          placeholder="e.g. football, cooking, coding"
+          (keydown.enter)="addInterest(interestField.value); interestField.value=''; $event.preventDefault();" />
+        <button type="button" (click)="addInterest(interestField.value); interestField.value=''">
+          Add
+        </button>
+      </div>
+
+      <div class="interests-list" *ngIf="interestsArray.length > 0">
+        <span *ngFor="let ctrl of interestsArray.controls; let i = index" class="badge">
+          {{ ctrl.value }}
+          <button type="button" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
 
   <div class="actions">
-    <button type="button" (click)="cancel()">Cancel</button>
-    <button type="submit" [disabled]="form.invalid || submitting">
+    <button class="btn btn-ghost" type="button" (click)="cancel()">Cancel</button>
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid || submitting">
       {{ submitting ? 'Creating...' : 'Create' }}
     </button>
   </div>

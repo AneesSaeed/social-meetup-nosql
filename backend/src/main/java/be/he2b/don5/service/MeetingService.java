@@ -48,7 +48,7 @@ public class MeetingService {
             request.getLocation(),
             organizerId,
             max,
-            request.getInterest()
+            request.getInterests()
         );
 
         return meetingRepo.save(meeting);
@@ -76,7 +76,7 @@ public class MeetingService {
     }
 
     public List<Meeting> searchMeetingsByInterest(String interest) {
-        return meetingRepo.findByInterestContainingIgnoreCase(interest);
+        return meetingRepo.findByInterestsRegexIgnoreCase(interest);
     }
 
     @Transactional
