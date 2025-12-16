@@ -1,1 +1,24 @@
-<p>home works!</p>
+<div class="home">
+  <!-- Floating action button -->
+  <div class="fab">
+    <app-create-meeting-button></app-create-meeting-button>
+  </div>
+
+  <main class="content">
+    <!-- 1) Suggestions row (placeholder) -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Suggestions</h2>
+      </div>
+
+      <div class="panel-body placeholder">
+        Suggested meetings will appear here.
+      </div>
+    </section>
+
+    <!-- 2) Upcoming meetings row -->
+    <section class="panel">
+      <app-upcoming-meetings-row></app-upcoming-meetings-row>
+    </section>
+  </main>
+</div>

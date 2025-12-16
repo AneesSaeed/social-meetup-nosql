@@ -1,0 +1,18 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <label>Title <input type="text" formControlName="title" /></label>
+  <label>Description <textarea rows="3" formControlName="description"></textarea></label>
+  <label>Type <input type="text" formControlName="eventType" /></label>
+  <label>Date & time <input type="datetime-local" formControlName="date" /></label>
+  <label>Location <input type="text" formControlName="location" /></label>
+  <label>Max participants <input type="number" formControlName="maxParticipants" /></label>
+  <label>Interest <input type="text" formControlName="interest" /></label>
+
+  <p *ngIf="errorMsg">{{ errorMsg }}</p>
+
+  <div class="actions">
+    <button type="button" (click)="cancel()">Cancel</button>
+    <button type="submit" [disabled]="form.invalid || submitting">
+      {{ submitting ? 'Creating...' : 'Create' }}
+    </button>
+  </div>
+</form>

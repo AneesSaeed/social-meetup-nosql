@@ -1,0 +1,8 @@
+.wrap { display: grid; gap: 12px; }
+.top { display: grid; gap: 6px; }
+.line { display: grid; grid-template-columns: 100px 1fr; gap: 10px; }
+.label { color: #666; font-size: 12px; }
+.desc { margin: 0; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+.primary { font-weight: 600; }
+.error { color: #b00020; margin: 0; }

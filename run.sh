@@ -23,7 +23,8 @@ command -v ng >/dev/null 2>&1 || { error "Angular CLI n'est pas installé."; exi
 cd backend || { error "Dossier backend introuvable."; exit 1; }
 
 info "Lancement de Docker..."
-docker compose up -d
+#docker compose up -d
+docker compose start
 info "Docker lancé !"
 
 info "Lancement du backend Spring..."
