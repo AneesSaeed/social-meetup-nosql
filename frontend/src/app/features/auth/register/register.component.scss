@@ -1,4 +1,5 @@
 @use '../../../../styles/variables' as v;
+@use '../../../../styles/badges';
 
 .auth-container {
   min-height: 100vh;
@@ -108,51 +109,19 @@ textarea:focus {
       outline: 2px solid rgba(0, 0, 0, 0.35);
       outline-offset: 2px;
     }
-  }
-}
 
-/* Interest badges */
-.interests-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+    /* Accent "Add" button */
+    &.is-accent {
+      background: v.$color-accent;
+      color: v.$color-accent-contrast; // e.g. #fff
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+      &:hover {
+        background: color-mix(in srgb, v.$color-accent 88%, black);
+      }
 
-  padding: 7px 10px;
-  border-radius: 999px;
-
-  background: rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  color: v.$color-text;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  button {
-    width: 22px;
-    height: 22px;
-    border-radius: 999px;
-    border: 0;
-
-    background: rgba(0, 0, 0, 0.10);
-    color: v.$color-text;
-
-    cursor: pointer;
-    line-height: 1;
-    transition: background 0.15s;
-
-    &:hover {
-      background: rgba(0, 0, 0, 0.16);
-    }
-
-    &:focus-visible {
-      outline: 2px solid rgba(0, 0, 0, 0.35);
-      outline-offset: 2px;
+      &:focus-visible {
+        outline: 2px solid color-mix(in srgb, v.$color-accent 70%, black);
+      }
     }
   }
 }

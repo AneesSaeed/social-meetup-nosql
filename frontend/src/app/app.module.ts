@@ -19,6 +19,7 @@ import { MeetingCreateFormComponent } from './features/meetings/meeting-create-f
 import { CreateMeetingButtonComponent } from './features/meetings/create-meeting-button/create-meeting-button.component';
 import { UpcomingMeetingsRowComponent } from './features/meetings/upcoming-meetings-row/upcoming-meetings-row.component';
 import { MeetingDetailsComponent } from './features/meetings/meeting-details/meeting-details.component';
+import { ColorBucketPipe } from './shared/pipes/color-bucket.pipe';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { MeetingDetailsComponent } from './features/meetings/meeting-details/mee
     MeetingCreateFormComponent,
     CreateMeetingButtonComponent,
     UpcomingMeetingsRowComponent,
-    MeetingDetailsComponent
+    MeetingDetailsComponent,
+    ColorBucketPipe
   ],
   imports: [
     BrowserModule,

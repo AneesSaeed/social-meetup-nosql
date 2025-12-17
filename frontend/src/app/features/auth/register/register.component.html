@@ -19,15 +19,19 @@
           type="text"
           placeholder="e.g. football, cooking, coding"
           (keydown.enter)="addInterest(interestField.value); interestField.value = ''; $event.preventDefault();" />
-        <button type="button" (click)="addInterest(interestField.value); interestField.value = '';">
+        <button class="is-accent" type="button" (click)="addInterest(interestField.value); interestField.value = '';">
           Add
         </button>
       </div>
 
-      <div class="interests-list">
-        <span *ngFor="let interest of interestsArray.controls; let i = index" class="badge">
+      <div class="badges">
+        <span
+          *ngFor="let interest of interestsArray.controls; let i = index"
+          class="badge"
+          [ngClass]="'badge--c' + (interest.value | colorBucket:8)"
+        >
           {{ interest.value }}
-          <button type="button" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
+          <button type="button" class="badge__remove" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
         </span>
       </div>
 

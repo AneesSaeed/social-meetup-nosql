@@ -6,6 +6,7 @@ import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
 import { ModalRef } from 'src/app/shared/modal/modal-ref';
 import { CreateMeetingRequest, Meeting } from 'src/app/core/models/meeting.model';
 import { SessionService } from 'src/app/core/services/session.service';
+import { colorBucket } from 'src/app/shared/utils/colors-hash';
 
 type MeetingCreateModalData = { userId: string };
 

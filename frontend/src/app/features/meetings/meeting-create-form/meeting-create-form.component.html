@@ -41,17 +41,19 @@
           type="text"
           placeholder="e.g. football, cooking, coding"
           (keydown.enter)="addInterest(interestField.value); interestField.value=''; $event.preventDefault();" />
-        <button type="button" class="btn btn-ghost" (click)="addInterest(interestField.value); interestField.value=''">
+        <button type="button" class="btn btn-ghost is-accent" (click)="addInterest(interestField.value); interestField.value=''">
           Add
         </button>
       </div>
 
-      <div class="interests-list" *ngIf="interestsArray.length > 0" aria-label="Selected interests">
-        <span *ngFor="let ctrl of interestsArray.controls; let i = index" class="badge">
+      <div class="badges" *ngIf="interestsArray.length > 0" aria-label="Selected interests">
+        <span
+          *ngFor="let ctrl of interestsArray.controls; let i = index"
+          class="badge"
+          [ngClass]="'badge--c' + (ctrl.value | colorBucket:8)"
+        >
           <span class="badge__text">{{ ctrl.value }}</span>
-          <button type="button" class="badge__remove" (click)="removeInterest(i)" aria-label="Remove interest">
-            ×
-          </button>
+          <button type="button" class="badge__remove" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
         </span>
       </div>
     </div>
