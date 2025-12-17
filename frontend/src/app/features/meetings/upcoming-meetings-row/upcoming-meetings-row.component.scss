@@ -36,16 +36,16 @@
   }
 }
 
-/* Wrapping layout (no horizontal scroll) */
 .grid {
   display: grid;
-  justify-content: center;
   gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
-  justify-content: start;
+  /* each row shares the available width equally */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  justify-content: stretch;
 }
 
 .card {
+  width: 100%;
   text-align: left;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 16px;

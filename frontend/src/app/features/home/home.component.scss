@@ -1,40 +1,49 @@
+@use '../../../styles/variables' as v;
+
 .home {
   position: relative;
-  min-height: calc(100vh - 64px); // adjust if header height differs
+  min-height: calc(100vh - 64px);
   padding: 24px;
+  background: v.$color-surface-alt;
 }
 
 .content {
   width: min(1100px, 100%);
   margin: 0 auto;
-
   display: grid;
   gap: 18px;
 }
 
 .panel {
-  background: #fff;
-  border: 1px solid #e6e6e6;
-  border-radius: 12px;
-  overflow: visible;
+  background: v.$color-surface;
+  border: 1px solid v.$color-border;
+  border-radius: 14px;
+  overflow: hidden;
+
+  padding: 1rem;
+  box-shadow: v.$shadow-card;
 }
 
 .panel-header {
   padding: 14px 16px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid v.$color-border;
+  background: v.$color-surface;
 
   h2 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: v.$color-text;
   }
 }
 
 .panel-body {
   padding: 16px;
+  color: v.$color-text;
 }
 
 .placeholder {
-  color: #666;
+  color: v.$color-text-light;
 }
 
 .fab {
