@@ -1,0 +1,30 @@
+<div class="overlay" *ngIf="open" (click)="close.emit()"></div>
+
+<aside class="drawer" [class.drawer--open]="open" (click)="$event.stopPropagation()">
+  <div class="drawer-header">
+    <div class="title">Profile</div>
+    <button type="button" class="icon-btn" (click)="close.emit()">✕</button>
+  </div>
+
+  <div class="drawer-body" *ngIf="user$ | async as user">
+    <div class="points">
+      <span class="label">Total Points</span>
+      <span class="value">{{ user.totalPoints }}</span>
+    </div>
+
+    <div class="interests" *ngIf="user.interests?.length">
+      <span class="label">Interests</span>
+      <div class="badges">
+        <span
+          class="badge"
+          *ngFor="let interest of user.interests"
+          [ngClass]="'badge--c' + (interest | colorBucket:10)"
+        >
+          {{ interest }}
+        </span>
+      </div>
+    </div>
+
+    <button type="button" class="logout" (click)="logout.emit()">Logout</button>
+  </div>
+</aside>

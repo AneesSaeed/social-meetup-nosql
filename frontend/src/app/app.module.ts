@@ -20,6 +20,7 @@ import { CreateMeetingButtonComponent } from './features/meetings/create-meeting
 import { UpcomingMeetingsRowComponent } from './features/meetings/upcoming-meetings-row/upcoming-meetings-row.component';
 import { MeetingDetailsComponent } from './features/meetings/meeting-details/meeting-details.component';
 import { ColorBucketPipe } from './shared/pipes/color-bucket.pipe';
+import { ProfileDrawerComponent } from './features/profile/profile-drawer/profile-drawer.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ColorBucketPipe } from './shared/pipes/color-bucket.pipe';
     CreateMeetingButtonComponent,
     UpcomingMeetingsRowComponent,
     MeetingDetailsComponent,
-    ColorBucketPipe
+    ColorBucketPipe,
+    ProfileDrawerComponent,
   ],
   imports: [
     BrowserModule,

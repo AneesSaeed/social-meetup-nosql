@@ -1,6 +1,7 @@
 @use '../../../../styles/variables' as v;
 
 .fab {
+  z-index: 1000;
   height: 56px;
   min-width: 56px;
   padding: 0 18px;

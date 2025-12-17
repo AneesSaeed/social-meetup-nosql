@@ -1,8 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { SessionService } from 'src/app/core/services/session.service';
-import { MeetingCreateFormComponent } from '../meeting-create-form/meeting-create-form.component';
-import { Meeting } from 'src/app/core/models/meeting.model';
-import { MeetingEventsService } from 'src/app/core/services/meeting-events.service';
 
 @Component({
   selector: 'app-create-meeting-button',
@@ -10,23 +7,12 @@ import { MeetingEventsService } from 'src/app/core/services/meeting-events.servi
   styleUrls: ['./create-meeting-button.component.scss']
 })
 export class CreateMeetingButtonComponent {
-  isOpen = false;
-  formComponent = MeetingCreateFormComponent;
+  @Output() clicked = new EventEmitter<void>();
 
-  constructor(
-    public session: SessionService,
-    private meetingEvents: MeetingEventsService
-  ) {}
+  constructor(public session: SessionService) {}
 
-  open() {
-    if (!this.session.currentUser) return;
-    this.isOpen = true;
-  }
-
-  onClosed(result?: Meeting) {
-    this.isOpen = false;
-    if (result) {
-      this.meetingEvents.emitCreated(result);
-    }
+  onClick() {
+    if (!this.session.isLoggedIn()) return;
+    this.clicked.emit();
   }
 }
