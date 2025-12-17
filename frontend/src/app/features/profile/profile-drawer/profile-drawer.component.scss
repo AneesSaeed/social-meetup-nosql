@@ -1,98 +1,178 @@
 @use '../../../../styles/variables' as v;
+@use '../../../../styles/badges';
 
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  z-index: 2010;
+:host {
+  --drawer-w: min(380px, 92vw);
+  --drawer-z-overlay: 2010;
+  --drawer-z-panel: 2020;
 }
 
+/* Overlay */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: var(--drawer-z-overlay);
+  touch-action: none;
+}
+
+/* Drawer panel */
 .drawer {
   position: fixed;
-  top: 0;
-  right: 0;
+  inset: 0 0 0 auto;
   height: 100dvh;
-  width: min(360px, 92vw);
+  width: var(--drawer-w);
   background: v.$color-surface;
   box-shadow: v.$shadow-card;
-  transform: translateX(100%);
-  transition: transform 0.2s ease;
-  z-index: 2020;
+  z-index: var(--drawer-z-panel);
+
   display: flex;
   flex-direction: column;
+
+  transform: translateX(100%);
+  transition: transform 0.22s ease, opacity 0.22s ease;
+  opacity: 0.98;
+
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 .drawer--open {
   transform: translateX(0);
+  opacity: 1;
 }
 
-.drawer-header {
+/* Header */
+.drawer__header {
   height: 64px;
   padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid v.$color-border;
+  flex: 0 0 auto;
+}
 
-  .title {
-    font-weight: 700;
-    color: v.$color-text;
+.drawer__title {
+  font-weight: 700;
+  color: v.$color-text;
+  letter-spacing: 0.2px;
+}
+
+.drawer__icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: v.$color-text;
+  padding: 8px;
+  border-radius: 10px;
+  line-height: 1;
+
+  &:hover {
+    background: v.$color-surface-alt;
   }
 
-  .icon-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    color: v.$color-text;
-    padding: 8px;
-    border-radius: 8px;
-
-    &:hover {
-      background: v.$color-surface-alt;
-    }
+  &:focus-visible {
+    outline: 2px solid v.$color-primary;
+    outline-offset: 2px;
   }
 }
 
-.drawer-body {
-  padding: 16px;
+/* Content area: top points line + scrollable interests */
+.drawer__content {
+  flex: 1 1 auto;
+  min-height: 0; /* critical for overflow to work in flex column */
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
-.label {
+/* Single-line total points */
+.drawer__points {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-bottom: 1px solid v.$color-border;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.drawer__label {
   font-size: 12px;
   color: v.$color-text-light;
   text-transform: uppercase;
-  font-weight: 600;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.value {
-  font-size: 16px;
   font-weight: 700;
+  letter-spacing: 0.6px;
+  line-height: 1;
+}
+
+.drawer__value {
+  font-size: 16px;
+  font-weight: 800;
   color: v.$color-primary-dark;
+  line-height: 1;
 }
 
-.badges {
+/* Interests take the rest */
+.drawer__interests {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 16px;
+  overflow: auto;
+
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.logout {
-  align-self: flex-start;
+/* Use global .badges/.badge, but prevent deformation */
+.drawer__interests .badges {
+  align-items: flex-start;
+}
+
+.drawer__interests .badge {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Footer pinned at bottom */
+.drawer__footer {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-top: 1px solid v.$color-border;
+  background: v.$color-surface;
+}
+
+.drawer__logout {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   background: none;
-  border: none;
+  border: 1px solid rgba(239, 68, 68, 0.35);
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
+
   color: v.$color-danger;
-  font-weight: 600;
+  font-weight: 700;
 
   &:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(239, 68, 68, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-danger;
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer {
+    transition: none;
   }
 }

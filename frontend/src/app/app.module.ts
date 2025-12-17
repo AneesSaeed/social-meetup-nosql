@@ -11,7 +11,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { HomeComponent } from './features/home/home.component';
-import { ProfileComponent } from './features/profile/profile.component';
 import { SearchComponent } from './features/search/search.component';
 import { HeaderComponent } from './features/header/header.component';
 import { BaseModalComponent } from './shared/modal/base-modal.component';
@@ -28,7 +27,6 @@ import { ProfileDrawerComponent } from './features/profile/profile-drawer/profil
     LoginComponent,
     RegisterComponent,
     HomeComponent,
-    ProfileComponent,
     SearchComponent,
     HeaderComponent,
     BaseModalComponent,
