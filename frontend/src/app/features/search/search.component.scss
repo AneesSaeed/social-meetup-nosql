@@ -1,0 +1,173 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/badges';
+
+.search {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+}
+
+.search__input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid v.$color-border;
+  background: v.$color-surface;
+  box-shadow: v.$shadow-header;
+
+  &:focus-within {
+    border-color: v.$color-primary-light;
+    box-shadow: 0 0 0 3px v.$color-hover;
+  }
+
+  input {
+    width: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    padding: 8px 4px;
+    min-width: 0;
+    color: v.$color-text;
+
+    &::placeholder {
+      color: v.$color-text-light;
+    }
+  }
+}
+
+.search__toggle {
+  display: inline-flex;
+  border-radius: 999px;
+  border: 1px solid v.$color-border;
+  overflow: hidden;
+  flex: 0 0 auto;
+  background: v.$color-surface-alt;
+}
+
+.toggle-btn {
+  padding: 6px 10px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  color: v.$color-text-light;
+
+  &:hover {
+    background: v.$color-hover;
+    color: v.$color-text;
+  }
+
+  &.toggle-btn--active {
+    font-weight: 600;
+    background: v.$color-primary;
+    color: v.$color-accent-contrast;
+  }
+}
+
+.search__clear {
+  border: 0;
+  background: transparent;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 6px;
+  color: v.$color-text-light;
+
+  &:hover {
+    color: v.$color-text;
+  }
+}
+
+.search__panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  border-radius: 12px;
+  border: 1px solid v.$color-border;
+  background: v.$color-surface;
+  box-shadow: v.$shadow-card;
+  overflow: hidden;
+}
+
+.search__status {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: v.$color-text-light;
+
+  &.error {
+    color: v.$color-danger;
+    font-weight: 600;
+  }
+}
+
+.search__list {
+  max-height: 360px;
+  overflow: auto;
+}
+
+.search__item {
+  padding: 10px 12px;
+  border-top: 1px solid v.$color-border;
+
+  &:first-child {
+    border-top: 0;
+  }
+
+  &:hover {
+    background: v.$color-hover;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .name {
+    font-weight: 600;
+    color: v.$color-text;
+  }
+
+  .score {
+    font-size: 12px;
+    color: v.$color-text-light;
+    flex: 0 0 auto;
+  }
+
+  // one-line bio
+  .bio {
+    margin-top: 6px;
+    font-size: 13px;
+    color: v.$color-text;
+    opacity: 0.9;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // interests: force single line inside dropdown
+  .badges {
+    margin-top: 8px;
+
+    flex-wrap: nowrap; // override global wrap
+    overflow: hidden;  // clip overflow
+    gap: 6px;
+  }
+
+  // keep each badge on one line and prevent huge tokens from breaking layout
+  .badge {
+    flex: 0 0 auto;
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

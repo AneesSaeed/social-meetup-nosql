@@ -5,7 +5,7 @@ import { CreateMeetingRequest, Meeting, Completion } from '../models/meeting.mod
 
 @Injectable({ providedIn: 'root' })
 export class MeetingService {
-  private baseUrl = 'http://localhost:8080/api/meetings';
+  private readonly baseUrl = 'http://localhost:8080/api/meetings';
 
   constructor(private http: HttpClient) {}
 

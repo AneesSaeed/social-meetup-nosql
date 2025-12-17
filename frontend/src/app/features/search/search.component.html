@@ -1,1 +1,70 @@
-<p>search bar</p>
+<div class="search">
+  <div class="search__input">
+    <!-- Text input bound to FormControl -->
+    <input
+      type="text"
+      [formControl]="query"
+      [placeholder]="placeholder()"
+      autocomplete="off"
+      (focus)="open = isReadyToSearch(query.value.trim())"
+    />
+
+    <!-- Mode toggle inside the input container -->
+    <div class="search__toggle" role="tablist" aria-label="Search mode">
+      <button
+        type="button"
+        class="toggle-btn"
+        [class.toggle-btn--active]="mode === 'users'"
+        (click)="setMode('users')"
+      >
+        Users
+      </button>
+      <button
+        type="button"
+        class="toggle-btn"
+        [class.toggle-btn--active]="mode === 'interests'"
+        (click)="setMode('interests')"
+      >
+        Interests
+      </button>
+    </div>
+
+    <!-- Clear input (only shown when not empty) -->
+    <button type="button" class="search__clear" *ngIf="query.value" (click)="clear()">×</button>
+  </div>
+
+  <!-- Results dropdown -->
+  <div class="search__panel" *ngIf="open">
+    <div class="search__status" *ngIf="loading">Loading…</div>
+    <div class="search__status error" *ngIf="!loading && error">{{ error }}</div>
+
+    <!-- Empty state -->
+    <div class="search__status" *ngIf="!loading && !error && results.length === 0">
+      No results
+    </div>
+
+    <!-- Results list -->
+    <div class="search__list" *ngIf="!loading && !error && results.length > 0">
+      <div class="search__item" *ngFor="let u of results; trackBy: trackByUserId">
+        <div class="row">
+          <div class="name">{{ u.name }}</div>
+          <div class="score" *ngIf="u.totalScore != null">{{ u.totalScore }}</div>
+        </div>
+
+        <!-- Bio (CSS truncates to one line) -->
+        <div class="bio one-line" *ngIf="u.bio">{{ u.bio }}</div>
+
+        <!-- Interests (CSS keeps one line and clips overflow) -->
+        <div class="badges one-line" *ngIf="u.interests?.length">
+          <span
+            class="badge"
+            *ngFor="let i of u.interests"
+            [ngClass]="'badge--c' + (i | colorBucket)"
+          >
+            {{ i }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
