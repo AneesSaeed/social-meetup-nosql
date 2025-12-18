@@ -3,6 +3,7 @@ package be.he2b.don5.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,16 +14,25 @@ import be.he2b.don5.model.Meeting;
 import be.he2b.don5.model.User;
 import be.he2b.don5.repository.MeetingRepository;
 import be.he2b.don5.repository.UserRepository;
+import be.he2b.don5.service.graph.SocialGraphService;
 
 @Service
 public class MeetingService {
 
     private final MeetingRepository meetingRepo;
     private final UserRepository userRepo;
+    private final SocialGraphService socialGraphService;
+    private final PointsCalculationService pointsCalculationService;
+    private final SearchService searchService;
 
-    public MeetingService(MeetingRepository meetingRepo, UserRepository userRepo) {
+    public MeetingService(MeetingRepository meetingRepo,
+            UserRepository userRepo, SocialGraphService socialGraphService,
+            PointsCalculationService pointsCalculationService, SearchService searchService) {
         this.meetingRepo = meetingRepo;
         this.userRepo = userRepo;
+        this.socialGraphService = socialGraphService;
+        this.pointsCalculationService = pointsCalculationService;
+        this.searchService = searchService;
     }
 
     @Transactional
@@ -142,29 +152,58 @@ public class MeetingService {
             throw new RuntimeException("Cancelled meeting cannot be completed");
         }
         if (meeting.getStatus() == Completion.COMPLETED) {
-            return meeting; // idempotent
+            return meeting;
         }
-
-        int awardedPoints = points > 0 ? points : 10;
 
         meeting.setStatus(Completion.COMPLETED);
-        meeting.setPoints(awardedPoints);
 
-        Meeting saved = meetingRepo.save(meeting);
+        if (meeting.getParticipants() != null && meeting.getParticipants().size() > 0) {
 
-        // award points + meeting count to all participants
-        if (saved.getParticipants() != null) {
-            for (String uid : saved.getParticipants()) {
-                User user = userRepo.findById(uid)
-                    .orElseThrow(() -> new RuntimeException("User " + uid + " not found"));
+            // Calculer les points pour chaque participant
+            String meetingInterest = meeting.getInterests() != null && !meeting.getInterests().isEmpty()
+                    ? meeting.getInterests().get(0)
+                    : meeting.getEventType();
 
-                user.setTotalPoints(user.getTotalPoints() + awardedPoints);
-                user.setTotalMeetings(user.getTotalMeetings() + 1);
-                userRepo.save(user);
-            }
+            Map<String, Integer> pointsPerUser = pointsCalculationService.calculatePointsForMeeting(
+                    meeting.getParticipants(),
+                    meetingInterest);
+
+            // Calculer la moyenne des points pour le meeting (pour l'affichage)
+            int avgPoints = (int) pointsPerUser.values().stream()
+                    .mapToInt(Integer::intValue)
+                    .average()
+                    .orElse(10.0);
+            meeting.setPoints(avgPoints);
+
+            // Attribuer points aux participants dans MongoDB + Elasticsearch
+        for (String uid : meeting.getParticipants()) {
+            User user = userRepo.findById(uid)
+                .orElseThrow(() -> new RuntimeException("User " + uid + " not found"));
+
+            int userPoints = pointsPerUser.getOrDefault(uid, 10);
+            user.setTotalPoints(user.getTotalPoints() + userPoints);
+            user.setTotalMeetings(user.getTotalMeetings() + 1);
+            userRepo.save(user);
+            
+            /**
+             * Synchro ElasticSearch
+             * ElasticSearch va créer l'user s'il n'existe pas.
+             * Sinon, il va faire un update partiel des champs modifiés.
+             */
+            searchService.syncUserToElasticsearch(user);
         }
 
-        return saved;
+            // Créer relations Neo4j avec points personnalisés
+            socialGraphService.createMeetingRelations(
+                    meeting.getId(),
+                    meeting.getParticipants(),
+                    pointsPerUser,
+                    meeting.getDate().toString(),
+                    meeting.getLocation(),
+                    meetingInterest);
+        }
+
+        return meetingRepo.save(meeting);
     }
 
     @Transactional

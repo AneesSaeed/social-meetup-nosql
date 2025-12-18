@@ -5,14 +5,16 @@ import be.he2b.don5.dto.RegisterRequest;
 import be.he2b.don5.model.User;
 import be.he2b.don5.repository.UserRepository;
 import lombok.AllArgsConstructor;
-
 import org.springframework.stereotype.Service;
+import be.he2b.don5.service.graph.SocialGraphService;
+
 @AllArgsConstructor
 @Service
 public class AuthService {
 
     private final UserRepository userRepo;
     private final SearchService searchService;
+    private final SocialGraphService socialGraphService;
 
     public User login(LoginRequest request) {
         return userRepo.findByEmail(request.getEmail())
@@ -24,7 +26,7 @@ public class AuthService {
         if (userRepo.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered");
         }
-        searchService.syncAllUsersToElasticsearch();
+        
         User newUser = new User(
                 request.getName(),
                 request.getEmail(),
@@ -32,7 +34,13 @@ public class AuthService {
                 request.getInterests()
         );
         User savedUser = userRepo.save(newUser);
+        
+        // Créer node Neo4j
+        socialGraphService.createUserNode(savedUser.getId(), savedUser.getName());
+        
+        // Synchroniser avec Elasticsearch
         searchService.syncUserToElasticsearch(savedUser);
+        
         return savedUser;
     }
 }
