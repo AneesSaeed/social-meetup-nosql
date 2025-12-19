@@ -1,4 +1,20 @@
 @use '../../../../styles/variables' as v;
+@use '../../../../styles/badges';
+
+/* smaller badges only on this page/component */
+:host {
+  .badge {
+    padding: 5px 8px;  // default is 7px 10px
+    font-size: 12px;   // default is 13px
+    gap: 6px;          // default is 8px
+  }
+
+  .badge button {
+    width: 18px;       // default is 22px
+    height: 18px;
+  }
+}
+
 
 .section {
   display: grid;
@@ -88,6 +104,12 @@
   flex-wrap: wrap;
 }
 
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .tag {
   font-size: 12px;
   background: v.$color-surface-alt;
@@ -98,7 +120,7 @@
   border: 1px solid v.$color-border;
 }
 
-.foot {
+.card-foot {
   font-size: 12px;
   color: v.$color-text-light;
   display: flex;
@@ -111,4 +133,12 @@ p {
   margin: 0;
   color: v.$color-text-light;
   font-size: 13px;
+}
+
+
+.status {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
 }

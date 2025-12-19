@@ -76,3 +76,18 @@
 .badge--c7 { background: rgba(34, 197, 94, 0.10);  border-color: rgba(34, 197, 94, 0.25); }   // green
 .badge--c8 { background: rgba(239, 68, 68, 0.10);  border-color: rgba(239, 68, 68, 0.25); }  // red
 .badge--c9 { background: rgba(100, 116, 139, 0.10); border-color: rgba(100, 116, 139, 0.25); } // slate
+
+
+/* Joined: emerald */
+.badge--joined {
+  background: rgba(16, 185, 129, 0.10);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: v.$color-secondary-dark;
+}
+
+/* Full: red */
+.badge--full {
+  background: rgba(220, 38, 38, 0.10);
+  border-color: rgba(220, 38, 38, 0.25);
+  color: v.$color-danger;
+}

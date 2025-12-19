@@ -11,15 +11,26 @@
       class="card"
       type="button"
       *ngFor="let m of meetings"
-      (click)="openDetails(m)">
-      <div class="title">{{ m.title }}</div>
+      (click)="openDetails(m)"
+    >
+      <div class="card-header">
+        <div class="title">{{ m.title }}</div>
+          <div class="status" *ngIf="session.isLoggedIn()">
+            <span class="badge badge--joined" *ngIf="isJoined(m)">Joined</span>
+            <span class="badge badge--full" *ngIf="isFull(m)">Full</span>
+          </div>
+
+      </div>
+
       <div class="meta">
         <span>{{ m.date | date:'medium' }}</span>
         <span>•</span>
         <span>{{ m.location }}</span>
       </div>
-      <div class="tag">{{ m.interests }}</div>
-      <div class="foot">
+      <div class="badges" *ngIf="m.interests?.length">
+        <span class="badge badge--c{{ it | colorBucket }}" *ngFor="let it of m.interests">{{ it }}</span>
+      </div>
+      <div class="card-foot">
         <span>{{ m.participants.length }}/{{ m.maxParticipants }}</span>
         <span>{{ m.eventType }}</span>
       </div>

@@ -17,11 +17,9 @@
 
     <div class="line interests-line">
       <span class="label">Interests</span>
-
-      <div class="badges" *ngIf="meeting.interests?.length; else noInterests">
-        <span class="badge" *ngFor="let it of meeting.interests">{{ it }}</span>
-      </div>
-
+        <div class="badges" *ngIf="meeting.interests?.length">
+          <span class="badge badge--c{{ it | colorBucket }}" *ngFor="let it of meeting.interests">{{ it }}</span>
+        </div>
       <ng-template #noInterests>
         <span class="value">—</span>
       </ng-template>

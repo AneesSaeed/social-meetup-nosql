@@ -4,6 +4,7 @@ import { Meeting } from 'src/app/core/models/meeting.model';
 import { MeetingApi } from 'src/app/core/api/meeting.api';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { MeetingDetailsComponent } from '../meeting-details/meeting-details.component';
+import { SessionService } from 'src/app/core/state/session.service';
 
 @Component({
   selector: 'app-upcoming-meetings-row',
@@ -25,7 +26,8 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
 
   constructor(
     private meetingApi: MeetingApi,
-    private meetingEvents: MeetingEventsService
+    private meetingEvents: MeetingEventsService,
+    public session: SessionService,
   ) {}
 
   ngOnInit(): void {
@@ -69,6 +71,15 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     });
+  }
+
+  isJoined(m: Meeting): boolean {
+    const uid = this.session.currentUser?.id;
+    return !!uid && m.participants?.includes(uid);
+  }
+
+  isFull(m: Meeting): boolean {
+    return m.maxParticipants > 0 && (m.participants?.length ?? 0) >= m.maxParticipants;
   }
 
   openDetails(meeting: Meeting) {
