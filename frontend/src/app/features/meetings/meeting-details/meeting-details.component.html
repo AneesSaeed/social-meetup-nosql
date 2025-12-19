@@ -37,7 +37,7 @@
   <p class="desc" *ngIf="meeting.description">{{ meeting.description }}</p>
 
   <div class="actions">
-    <button class="btn btn-ghost" type="button" (click)="close(false)">Close</button>
+    <button class="btn btn-ghost" type="button" (click)="close()">Close</button>
 
     <button
       class="btn btn-soft"
@@ -56,7 +56,5 @@
       (click)="leave()">
       {{ busy ? 'Leaving...' : 'Leave' }}
     </button>
-
-    <button class="btn btn-primary" type="button" (click)="close(true)">Done</button>
   </div>
 </div>

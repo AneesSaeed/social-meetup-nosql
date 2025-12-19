@@ -5,6 +5,7 @@ import { SessionService } from 'src/app/core/services/session.service';
 import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
 import { ModalRef } from 'src/app/shared/modal/modal-ref';
 import { ToastService } from 'src/app/shared/toast/toast.service';
+import { MeetingEventsService } from 'src/app/core/services/meeting-events.service';
 
 type MeetingDetailsData = { meeting: Meeting };
 
@@ -21,6 +22,7 @@ export class MeetingDetailsComponent {
     @Inject(MODAL_DATA) data: MeetingDetailsData,
     private modalRef: ModalRef,
     private meetingService: MeetingService,
+    private meetingEvents: MeetingEventsService,
     public session: SessionService,
     private toast: ToastService
   ) {
@@ -54,6 +56,7 @@ export class MeetingDetailsComponent {
         this.meeting = updated;
         this.busy = false;
         this.toast.success('Successfully joined');
+        this.meetingEvents.emitUpdated(updated);
       },
       error: (err) => {
         console.error(err);
@@ -73,6 +76,7 @@ export class MeetingDetailsComponent {
         this.meeting = updated;
         this.busy = false;
         this.toast.success('Successfully left');
+        this.meetingEvents.emitUpdated(updated);
       },
       error: (err) => {
         console.error(err);
@@ -82,7 +86,7 @@ export class MeetingDetailsComponent {
     });
   }
 
-  close(refresh = false) {
-    this.modalRef.close({ refresh });
+  close() {
+    this.modalRef.close();
   }
 }

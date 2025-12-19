@@ -31,9 +31,21 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadUpcoming();
 
-    // refresh row when a meeting is created
     this.sub.add(
-      this.meetingEvents.created$.subscribe(() => this.loadUpcoming())
+      this.meetingEvents.created$.subscribe((created) => {
+        this.meetings = [...this.meetings, created].sort((a, b) => (a.date > b.date ? 1 : -1));
+      })
+    );
+
+    this.sub.add(
+      this.meetingEvents.updated$.subscribe((updated) => {
+        const idx = this.meetings.findIndex(m => m.id === updated.id);
+        if (idx === -1) return;
+
+        const next = [...this.meetings];
+        next[idx] = updated;
+        this.meetings = next;
+      })
     );
   }
 
@@ -65,13 +77,7 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
     this.isOpen = true;
   }
 
-  onModalClosed(result?: any) {
+  onModalClosed() {
     this.isOpen = false;
-
-    // If details component returns something, you can refresh.
-    // (Also useful after join/leave)
-    if (result?.refresh) {
-      this.loadUpcoming();
-    }
   }
 }

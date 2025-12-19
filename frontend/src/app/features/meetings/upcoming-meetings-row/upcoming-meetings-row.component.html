@@ -1,7 +1,6 @@
 <section class="section">
   <div class="section-header">
     <h2>Upcoming meetings</h2>
-    <button type="button" class="link" (click)="loadUpcoming()">Refresh</button>
   </div>
 
   <p *ngIf="loading">Loading...</p>
@@ -34,5 +33,5 @@
   [title]="modalTitle"
   [component]="modalComponent"
   [data]="modalData"
-  (closed)="onModalClosed($event)">
+  (closed)="onModalClosed()">
 </app-base-modal>
