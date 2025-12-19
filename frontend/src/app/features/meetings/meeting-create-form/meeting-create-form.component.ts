@@ -7,6 +7,7 @@ import { ModalRef } from 'src/app/shared/modal/modal-ref';
 import { CreateMeetingRequest, Meeting } from 'src/app/core/models/meeting.model';
 import { SessionService } from 'src/app/core/state/session.service';
 import { colorBucket } from 'src/app/shared/utils/colors-hash';
+import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 
 type MeetingCreateModalData = { userId: string };
 
@@ -43,6 +44,7 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
     private meetingApi: MeetingApi,
     private modalRef: ModalRef<Meeting>,
     private session: SessionService,
+    private meetingEvents: MeetingEventsService,
     @Inject(MODAL_DATA) public data: MeetingCreateModalData
   ) {}
 
@@ -112,7 +114,10 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
     };
 
     this.meetingApi.createMeeting(payload).subscribe({
-      next: (created) => this.modalRef.close(created),
+      next: (created) => {
+        this.meetingEvents.emitCreated(created);
+        this.modalRef.close();
+      },
       error: (err) => {
         console.error(err);
         this.errorMsg = 'Create meeting failed';

@@ -17,7 +17,6 @@ export class HomeComponent {
 
   constructor(
     public session: SessionService,
-    private meetingEvents: MeetingEventsService
   ) {}
 
   openCreate() {
@@ -25,8 +24,7 @@ export class HomeComponent {
     this.isCreateOpen = true;
   }
 
-  onCreateClosed(result?: Meeting) {
+  onCreateClosed() {
     this.isCreateOpen = false;
-    if (result) this.meetingEvents.emitCreated(result);
   }
 }
