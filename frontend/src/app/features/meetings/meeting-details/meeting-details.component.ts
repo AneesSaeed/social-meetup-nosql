@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { Meeting } from 'src/app/core/models/meeting.model';
-import { MeetingService } from 'src/app/core/api/meeting.api';
+import { MeetingApi } from 'src/app/core/api/meeting.api';
 import { SessionService } from 'src/app/core/state/session.service';
 import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
 import { ModalRef } from 'src/app/shared/modal/modal-ref';
@@ -21,7 +21,7 @@ export class MeetingDetailsComponent {
   constructor(
     @Inject(MODAL_DATA) data: MeetingDetailsData,
     private modalRef: ModalRef,
-    private meetingService: MeetingService,
+    private meetingApi: MeetingApi,
     private meetingEvents: MeetingEventsService,
     public session: SessionService,
     private toast: ToastService
@@ -51,7 +51,7 @@ export class MeetingDetailsComponent {
 
     this.busy = true;
 
-    this.meetingService.join(this.meeting.id, this.userId).subscribe({
+    this.meetingApi.join(this.meeting.id, this.userId).subscribe({
       next: (updated) => {
         this.meeting = updated;
         this.busy = false;
@@ -71,7 +71,7 @@ export class MeetingDetailsComponent {
 
     this.busy = true;
 
-    this.meetingService.leave(this.meeting.id, this.userId).subscribe({
+    this.meetingApi.leave(this.meeting.id, this.userId).subscribe({
       next: (updated) => {
         this.meeting = updated;
         this.busy = false;

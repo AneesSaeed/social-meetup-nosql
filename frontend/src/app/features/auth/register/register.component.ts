@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { AuthService } from 'src/app/core/api/auth.api';
+import { AuthApi } from 'src/app/core/api/auth.api';
 import { SessionService } from 'src/app/core/state/session.service';
 
 @Component({
@@ -17,12 +17,12 @@ export class RegisterComponent {
 
   // Inject services needed by this component:
   // - FormBuilder: to build forms easily
-  // - AuthService: to call the /register API
+  // - AuthApi: to call the /register API
   // - SessionService: to store the user after registration
   // - Router: to navigate the user
   constructor(
     private fb: FormBuilder,
-    private auth: AuthService,
+    private auth: AuthApi,
     private session: SessionService,
     private router: Router
 

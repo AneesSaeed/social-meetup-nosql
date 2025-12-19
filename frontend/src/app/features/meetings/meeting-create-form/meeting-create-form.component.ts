@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { MeetingService } from 'src/app/core/api/meeting.api';
+import { MeetingApi } from 'src/app/core/api/meeting.api';
 import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
 import { ModalRef } from 'src/app/shared/modal/modal-ref';
 import { CreateMeetingRequest, Meeting } from 'src/app/core/models/meeting.model';
@@ -40,7 +40,7 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private meetingService: MeetingService,
+    private meetingApi: MeetingApi,
     private modalRef: ModalRef<Meeting>,
     private session: SessionService,
     @Inject(MODAL_DATA) public data: MeetingCreateModalData
@@ -111,7 +111,7 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
       interests: (this.interestsArray.value as string[]).map(s => String(s).trim()).filter(Boolean),
     };
 
-    this.meetingService.createMeeting(payload).subscribe({
+    this.meetingApi.createMeeting(payload).subscribe({
       next: (created) => this.modalRef.close(created),
       error: (err) => {
         console.error(err);

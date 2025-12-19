@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Meeting } from 'src/app/core/models/meeting.model';
-import { MeetingService } from 'src/app/core/api/meeting.api';
+import { MeetingApi } from 'src/app/core/api/meeting.api';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { MeetingDetailsComponent } from '../meeting-details/meeting-details.component';
 
@@ -24,7 +24,7 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
   private sub = new Subscription();
 
   constructor(
-    private meetingService: MeetingService,
+    private meetingApi: MeetingApi,
     private meetingEvents: MeetingEventsService
   ) {}
 
@@ -57,7 +57,7 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.errorMsg = '';
 
-    this.meetingService.getAll('UPCOMING').subscribe({
+    this.meetingApi.getAll('UPCOMING').subscribe({
       next: (list) => {
         // optional: sort by date ascending
         this.meetings = [...list].sort((a, b) => (a.date > b.date ? 1 : -1));

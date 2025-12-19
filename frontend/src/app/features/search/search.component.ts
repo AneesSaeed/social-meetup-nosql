@@ -11,7 +11,7 @@ import {
   tap
 } from 'rxjs';
 
-import { SearchService } from 'src/app/core/api/search.service';
+import { SearchApi } from 'src/app/core/api/search.api';
 import { UserSearchDocument } from 'src/app/core/models/user-search.model';
 
 // Two search modes: default (users) and interests mode
@@ -40,7 +40,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   // search = backend calls, elRef = detect clicks outside this component
   constructor(
-    private search: SearchService,
+    private search: SearchApi,
     private elRef: ElementRef<HTMLElement>
   ) {}
 
