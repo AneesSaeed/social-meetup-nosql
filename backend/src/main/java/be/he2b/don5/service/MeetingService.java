@@ -25,9 +25,12 @@ public class MeetingService {
     private final PointsCalculationService pointsCalculationService;
     private final SearchService searchService;
 
-    public MeetingService(MeetingRepository meetingRepo,
-            UserRepository userRepo, SocialGraphService socialGraphService,
-            PointsCalculationService pointsCalculationService, SearchService searchService) {
+    public MeetingService(
+            MeetingRepository meetingRepo,
+            UserRepository userRepo,
+            SocialGraphService socialGraphService,
+            PointsCalculationService pointsCalculationService,
+            SearchService searchService) {
         this.meetingRepo = meetingRepo;
         this.userRepo = userRepo;
         this.socialGraphService = socialGraphService;
@@ -51,15 +54,14 @@ public class MeetingService {
         int max = request.getMaxParticipants() > 0 ? request.getMaxParticipants() : 10;
 
         Meeting meeting = new Meeting(
-            request.getTitle(),
-            request.getDescription(),
-            request.getEventType(),
-            date,
-            request.getLocation(),
-            organizerId,
-            max,
-            request.getInterests()
-        );
+                request.getTitle(),
+                request.getDescription(),
+                request.getEventType(),
+                date,
+                request.getLocation(),
+                organizerId,
+                max,
+                request.getInterests());
 
         return meetingRepo.save(meeting);
     }
@@ -70,7 +72,7 @@ public class MeetingService {
 
     public Meeting getMeetingById(String id) {
         return meetingRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Meeting not found"));
+                .orElseThrow(() -> new RuntimeException("Meeting not found"));
     }
 
     public List<Meeting> getMeetingsByUser(String userId) {
@@ -176,22 +178,22 @@ public class MeetingService {
             meeting.setPoints(avgPoints);
 
             // Attribuer points aux participants dans MongoDB + Elasticsearch
-        for (String uid : meeting.getParticipants()) {
-            User user = userRepo.findById(uid)
-                .orElseThrow(() -> new RuntimeException("User " + uid + " not found"));
+            for (String uid : meeting.getParticipants()) {
+                User user = userRepo.findById(uid)
+                        .orElseThrow(() -> new RuntimeException("User " + uid + " not found"));
 
-            int userPoints = pointsPerUser.getOrDefault(uid, 10);
-            user.setTotalPoints(user.getTotalPoints() + userPoints);
-            user.setTotalMeetings(user.getTotalMeetings() + 1);
-            userRepo.save(user);
-            
-            /**
-             * Synchro ElasticSearch
-             * ElasticSearch va créer l'user s'il n'existe pas.
-             * Sinon, il va faire un update partiel des champs modifiés.
-             */
-            searchService.syncUserToElasticsearch(user);
-        }
+                int userPoints = pointsPerUser.getOrDefault(uid, 10);
+                user.setTotalPoints(user.getTotalPoints() + userPoints);
+                user.setTotalMeetings(user.getTotalMeetings() + 1);
+                userRepo.save(user);
+
+                /**
+                 * Synchro ElasticSearch
+                 * ElasticSearch va créer l'user s'il n'existe pas.
+                 * Sinon, il va faire un update partiel des champs modifiés.
+                 */
+                searchService.syncUserToElasticsearch(user);
+            }
 
             // Créer relations Neo4j avec points personnalisés
             socialGraphService.createMeetingRelations(

@@ -22,9 +22,14 @@ public class SocialGraphService {
     }
 
     @Transactional
-    public void createMeetingRelations(String meetingId, List<String> participants,
-            Map<String, Integer> pointsPerUser, String date,
-            String location, String interest) {
+    public void createMeetingRelations(
+            String meetingId, 
+            List<String> participants,
+            Map<String, Integer> pointsPerUser, 
+            String date,
+            String location, 
+            String interest
+    ) {
         // Créer relations bidirectionnelles entre tous les participants
         for (int i = 0; i < participants.size(); i++) {
             for (int j = i + 1; j < participants.size(); j++) {

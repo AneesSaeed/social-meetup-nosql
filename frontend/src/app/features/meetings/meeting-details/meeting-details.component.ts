@@ -4,6 +4,7 @@ import { MeetingService } from 'src/app/core/services/meeting.service';
 import { SessionService } from 'src/app/core/services/session.service';
 import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
 import { ModalRef } from 'src/app/shared/modal/modal-ref';
+import { ToastService } from 'src/app/shared/toast/toast.service';
 
 type MeetingDetailsData = { meeting: Meeting };
 
@@ -15,13 +16,13 @@ type MeetingDetailsData = { meeting: Meeting };
 export class MeetingDetailsComponent {
   meeting: Meeting;
   busy = false;
-  errorMsg = '';
 
   constructor(
     @Inject(MODAL_DATA) data: MeetingDetailsData,
     private modalRef: ModalRef,
     private meetingService: MeetingService,
-    public session: SessionService
+    public session: SessionService,
+    private toast: ToastService
   ) {
     this.meeting = data.meeting;
   }
@@ -39,21 +40,25 @@ export class MeetingDetailsComponent {
       this.meeting.participants.length >= this.meeting.maxParticipants;
   }
 
+  private extractError(err: any, fallback: string): string {
+    return err?.error?.message || err?.error?.error || err?.message || fallback;
+  }
+
   join() {
     if (!this.userId || this.busy || this.isParticipant || this.isFull) return;
 
     this.busy = true;
-    this.errorMsg = '';
 
     this.meetingService.join(this.meeting.id, this.userId).subscribe({
       next: (updated) => {
         this.meeting = updated;
         this.busy = false;
+        this.toast.success('Successfully joined');
       },
       error: (err) => {
         console.error(err);
-        this.errorMsg = 'Join failed';
         this.busy = false;
+        this.toast.error(this.extractError(err, 'Join failed'));
       }
     });
   }
@@ -62,17 +67,17 @@ export class MeetingDetailsComponent {
     if (!this.userId || this.busy || !this.isParticipant) return;
 
     this.busy = true;
-    this.errorMsg = '';
 
     this.meetingService.leave(this.meeting.id, this.userId).subscribe({
       next: (updated) => {
         this.meeting = updated;
         this.busy = false;
+        this.toast.success('Successfully left');
       },
       error: (err) => {
         console.error(err);
-        this.errorMsg = 'Leave failed';
         this.busy = false;
+        this.toast.error(this.extractError(err, 'Leave failed'));
       }
     });
   }

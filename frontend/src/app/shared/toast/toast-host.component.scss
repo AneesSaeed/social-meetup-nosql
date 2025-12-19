@@ -1,0 +1,18 @@
+.toast-wrap {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  padding: 10px 14px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+  background: #222;
+  color: #fff;
+  z-index: 9999;
+  max-width: min(92vw, 520px);
+  text-align: center;
+}
+
+.toast-wrap.success { background: #1f7a3a; }
+.toast-wrap.error { background: #b42318; }
+.toast-wrap.info { background: #1f4f7a; }
