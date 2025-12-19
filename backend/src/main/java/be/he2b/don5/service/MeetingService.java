@@ -161,16 +161,11 @@ public class MeetingService {
 
         if (meeting.getParticipants() != null && meeting.getParticipants().size() > 0) {
 
-            // Calculer les points pour chaque participant
-            String meetingInterest = meeting.getInterests() != null && !meeting.getInterests().isEmpty()
-                    ? meeting.getInterests().get(0)
-                    : meeting.getEventType();
-
+            // Calculer les points avec tous les intérêts du meeting
             Map<String, Integer> pointsPerUser = pointsCalculationService.calculatePointsForMeeting(
                     meeting.getParticipants(),
-                    meetingInterest);
+                    meeting.getInterests());
 
-            // Calculer la moyenne des points pour le meeting (pour l'affichage)
             int avgPoints = (int) pointsPerUser.values().stream()
                     .mapToInt(Integer::intValue)
                     .average()
@@ -195,14 +190,18 @@ public class MeetingService {
                 searchService.syncUserToElasticsearch(user);
             }
 
-            // Créer relations Neo4j avec points personnalisés
+            // Concaténer les intérêts pour Neo4j
+            String interestsStr = meeting.getInterests() != null && !meeting.getInterests().isEmpty()
+                    ? String.join(", ", meeting.getInterests())
+                    : meeting.getEventType();
+
             socialGraphService.createMeetingRelations(
                     meeting.getId(),
                     meeting.getParticipants(),
                     pointsPerUser,
                     meeting.getDate().toString(),
                     meeting.getLocation(),
-                    meetingInterest);
+                    interestsStr);
         }
 
         return meetingRepo.save(meeting);
