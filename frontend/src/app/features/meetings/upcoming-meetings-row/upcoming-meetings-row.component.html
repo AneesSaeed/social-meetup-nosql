@@ -1,6 +1,15 @@
 <section class="section">
   <div class="section-header">
-    <h2>Upcoming meetings</h2>
+    <div>
+      <h2>Upcoming meetings</h2>
+    </div>
+    <div class="searchBar">
+      <input
+      class="interest-search"
+      type="text"
+      [formControl]="interestQuery"
+      placeholder="Filter by interest…" />
+    </div>
   </div>
 
   <p *ngIf="loading">Loading...</p>

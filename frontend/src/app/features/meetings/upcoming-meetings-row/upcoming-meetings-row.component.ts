@@ -6,6 +6,9 @@ import { MeetingEventsService } from 'src/app/core/events/meeting-events.service
 import { MeetingDetailsComponent } from '../meeting-details/meeting-details.component';
 import { SessionService } from 'src/app/core/state/session.service';
 
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
 @Component({
   selector: 'app-upcoming-meetings-row',
   templateUrl: './upcoming-meetings-row.component.html',
@@ -15,6 +18,9 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
   meetings: Meeting[] = [];
   loading = false;
   errorMsg = '';
+
+  interestQuery = new FormControl<string>('', { nonNullable: true });
+  private lastMode: 'upcoming' | 'search' = 'upcoming';
 
   // modal
   isOpen = false;
@@ -34,10 +40,18 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
     this.loadUpcoming();
 
     this.sub.add(
+      this.interestQuery.valueChanges
+        .pipe(debounceTime(250), distinctUntilChanged())
+        .subscribe((q) => this.applyInterestFilter(q))
+    );
+
+    this.sub.add(
       this.meetingEvents.created$.subscribe((created) => {
+        if (this.interestQuery.value.trim()) return; // don’t inject into filtered list
         this.meetings = [...this.meetings, created].sort((a, b) => (a.date > b.date ? 1 : -1));
       })
     );
+
 
     this.sub.add(
       this.meetingEvents.updated$.subscribe((updated) => {
@@ -68,6 +82,38 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error(err);
         this.errorMsg = 'Failed to load upcoming meetings';
+        this.loading = false;
+      }
+    });
+  }
+
+  private applyInterestFilter(q: string) {
+    const query = q.trim();
+
+    if (!query) {
+      this.lastMode = 'upcoming';
+      this.loadUpcoming();
+      return;
+    }
+
+    this.lastMode = 'search';
+    this.loading = true;
+    this.errorMsg = '';
+
+    this.meetingApi.searchByInterest(query).subscribe({
+      next: (list) => {
+        // keep only upcoming if you want this section to stay "Upcoming"
+        const upcomingOnly = list.filter(m => (m as any).completion
+          ? (m as any).completion === 'UPCOMING'
+          : true
+        );
+
+        this.meetings = [...upcomingOnly].sort((a, b) => (a.date > b.date ? 1 : -1));
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMsg = 'Failed to search meetings by interest';
         this.loading = false;
       }
     });
