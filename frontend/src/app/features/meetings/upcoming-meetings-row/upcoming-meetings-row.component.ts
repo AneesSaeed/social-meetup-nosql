@@ -1,13 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { Meeting } from 'src/app/core/models/meeting.model';
 import { MeetingApi } from 'src/app/core/api/meeting.api';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { MeetingDetailsComponent } from '../meeting-details/meeting-details.component';
 import { SessionService } from 'src/app/core/state/session.service';
-
-import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-upcoming-meetings-row',
@@ -15,12 +13,17 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styleUrls: ['./upcoming-meetings-row.component.scss']
 })
 export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
+  // source list (always UPCOMING)
+  private allMeetings: Meeting[] = [];
+
+  // displayed list (filtered)
   meetings: Meeting[] = [];
+
   loading = false;
   errorMsg = '';
 
+  // filter
   interestQuery = new FormControl<string>('', { nonNullable: true });
-  private lastMode: 'upcoming' | 'search' = 'upcoming';
 
   // modal
   isOpen = false;
@@ -33,7 +36,7 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
   constructor(
     private meetingApi: MeetingApi,
     private meetingEvents: MeetingEventsService,
-    public session: SessionService,
+    public session: SessionService
   ) {}
 
   ngOnInit(): void {
@@ -42,25 +45,29 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
     this.sub.add(
       this.interestQuery.valueChanges
         .pipe(debounceTime(250), distinctUntilChanged())
-        .subscribe((q) => this.applyInterestFilter(q))
+        .subscribe(() => this.applyLocalFilter())
     );
 
     this.sub.add(
       this.meetingEvents.created$.subscribe((created) => {
-        if (this.interestQuery.value.trim()) return; // don’t inject into filtered list
-        this.meetings = [...this.meetings, created].sort((a, b) => (a.date > b.date ? 1 : -1));
+        if (created.status !== 'UPCOMING') return;
+
+        this.allMeetings = [...this.allMeetings, created].sort((a, b) => (a.date > b.date ? 1 : -1));
+        this.applyLocalFilter();
       })
     );
 
-
     this.sub.add(
       this.meetingEvents.updated$.subscribe((updated) => {
-        const idx = this.meetings.findIndex(m => m.id === updated.id);
-        if (idx === -1) return;
+        // remove old
+        this.allMeetings = this.allMeetings.filter(m => m.id !== updated.id);
 
-        const next = [...this.meetings];
-        next[idx] = updated;
-        this.meetings = next;
+        // re-add if still UPCOMING
+        if (updated.status === 'UPCOMING') {
+          this.allMeetings = [...this.allMeetings, updated].sort((a, b) => (a.date > b.date ? 1 : -1));
+        }
+
+        this.applyLocalFilter();
       })
     );
   }
@@ -75,8 +82,9 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
 
     this.meetingApi.getAll('UPCOMING').subscribe({
       next: (list) => {
-        // optional: sort by date ascending
-        this.meetings = [...list].sort((a, b) => (a.date > b.date ? 1 : -1));
+        const sorted = [...list].sort((a, b) => (a.date > b.date ? 1 : -1));
+        this.allMeetings = sorted;
+        this.applyLocalFilter();
         this.loading = false;
       },
       error: (err) => {
@@ -87,41 +95,22 @@ export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
     });
   }
 
-  private applyInterestFilter(q: string) {
-    const query = q.trim();
+  private applyLocalFilter() {
+    const q = this.interestQuery.value.trim().toLowerCase();
 
-    if (!query) {
-      this.lastMode = 'upcoming';
-      this.loadUpcoming();
+    if (!q) {
+      this.meetings = [...this.allMeetings];
       return;
     }
 
-    this.lastMode = 'search';
-    this.loading = true;
-    this.errorMsg = '';
-
-    this.meetingApi.searchByInterest(query).subscribe({
-      next: (list) => {
-        // keep only upcoming if you want this section to stay "Upcoming"
-        const upcomingOnly = list.filter(m => (m as any).completion
-          ? (m as any).completion === 'UPCOMING'
-          : true
-        );
-
-        this.meetings = [...upcomingOnly].sort((a, b) => (a.date > b.date ? 1 : -1));
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error(err);
-        this.errorMsg = 'Failed to search meetings by interest';
-        this.loading = false;
-      }
-    });
+    this.meetings = this.allMeetings.filter(m =>
+      (m.interests ?? []).some(it => it.toLowerCase().includes(q))
+    );
   }
 
   isJoined(m: Meeting): boolean {
     const uid = this.session.currentUser?.id;
-    return !!uid && m.participants?.includes(uid);
+    return !!uid && (m.participants ?? []).includes(uid);
   }
 
   isFull(m: Meeting): boolean {
