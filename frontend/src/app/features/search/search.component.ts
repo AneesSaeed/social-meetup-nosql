@@ -11,7 +11,7 @@ import {
   tap
 } from 'rxjs';
 
-import { SearchService } from 'src/app/core/services/search.service';
+import { SearchService } from 'src/app/core/api/search.service';
 import { UserSearchDocument } from 'src/app/core/models/user-search.model';
 
 // Two search modes: default (users) and interests mode

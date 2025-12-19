@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { SessionService } from 'src/app/core/services/session.service';
+import { SessionService } from 'src/app/core/state/session.service';
 import { HostListener } from '@angular/core';
 
 @Component({

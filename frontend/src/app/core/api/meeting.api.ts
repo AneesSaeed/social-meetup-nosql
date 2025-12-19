@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { CreateMeetingRequest, Meeting, Completion } from '../models/meeting.model';
 
 @Injectable({ providedIn: 'root' })
-export class MeetingService {
+export class MeetingApi {
   private readonly baseUrl = 'http://localhost:8080/api/meetings';
 
   constructor(private http: HttpClient) {}

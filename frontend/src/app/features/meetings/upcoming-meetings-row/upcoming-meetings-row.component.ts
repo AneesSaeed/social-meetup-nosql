@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Meeting } from 'src/app/core/models/meeting.model';
-import { MeetingService } from 'src/app/core/services/meeting.service';
-import { MeetingEventsService } from 'src/app/core/services/meeting-events.service';
+import { MeetingService } from 'src/app/core/api/meeting.api';
+import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { MeetingDetailsComponent } from '../meeting-details/meeting-details.component';
 
 @Component({

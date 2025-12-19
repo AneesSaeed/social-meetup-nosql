@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { UserSearchDocument } from '../models/user-search.model';
 
 @Injectable({ providedIn: 'root' })
-export class SearchService {
+export class SearchApi {
   private readonly baseUrl = 'http://localhost:8080/api/search';
 
   constructor(private http: HttpClient) {}

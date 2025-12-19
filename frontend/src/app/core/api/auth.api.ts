@@ -8,7 +8,7 @@ import { User } from '../models/user.model';
 @Injectable({
   providedIn: 'root' // 'root' mean create one single instance of this service for the entire application.
 })
-export class AuthService {
+export class AuthApi {
 
   private baseUrl = 'http://localhost:8080/api';
 

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SessionService } from 'src/app/core/services/session.service';
+import { SessionService } from 'src/app/core/state/session.service';
 import { User } from 'src/app/core/models/user.model';
 
 @Component({

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { SessionService } from 'src/app/core/services/session.service';
+import { SessionService } from 'src/app/core/state/session.service';
 
 @Component({
   selector: 'app-create-meeting-button',

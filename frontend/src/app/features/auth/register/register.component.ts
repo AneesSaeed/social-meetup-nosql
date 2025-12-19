@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { AuthService } from 'src/app/core/services/auth.service';
-import { SessionService } from 'src/app/core/services/session.service';
+import { AuthService } from 'src/app/core/api/auth.api';
+import { SessionService } from 'src/app/core/state/session.service';
 
 @Component({
   selector: 'app-register',

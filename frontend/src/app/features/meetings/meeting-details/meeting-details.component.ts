@@ -1,11 +1,11 @@
 import { Component, Inject } from '@angular/core';
 import { Meeting } from 'src/app/core/models/meeting.model';
-import { MeetingService } from 'src/app/core/services/meeting.service';
-import { SessionService } from 'src/app/core/services/session.service';
+import { MeetingService } from 'src/app/core/api/meeting.api';
+import { SessionService } from 'src/app/core/state/session.service';
 import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
 import { ModalRef } from 'src/app/shared/modal/modal-ref';
 import { ToastService } from 'src/app/shared/toast/toast.service';
-import { MeetingEventsService } from 'src/app/core/services/meeting-events.service';
+import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 
 type MeetingDetailsData = { meeting: Meeting };
 

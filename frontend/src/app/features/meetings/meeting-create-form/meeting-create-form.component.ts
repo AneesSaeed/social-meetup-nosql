@@ -1,11 +1,11 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { MeetingService } from 'src/app/core/services/meeting.service';
+import { MeetingService } from 'src/app/core/api/meeting.api';
 import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
 import { ModalRef } from 'src/app/shared/modal/modal-ref';
 import { CreateMeetingRequest, Meeting } from 'src/app/core/models/meeting.model';
-import { SessionService } from 'src/app/core/services/session.service';
+import { SessionService } from 'src/app/core/state/session.service';
 import { colorBucket } from 'src/app/shared/utils/colors-hash';
 
 type MeetingCreateModalData = { userId: string };
