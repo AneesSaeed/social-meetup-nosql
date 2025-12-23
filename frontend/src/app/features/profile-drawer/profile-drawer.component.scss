@@ -171,6 +171,74 @@
   }
 }
 
+.drawer__section {
+  padding: 16px;
+  border-top: 1px solid v.$color-border;
+  display: grid;
+  gap: 10px;
+}
+
+.drawer__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawer__text {
+  margin: 0;
+  color: v.$color-text;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.drawer__edit {
+  display: grid;
+  gap: 10px;
+}
+
+.drawer__textarea {
+  width: 100%;
+  border: 1px solid v.$color-border;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: v.$color-surface;
+  color: v.$color-text;
+  resize: vertical;
+
+  &:focus-visible {
+    outline: 2px solid v.$color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.drawer__interest-add {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.drawer__input {
+  flex: 1 1 auto;
+  border: 1px solid v.$color-border;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: v.$color-surface;
+  color: v.$color-text;
+
+  &:focus-visible {
+    outline: 2px solid v.$color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.drawer__edit-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+
 @media (prefers-reduced-motion: reduce) {
   .drawer {
     transition: none;

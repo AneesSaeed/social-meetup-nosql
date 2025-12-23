@@ -26,13 +26,12 @@ export class SessionService {
   }
 
   // Update fields for the currently logged-in user
-  updateCurrentUser(
-    patch: Partial<{ totalPoints: number; totalMeetings: number }>
-  ) {
+  updateCurrentUser(patch: Partial<User>) {
     const u = this.currentUser;
     if (!u) return;
 
-    const updated = { ...u, ...patch };
+    // merge keeps existing required fields (id/name/email/...) intact
+    const updated: User = { ...u, ...patch };
     this.setUser(updated);
   }
 

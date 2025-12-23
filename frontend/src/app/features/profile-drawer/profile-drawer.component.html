@@ -26,20 +26,85 @@
         <span class="drawer__value">{{ user.totalMeetings }}</span>
       </div>
 
-      <section class="drawer__interests" *ngIf="user.interests?.length">
-        <span class="drawer__label">Interests</span>
-        <div class="badges">
-          <span
-            class="badge"
-            *ngFor="let interest of user.interests"
-            [ngClass]="'badge--c' + (interest | colorBucket:10)"
-            [title]="interest"
-          >
-            {{ interest }}
-          </span>
+      <!-- BIO -->
+      <section class="drawer__section">
+        <div class="drawer__section-head">
+          <span class="drawer__label">Bio</span>
+
+          <button type="button"
+                  class="drawer__icon-btn"
+                  (click)="toggleBioEdit(user)"
+                  aria-label="Edit bio">
+            ✎
+          </button>
         </div>
 
-        <!-- Future: add/remove interests controls will be placed here -->
+        <!-- readonly -->
+        <p class="drawer__text" *ngIf="!editingBio">
+          {{ user.bio || '—' }}
+        </p>
+
+        <!-- edit mode -->
+        <div *ngIf="editingBio" class="drawer__edit">
+          <textarea class="drawer__textarea" [formControl]="bioCtrl" rows="4"></textarea>
+
+          <div class="drawer__edit-actions">
+            <button type="button" class="btn btn-ghost" (click)="toggleBioEdit(user)">Cancel</button>
+            <button type="button" class="btn btn-primary" [disabled]="savingBio" (click)="saveBio()">
+              {{ savingBio ? 'Saving...' : 'Save' }}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- INTERESTS -->
+      <section class="drawer__section">
+        <div class="drawer__section-head">
+          <span class="drawer__label">Interests</span>
+
+          <button type="button"
+                  class="drawer__icon-btn"
+                  (click)="toggleInterestsEdit()"
+                  aria-label="Edit interests">
+            ✎
+          </button>
+        </div>
+
+        <!-- readonly -->
+        <div class="badges" *ngIf="!editingInterests">
+          <span
+            class="badge"
+            *ngFor="let interest of (user.interests ?? [])"
+            [ngClass]="'badge--c' + (interest | colorBucket:10)"
+            [title]="interest">
+            {{ interest }}
+          </span>
+          <p class="drawer__text" *ngIf="!(user.interests?.length)">—</p>
+        </div>
+
+        <!-- edit mode -->
+        <div *ngIf="editingInterests" class="drawer__edit">
+          <div class="drawer__interest-add">
+            <input class="drawer__input" type="text" [formControl]="interestCtrl" placeholder="Add an interest..." />
+            <button type="button" class="btn btn-primary" (click)="addInterest(user)" [disabled]="savingInterests">
+              Add
+            </button>
+          </div>
+
+          <div class="badges" *ngIf="user.interests?.length">
+            <span
+              class="badge"
+              *ngFor="let interest of user.interests"
+              [ngClass]="'badge--c' + (interest | colorBucket:10)">
+              {{ interest }}
+              <button type="button" class="badge__remove" (click)="removeInterest(user, interest)" aria-label="Remove">×</button>
+            </span>
+          </div>
+
+          <div class="drawer__edit-actions">
+            <button type="button" class="btn btn-ghost" (click)="toggleInterestsEdit()">Done</button>
+          </div>
+        </div>
       </section>
     </div>
 

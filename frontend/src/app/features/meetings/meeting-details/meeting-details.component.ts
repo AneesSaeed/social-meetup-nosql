@@ -6,7 +6,8 @@ import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
 import { ModalRef } from 'src/app/shared/modal/modal-ref';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
-import { UserApi, UserDto } from 'src/app/core/api/user.api';
+import { UserApi } from 'src/app/core/api/user.api';
+import { User } from 'src/app/core/models/user.model';
 
 type MeetingDetailsData = {
   meeting: Meeting;
@@ -158,12 +159,8 @@ export class MeetingDetailsComponent {
     if (!this.meeting?.organizer) return;
 
     this.userApi.getById(this.meeting.organizer).subscribe({
-      next: (u: UserDto) => {
-        const composed =
-          (u.name && u.name.trim()) ||
-          [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
-
-        this.organizerName = composed || u.email || u.id;
+      next: (u: User) => {
+        this.organizerName = u.name?.trim() || u.email || u.id;
       },
       error: () => {
         // fall back silently to the id in the UI
