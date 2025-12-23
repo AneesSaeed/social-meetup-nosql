@@ -6,8 +6,8 @@ import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
 import { ModalRef } from 'src/app/shared/modal/modal-ref';
 import { CreateMeetingRequest, Meeting } from 'src/app/core/models/meeting.model';
 import { SessionService } from 'src/app/core/state/session.service';
-import { colorBucket } from 'src/app/shared/utils/colors-hash';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
+import { ToastService } from 'src/app/shared/toast/toast.service';
 
 type MeetingCreateModalData = { userId: string };
 
@@ -45,6 +45,7 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
     private modalRef: ModalRef<Meeting>,
     private session: SessionService,
     private meetingEvents: MeetingEventsService,
+    private toast: ToastService,
     @Inject(MODAL_DATA) public data: MeetingCreateModalData
   ) {}
 
@@ -91,7 +92,6 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
   }
 
   private toLocalDateTime(value: string): string {
-    // "YYYY-MM-DDTHH:mm" -> "YYYY-MM-DDTHH:mm:00"
     return value.length === 16 ? `${value}:00` : value;
   }
 
@@ -116,11 +116,14 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
     this.meetingApi.createMeeting(payload).subscribe({
       next: (created) => {
         this.meetingEvents.emitCreated(created);
+        this.toast.success('Meeting created');
         this.modalRef.close();
       },
       error: (err) => {
         console.error(err);
-        this.errorMsg = 'Create meeting failed';
+        const msg = this.extractError(err, 'Create meeting failed');
+        this.errorMsg = msg;
+        this.toast.error(msg);
         this.submitting = false;
       }
     });
@@ -128,5 +131,9 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
 
   cancel() {
     this.modalRef.close();
+  }
+
+  private extractError(err: any, fallback: string): string {
+    return err?.error?.message || err?.error?.error || err?.message || fallback;
   }
 }

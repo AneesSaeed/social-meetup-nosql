@@ -1,6 +1,8 @@
 package be.he2b.don5.repository.graph;
 
 import be.he2b.don5.domain.graph.UserNode;
+import be.he2b.don5.dto.RecommendationDto;
+
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,7 +40,7 @@ public interface UserNodeRepository extends Neo4jRepository<UserNode, String> {
                      "WHERE NOT (me)-[:MET]-(recommendation) AND me <> recommendation " +
                      "RETURN recommendation.id as userId, recommendation.name as userName, count(*) as mutualFriends " +
                      "ORDER BY mutualFriends DESC")
-       List<Map<String, Object>> getRecommendations(@Param("userId") String userId);
+       List<RecommendationDto> getRecommendations(@Param("userId") String userId);
 
        @Query("MATCH (u:User {id: $userId})-[r:MET*1..3]-(connected:User) " +
                      "RETURN DISTINCT connected.id as userId, connected.name as userName, length(r) as distance " +

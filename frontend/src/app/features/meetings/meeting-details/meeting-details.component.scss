@@ -1,4 +1,3 @@
-/* meeting-details.component.scss */
 @use '../../../../styles/variables' as v;
 @use '../../../../styles/badges';
 
@@ -7,13 +6,82 @@
   gap: 14px;
 }
 
+.header {
+  display: grid;
+  gap: 6px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+  color: v.$color-text;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  color: v.$color-text-light;
+  font-size: 13px;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.muted {
+  color: v.$color-text-light;
+  margin-left: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border: 1px solid v.$color-border;
+  background: v.$color-surface-alt;
+  color: v.$color-text;
+  text-transform: uppercase;
+}
+
+.pill--upcoming {
+  border-color: rgba(37, 99, 235, 0.25);
+  background: v.$color-hover;
+  color: v.$color-primary-dark;
+}
+
+.pill--completed {
+  border-color: rgba(16, 185, 129, 0.25);
+  background: rgba(16, 185, 129, 0.08);
+  color: v.$color-secondary-dark;
+}
+
+.pill--cancelled {
+  border-color: rgba(220, 38, 38, 0.25);
+  background: rgba(220, 38, 38, 0.08);
+  color: v.$color-danger;
+}
+
 .top {
   display: grid;
   gap: 10px;
   padding: 12px;
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: v.$color-surface-alt;
+  border: 1px solid v.$color-border;
 }
 
 .line {
@@ -26,7 +94,7 @@
 .label {
   font-size: 12px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.55);
+  color: v.$color-text-light;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -58,82 +126,146 @@
   gap: 10px;
   margin-top: 6px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .btn {
-  border: 0;
+  border: 1px solid transparent;
   border-radius: 12px;
-  padding: 12px 14px;
+  padding: 10px 14px;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  transition: filter 0.15s, transform 0.08s, box-shadow 0.15s, background 0.15s;
-}
 
-.btn-primary {
-  background: v.$color-primary;
-  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-height: 42px;
+
+  transition: background 0.15s, transform 0.08s, box-shadow 0.15s, border-color 0.15s, color 0.15s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover:not(:disabled) {
-    filter: brightness(0.96);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: v.$shadow-card;
   }
 
   &:active:not(:disabled) {
     transform: translateY(1px);
-  }
-
-  &:disabled {
-    background: rgba(0, 0, 0, 0.12);
-    color: rgba(0, 0, 0, 0.45);
-    cursor: not-allowed;
     box-shadow: none;
   }
 
+  &:disabled {
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.62;
+  }
+
   &:focus-visible {
-    outline: 2px solid rgba(0, 0, 0, 0.35);
+    outline: 2px solid rgba(37, 99, 235, 0.35); /* matches primary hue */
     outline-offset: 2px;
   }
 }
 
+/* Spinner that works on light and dark button backgrounds */
+.btn__spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  opacity: 0.75;
+  animation: btn-spin 0.8s linear infinite;
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Neutral / secondary buttons */
 .btn-ghost {
-  background: rgba(0, 0, 0, 0.06);
+  background: v.$color-surface-alt;
+  border-color: v.$color-border;
   color: v.$color-text;
 
   &:hover:not(:disabled) {
-    background: rgba(0, 0, 0, 0.10);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(1px);
-  }
-
-  &:focus-visible {
-    outline: 2px solid rgba(0, 0, 0, 0.35);
-    outline-offset: 2px;
+    background: v.$color-hover;
+    border-color: v.$color-primary-light;
   }
 }
 
 .btn-soft {
-  background: rgba(0, 0, 0, 0.06);
+  background: v.$color-surface-alt;
+  border-color: v.$color-border;
   color: v.$color-text;
 
   &:hover:not(:disabled) {
-    background: rgba(0, 0, 0, 0.10);
+    background: v.$color-hover;
+    border-color: v.$color-border;
   }
+}
 
-  &:active:not(:disabled) {
-    transform: translateY(1px);
+/* Primary (Join) */
+.btn-primary {
+  background: v.$color-primary;
+  border-color: v.$color-primary;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: v.$color-primary-dark;
+    border-color: v.$color-primary-dark;
   }
 
   &:disabled {
-    background: rgba(0, 0, 0, 0.08);
-    color: rgba(0, 0, 0, 0.35);
-    cursor: not-allowed;
+    background: rgba(37, 99, 235, 0.35);
+    border-color: rgba(37, 99, 235, 0.25);
+    color: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* Complete (positive action) */
+.btn-success {
+  background: v.$color-secondary;
+  border-color: v.$color-secondary;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: v.$color-secondary-dark;
+    border-color: v.$color-secondary-dark;
+  }
+
+  &:disabled {
+    background: rgba(16, 185, 129, 0.35);
+    border-color: rgba(16, 185, 129, 0.25);
+    color: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* Cancel (destructive action) */
+.btn-danger {
+  background: transparent;
+  border-color: rgba(220, 38, 38, 0.35);
+  color: v.$color-danger;
+
+  &:hover:not(:disabled) {
+    background: rgba(220, 38, 38, 0.08);
+    border-color: rgba(220, 38, 38, 0.55);
+  }
+
+  &:active:not(:disabled) {
+    background: rgba(220, 38, 38, 0.12);
+  }
+
+  &:disabled {
+    background: transparent;
+    border-color: rgba(220, 38, 38, 0.20);
+    color: rgba(220, 38, 38, 0.55);
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(0, 0, 0, 0.35);
+    outline: 2px solid rgba(220, 38, 38, 0.35);
     outline-offset: 2px;
   }
 }
@@ -146,9 +278,25 @@
   }
 }
 
-
-
 .interests-line {
   align-items: start;
 }
 
+/* Better mobile actions layout */
+@media (max-width: 520px) {
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions .btn {
+    flex: 1 1 auto;
+  }
+
+  .actions .btn-ghost {
+    flex: 0 0 auto;
+  }
+
+  .actions .btn-primary {
+    flex: 1 1 100%;
+  }
+}

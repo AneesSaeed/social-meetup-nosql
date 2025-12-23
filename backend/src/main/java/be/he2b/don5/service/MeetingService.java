@@ -144,10 +144,10 @@ public class MeetingService {
     /**
      * Marks a meeting as completed and awards points to all participants.
      * Call this from a controller endpoint like:
-     * POST /api/meetings/{id}/complete?points=10
+     * POST /api/meetings/{id}/complete
      */
     @Transactional
-    public Meeting completeMeeting(String meetingId, int points) {
+    public Meeting completeMeeting(String meetingId) {
         Meeting meeting = getMeetingById(meetingId);
 
         if (meeting.getStatus() == Completion.CANCELLED) {

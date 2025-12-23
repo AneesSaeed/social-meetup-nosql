@@ -1,0 +1,40 @@
+.state {
+  padding: 12px 0;
+  opacity: 0.8;
+}
+
+.state--error {
+  opacity: 1;
+}
+
+.list {
+  display: grid;
+  gap: 10px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.meta {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.pill {
+  font-size: 0.8rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.12);
+  opacity: 0.8;
+}

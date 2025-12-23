@@ -63,6 +63,16 @@ public class MeetingController {
         return meetingService.leaveMeeting(id, userId);
     }
 
+    @PostMapping("/{id}/complete")
+    public Meeting complete(@PathVariable String id) {
+        return meetingService.completeMeeting(id);
+    }
+
+    @PostMapping("/{id}/cancel")
+    public Meeting cancel(@PathVariable String id) {
+        return meetingService.cancelMeeting(id);
+    }
+
     @GetMapping("/search")
     public List<Meeting> searchMeetingsByInterest(@RequestParam String interest) {
         return meetingService.searchMeetingsByInterest(interest);

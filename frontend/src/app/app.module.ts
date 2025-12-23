@@ -21,6 +21,7 @@ import { MeetingDetailsComponent } from './features/meetings/meeting-details/mee
 import { ColorBucketPipe } from './shared/pipes/color-bucket.pipe';
 import { ProfileDrawerComponent } from './features/profile-drawer/profile-drawer.component';
 import { ToastHostComponent } from './shared/toast/toast-host.component';
+import { SuggestionsPanelComponent } from './features/suggestions/suggestions-panel/suggestions-panel.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ToastHostComponent } from './shared/toast/toast-host.component';
     ColorBucketPipe,
     ProfileDrawerComponent,
     ToastHostComponent,
+    SuggestionsPanelComponent,
   ],
   imports: [
     BrowserModule,

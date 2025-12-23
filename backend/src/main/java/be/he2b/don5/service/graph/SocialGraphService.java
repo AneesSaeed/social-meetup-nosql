@@ -1,12 +1,15 @@
 package be.he2b.don5.service.graph;
 
-import be.he2b.don5.domain.graph.UserNode;
-import be.he2b.don5.repository.graph.UserNodeRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import lombok.AllArgsConstructor;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import be.he2b.don5.domain.graph.UserNode;
+import be.he2b.don5.dto.RecommendationDto;
+import be.he2b.don5.repository.graph.UserNodeRepository;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -55,7 +58,7 @@ public class SocialGraphService {
         return userNodeRepo.getUserMeetings(userId);
     }
 
-    public List<Map<String, Object>> getRecommendations(String userId) {
+    public List<RecommendationDto> getRecommendations(String userId) {
         return userNodeRepo.getRecommendations(userId);
     }
 

@@ -1,5 +1,6 @@
 package be.he2b.don5.controller.graph;
 
+import be.he2b.don5.dto.RecommendationDto;
 import be.he2b.don5.service.graph.SocialGraphService;
 import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class SocialGraphController {
     }
 
     @GetMapping("/recommendations/{userId}")
-    public List<Map<String, Object>> getRecommendations(@PathVariable String userId) {
+    public List<RecommendationDto> getRecommendations(@PathVariable String userId) {
         return socialGraphService.getRecommendations(userId);
     }
 

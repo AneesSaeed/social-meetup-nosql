@@ -1,0 +1,31 @@
+<section class="panel">
+  <div class="panel-header">
+    <h2>Suggestions</h2>
+  </div>
+
+  <div class="panel-body">
+    <div *ngIf="loading" class="state">Loading suggestions…</div>
+
+    <div *ngIf="!loading && error" class="state state--error">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && items.length === 0" class="state">
+      No suggestions yet. Complete meetings to grow your network.
+    </div>
+
+    <div *ngIf="!loading && !error && items.length > 0" class="list">
+      <div class="card" *ngFor="let u of items; trackBy: trackByUserId">
+        <div class="card__main">
+          <div class="name">{{ u.userName }}</div>
+          <div class="meta">{{ u.mutualFriends }} mutual connection(s)</div>
+        </div>
+
+        <!-- Optional: until you have /users/:id route -->
+        <div class="card__actions">
+          <span class="pill">Suggested</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

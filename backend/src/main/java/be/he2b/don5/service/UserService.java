@@ -1,6 +1,7 @@
 package be.he2b.don5.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -26,5 +27,9 @@ public class UserService {
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
+    }
+
+    public Optional<User> getById(String id) {
+        return userRepo.findById(id);
     }
 }

@@ -38,6 +38,14 @@ export class MeetingApi {
     return this.http.post<Meeting>(`${this.baseUrl}/${meetingId}/leave?userId=${userId}`, {});
   }
 
+  complete(meetingId: string): Observable<Meeting> {
+    return this.http.post<Meeting>(`${this.baseUrl}/${meetingId}/complete`, {});
+  }
+
+  cancel(meetingId: string): Observable<Meeting> {
+    return this.http.post<Meeting>(`${this.baseUrl}/${meetingId}/cancel`, {});
+  }
+
   searchByInterest(interest: string): Observable<Meeting[]> {
     return this.http.get<Meeting[]>(`${this.baseUrl}/search?interest=${encodeURIComponent(interest)}`);
   }
