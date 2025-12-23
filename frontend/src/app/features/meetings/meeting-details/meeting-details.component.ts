@@ -8,7 +8,10 @@ import { ToastService } from 'src/app/shared/toast/toast.service';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { UserApi, UserDto } from 'src/app/core/api/user.api';
 
-type MeetingDetailsData = { meeting: Meeting };
+type MeetingDetailsData = {
+  meeting: Meeting;
+  readonly?: boolean;
+};
 
 @Component({
   selector: 'app-meeting-details',
@@ -19,6 +22,7 @@ export class MeetingDetailsComponent {
   meeting: Meeting;
   busy = false;
 
+  readonly = false;
   organizerName: string | null = null;
 
   constructor(
@@ -31,6 +35,7 @@ export class MeetingDetailsComponent {
     private userApi: UserApi
   ) {
     this.meeting = data.meeting;
+    this.readonly = !!data.readonly;
     this.loadOrganizerName();
   }
 

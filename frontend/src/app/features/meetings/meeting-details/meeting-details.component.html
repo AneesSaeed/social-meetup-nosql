@@ -59,45 +59,47 @@
   <div class="actions">
     <button class="btn btn-ghost" type="button" (click)="close()">Close</button>
 
-    <button
-      class="btn btn-primary"
-      type="button"
-      *ngIf="session.isLoggedIn() && !isParticipant"
-      [disabled]="busy || isFull"
-      (click)="join()">
-      <span class="btn__spinner" *ngIf="busy && !isFull" aria-hidden="true"></span>
-      {{ isFull ? 'Full' : (busy ? 'Joining...' : 'Join') }}
-    </button>
+    <ng-container *ngIf="!readonly">
+      <button
+        class="btn btn-primary"
+        type="button"
+        *ngIf="session.isLoggedIn() && !isParticipant"
+        [disabled]="busy || isFull"
+        (click)="join()">
+        <span class="btn__spinner" *ngIf="busy && !isFull" aria-hidden="true"></span>
+        {{ isFull ? 'Full' : (busy ? 'Joining...' : 'Join') }}
+      </button>
 
-    <button
-      class="btn btn-soft"
-      type="button"
-      *ngIf="session.isLoggedIn() && isParticipant"
-      [disabled]="busy"
-      (click)="leave()">
-      <span class="btn__spinner" *ngIf="busy" aria-hidden="true"></span>
-      {{ busy ? 'Leaving...' : 'Leave' }}
-    </button>
+      <button
+        class="btn btn-soft"
+        type="button"
+        *ngIf="session.isLoggedIn() && isParticipant"
+        [disabled]="busy"
+        (click)="leave()">
+        <span class="btn__spinner" *ngIf="busy" aria-hidden="true"></span>
+        {{ busy ? 'Leaving...' : 'Leave' }}
+      </button>
 
-    <button
-      class="btn btn-success"
-      type="button"
-      *ngIf="canComplete"
-      [disabled]="busy"
-      (click)="complete()">
-      <span class="btn__spinner" *ngIf="busy" aria-hidden="true"></span>
-      {{ busy ? 'Completing...' : 'Complete' }}
-    </button>
+      <button
+        class="btn btn-success"
+        type="button"
+        *ngIf="canComplete"
+        [disabled]="busy"
+        (click)="complete()">
+        <span class="btn__spinner" *ngIf="busy" aria-hidden="true"></span>
+        {{ busy ? 'Completing...' : 'Complete' }}
+      </button>
 
-    <button
-      class="btn btn-danger"
-      type="button"
-      *ngIf="canCancel"
-      [disabled]="busy"
-      (click)="cancelMeeting()">
-      <span class="btn__spinner" *ngIf="busy" aria-hidden="true"></span>
-      {{ busy ? 'Cancelling...' : 'Cancel' }}
-    </button>
+      <button
+        class="btn btn-danger"
+        type="button"
+        *ngIf="canCancel"
+        [disabled]="busy"
+        (click)="cancelMeeting()">
+        <span class="btn__spinner" *ngIf="busy" aria-hidden="true"></span>
+        {{ busy ? 'Cancelling...' : 'Cancel' }}
+      </button>
+    </ng-container>
   </div>
 
 </div>
