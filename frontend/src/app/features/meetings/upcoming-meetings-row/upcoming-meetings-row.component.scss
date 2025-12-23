@@ -1,33 +1,7 @@
 @use '../../../../styles/variables' as v;
-@use '../../../../styles/badges';
-
-/* smaller badges only on this page/component */
-:host {
-  .badge {
-    padding: 5px 8px;  // default is 7px 10px
-    font-size: 12px;   // default is 13px
-    gap: 6px;          // default is 8px
-  }
-
-  .badge button {
-    width: 18px;       // default is 22px
-    height: 18px;
-  }
-}
-
-
-.section {
-  display: grid;
-  gap: 12px;
-}
+@use '../../../../styles/meeting-panel';
 
 .section-header {
-  h2 {
-    margin: 0;
-    font-size: 1.05rem;
-    color: v.$color-text;
-  }
-
   .searchBar {
     margin-top: 1rem;
     text-align: center;
@@ -44,9 +18,11 @@
   cursor: pointer;
   padding: 6px 10px;
   border-radius: 10px;
+
   color: v.$color-primary-dark;
   font-weight: 600;
   font-size: 13px;
+
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 
   &:hover {
@@ -54,106 +30,19 @@
     border-color: v.$color-border;
     color: v.$color-primary;
   }
-}
-
-.grid {
-  display: grid;
-  gap: 12px;
-  /* each row shares the available width equally */
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  justify-content: stretch;
-}
-
-.card {
-  width: 100%;
-  text-align: left;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 16px;
-  background: v.$color-surface;
-  padding: 14px;
-  cursor: pointer;
-  display: grid;
-  gap: 10px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  transition: transform 0.12s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    border-color: rgba(59, 130, 246, 0.35);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
 
   &:focus-visible {
-    outline: 2px solid v.$color-primary;
+    outline: 2px solid rgba(37, 99, 235, 0.35);
     outline-offset: 2px;
   }
 }
 
-.title {
-  font-weight: 700;
-  color: v.$color-text;
-  font-size: 15px;
-  line-height: 1.2;
-}
-
-.meta {
-  font-size: 12px;
-  color: v.$color-text-light;
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.tag {
-  font-size: 12px;
-  background: v.$color-surface-alt;
-  color: v.$color-text;
-  padding: 4px 10px;
-  border-radius: 999px;
-  width: fit-content;
-  border: 1px solid v.$color-border;
-}
-
-.card-foot {
-  font-size: 12px;
-  color: v.$color-text-light;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 2px;
-}
-
-p {
-  margin: 0;
-  color: v.$color-text-light;
-  font-size: 13px;
-}
-
-
-.status {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-
-//search
 .interest-search {
   width: 220px;
   max-width: 50vw;
   padding: 8px 10px;
   border-radius: 12px;
+
   border: 1px solid v.$color-border;
   background: v.$color-surface;
   color: v.$color-text;

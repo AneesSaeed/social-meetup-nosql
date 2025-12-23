@@ -36,6 +36,7 @@ public interface UserNodeRepository extends Neo4jRepository<UserNode, String> {
                      "ORDER BY r.date DESC")
        List<Map<String, Object>> getUserMeetings(@Param("userId") String userId);
 
+       // Fix: mutualFriends count
        @Query("MATCH (me:User {id: $userId})-[:MET]->(friend)-[:MET]->(recommendation:User) " +
                      "WHERE NOT (me)-[:MET]-(recommendation) AND me <> recommendation " +
                      "RETURN recommendation.id as userId, recommendation.name as userName, count(*) as mutualFriends " +
