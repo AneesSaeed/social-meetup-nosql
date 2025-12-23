@@ -8,6 +8,9 @@ export interface UserDto {
   firstName?: string;
   lastName?: string;
   email?: string;
+
+  totalPoints?: number;
+  totalMeetings?: number;
 }
 
 @Injectable({ providedIn: 'root' })

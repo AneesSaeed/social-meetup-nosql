@@ -15,9 +15,15 @@
 
   <ng-container *ngIf="user$ | async as user">
     <div class="drawer__content">
+      <!-- total points -->
       <div class="drawer__points">
         <span class="drawer__label">Total Points</span>
         <span class="drawer__value">{{ user.totalPoints }}</span>
+      </div>
+      <!-- number of meetings -->
+      <div class="drawer__points">
+        <span class="drawer__label">Total Meetings</span>
+        <span class="drawer__value">{{ user.totalMeetings }}</span>
       </div>
 
       <section class="drawer__interests" *ngIf="user.interests?.length">

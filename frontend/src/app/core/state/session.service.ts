@@ -4,10 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SessionService {
-
   // Holds the current user and emits updates
   private userSubject = new BehaviorSubject<User | null>(this.loadUser());
 
@@ -24,6 +23,17 @@ export class SessionService {
   setUser(user: User) {
     localStorage.setItem('user', JSON.stringify(user));
     this.userSubject.next(user);
+  }
+
+  // Update fields for the currently logged-in user
+  updateCurrentUser(
+    patch: Partial<{ totalPoints: number; totalMeetings: number }>
+  ) {
+    const u = this.currentUser;
+    if (!u) return;
+
+    const updated = { ...u, ...patch };
+    this.setUser(updated);
   }
 
   // Remove user from localStorage and reset stream
