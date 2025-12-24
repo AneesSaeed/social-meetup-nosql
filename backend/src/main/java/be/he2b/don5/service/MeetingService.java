@@ -9,33 +9,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import be.he2b.don5.dto.CreateMeetingRequest;
+import be.he2b.don5.dto.event.MeetingCompletedEvent;
+import be.he2b.don5.dto.event.UserUpdatedEvent;
 import be.he2b.don5.model.Completion;
 import be.he2b.don5.model.Meeting;
 import be.he2b.don5.model.User;
 import be.he2b.don5.repository.MeetingRepository;
 import be.he2b.don5.repository.UserRepository;
-import be.he2b.don5.service.graph.SocialGraphService;
 
 @Service
 public class MeetingService {
 
     private final MeetingRepository meetingRepo;
     private final UserRepository userRepo;
-    private final SocialGraphService socialGraphService;
     private final PointsCalculationService pointsCalculationService;
-    private final SearchService searchService;
+    private final OutboxService outboxService;
 
     public MeetingService(
             MeetingRepository meetingRepo,
             UserRepository userRepo,
-            SocialGraphService socialGraphService,
             PointsCalculationService pointsCalculationService,
-            SearchService searchService) {
+            OutboxService outboxService) {
         this.meetingRepo = meetingRepo;
         this.userRepo = userRepo;
-        this.socialGraphService = socialGraphService;
         this.pointsCalculationService = pointsCalculationService;
-        this.searchService = searchService;
+        this.outboxService = outboxService;
     }
 
     @Transactional
@@ -182,26 +180,41 @@ public class MeetingService {
                 user.setTotalMeetings(user.getTotalMeetings() + 1);
                 userRepo.save(user);
 
-                /**
-                 * Synchro ElasticSearch
-                 * ElasticSearch va créer l'user s'il n'existe pas.
-                 * Sinon, il va faire un update partiel des champs modifiés.
-                 */
-                searchService.syncUserToElasticsearch(user);
+                UserUpdatedEvent userEvent = new UserUpdatedEvent(
+                    user.getId(),
+                    user.getBio(),
+                    user.getInterests(),
+                    user.getTotalPoints(),
+                    user.getTotalMeetings()
+                );
+                
+                outboxService.publishEvent(
+                    user.getId(),
+                    "User",
+                    "UserUpdatedEvent",
+                    userEvent
+                );
             }
 
-            // Concaténer les intérêts pour Neo4j
             String interestsStr = meeting.getInterests() != null && !meeting.getInterests().isEmpty()
                     ? String.join(", ", meeting.getInterests())
                     : meeting.getEventType();
 
-            socialGraphService.createMeetingRelations(
-                    meeting.getId(),
-                    meeting.getParticipants(),
-                    pointsPerUser,
-                    meeting.getDate().toString(),
-                    meeting.getLocation(),
-                    interestsStr);
+            MeetingCompletedEvent meetingEvent = new MeetingCompletedEvent(
+                meeting.getId(),
+                meeting.getParticipants(),
+                pointsPerUser,
+                meeting.getDate().toString(),
+                meeting.getLocation(),
+                interestsStr
+            );
+            
+            outboxService.publishEvent(
+                meeting.getId(),
+                "Meeting",
+                "MeetingCompletedEvent",
+                meetingEvent
+            );
         }
 
         return meetingRepo.save(meeting);
