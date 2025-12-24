@@ -24,7 +24,8 @@ public interface UserNodeRepository extends Neo4jRepository<UserNode, String> {
        /**
         * Explanations for coalesce :
         * In case the user has no meetings, the sum would return null.
-        * Using coalesce ensures that we return 0 instead of a null that would cause issues and make spring cry.
+        * Using coalesce ensures that we return 0 instead of a null that would cause
+        * issues and make spring cry.
         * Coalesce(expression, value_if_expressionISnull)
         */
        @Query("MATCH (u:User {id: $userId})-[r:MET]-() RETURN coalesce(sum(r.points), 0) as totalScore")
@@ -36,10 +37,10 @@ public interface UserNodeRepository extends Neo4jRepository<UserNode, String> {
                      "ORDER BY r.date DESC")
        List<Map<String, Object>> getUserMeetings(@Param("userId") String userId);
 
-       // Fix: mutualFriends count
        @Query("MATCH (me:User {id: $userId})-[:MET]->(friend)-[:MET]->(recommendation:User) " +
                      "WHERE NOT (me)-[:MET]-(recommendation) AND me <> recommendation " +
-                     "RETURN recommendation.id as userId, recommendation.name as userName, count(*) as mutualFriends " +
+                     "RETURN recommendation.id as userId, recommendation.name as userName, count(DISTINCT friend) as mutualFriends "
+                     +
                      "ORDER BY mutualFriends DESC")
        List<RecommendationDto> getRecommendations(@Param("userId") String userId);
 
