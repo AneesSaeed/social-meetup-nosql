@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 public class OutboxEvent {
     @Id
     private String id;
-    private String aggregateId;
-    private String aggregateType;
-    private String eventType;
-    private String payload;
-    private LocalDateTime createdAt;
-    private boolean processed;
+    private String aggregateId; // id de l'entité (userId, meetingId...)
+    private String aggregateType; // l'objet : User, Meeting...
+    private String eventType; // created, updated, deleted...
+    private String payload; // JSON string représentant les données de l'événement
+    private LocalDateTime createdAt; // date de création de l'événement
+    private boolean processed; // indique si l'événement a été traité
 
     public OutboxEvent(String aggregateId, String aggregateType, String eventType, String payload) {
         this.aggregateId = aggregateId;

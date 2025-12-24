@@ -6,8 +6,8 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableScheduling
-@EnableKafka
+@EnableScheduling // Enable scheduling for OutboxEventPublisher
+@EnableKafka // Enable Kafka listeners
 public class Don5Application {
 
 	public static void main(String[] args) {

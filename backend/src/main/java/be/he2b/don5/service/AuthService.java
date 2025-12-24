@@ -21,6 +21,9 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    /**
+     * Transactional : Guarantees atomic user creation and event publishing.
+     */
     @Transactional
     public User register(RegisterRequest request) {
         if (userRepo.findByEmail(request.getEmail()).isPresent()) {
@@ -35,6 +38,7 @@ public class AuthService {
         );
         User savedUser = userRepo.save(newUser);
         
+        // Create and publish UserCreatedEvent to the outbox
         UserCreatedEvent event = new UserCreatedEvent(
             savedUser.getId(),
             savedUser.getName(),
@@ -44,6 +48,7 @@ public class AuthService {
             savedUser.getTotalPoints()
         );
         
+        // Publish the event to Kafka via the outbox
         outboxService.publishEvent(
             savedUser.getId(),
             "User",

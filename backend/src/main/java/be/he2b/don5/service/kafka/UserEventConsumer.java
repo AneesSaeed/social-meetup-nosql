@@ -23,6 +23,16 @@ public class UserEventConsumer {
     private final UserSearchRepository userSearchRepository;
     private final ObjectMapper objectMapper;
 
+    /**
+     * Neo4j Consumer and Elasticsearch Consumer for User Events
+     * They're separated by groupId to allow independent processing
+     * So that a failure in one does not block the other
+     * 
+     * Kafka ensures each group gets its own copy of the message
+    */
+
+    // Listener for Neo4j processing
+    // Listens to "user-events" topic
     @KafkaListener(topics = "user-events", groupId = "neo4j-consumer")
     public void consumeForNeo4j(String message) {
         try {
@@ -39,6 +49,8 @@ public class UserEventConsumer {
         }
     }
 
+    // Listener for Elasticsearch indexing
+    // Listens to "user-events" topic
     @KafkaListener(topics = "user-events", groupId = "elasticsearch-consumer")
     public void consumeForElasticsearch(String message) {
         try {

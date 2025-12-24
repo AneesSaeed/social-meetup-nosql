@@ -17,6 +17,10 @@ public class MeetingEventConsumer {
     private final SocialGraphService socialGraphService;
     private final ObjectMapper objectMapper;
 
+    /**
+     * Same logic used in UserEventConsumer.java
+    */
+
     @KafkaListener(topics = "meeting-events", groupId = "neo4j-meeting-consumer")
     public void consumeMeetingCompleted(String message) {
         try {

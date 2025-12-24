@@ -24,6 +24,11 @@ public class KafkaConfig {
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
+    /**
+     * Configuration to produce messages to Kafka topics.
+     * StringSerializer is necessary since messages are sent as strings.
+     *      and we have to convert it as JSON
+     */
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> config = new HashMap<>();
@@ -33,11 +38,19 @@ public class KafkaConfig {
         return new DefaultKafkaProducerFactory<>(config);
     }
 
+    /**
+     * KafkaTemplate to send messages to Kafka topics.
+     * Helper class that wraps a Producer instance and provides methods for sending messages.
+     */
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
+    /**
+     * Configuration to consume messages from Kafka topics.
+     * StringDeserializer is necessary since messages are received as strings.
+     */
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
@@ -45,7 +58,7 @@ public class KafkaConfig {
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); // Start from the beginning if there's a new consumer
         return new DefaultKafkaConsumerFactory<>(config);
     }
 
@@ -57,6 +70,13 @@ public class KafkaConfig {
         return factory;
     }
 
+    /**
+     * Kafka topics creation
+     * user-events is used to send events related to users (creation, deletion, update)
+     * meeting-events is used to send events related to meetings (creation, deletion, update)
+     * Partitions is set to 3 for parallelism and scalability
+     *          Partitions allow multiple consumers to read from the same topic simultaneously
+     */
     @Bean
     public NewTopic userEventsTopic() {
         return TopicBuilder.name("user-events")
