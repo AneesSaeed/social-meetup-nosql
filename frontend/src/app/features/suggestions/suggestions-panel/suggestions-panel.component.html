@@ -1,29 +1,44 @@
-<div *ngIf="!loading && !error && items.length === 0" class="state">
-  No suggestions yet. Complete meetings to grow your network.
-</div>
+<section class="panel">
+  <div class="panel-header">
+    <h2>Suggestions</h2>
+  </div>
 
-<div *ngIf="!loading && !error && items.length > 0" class="list">
-  <div
-    class="card card--clickable"
-    *ngFor="let u of items; trackBy: trackByUserId"
-    role="button"
-    tabindex="0"
-    (click)="openUser(u.userId)"
-    (keydown.enter)="openUser(u.userId)"
-    (keydown.space)="openUser(u.userId); $event.preventDefault()"
-  >
-    <div class="card__main">
-      <div class="name">{{ u.userName }}</div>
-      <div class="meta">{{ u.mutualFriends }} mutual connection(s)</div>
+  <div class="panel-body">
+    <div *ngIf="loading" class="state">Loading suggestions…</div>
+
+    <div *ngIf="!loading && error" class="state state--error">
+      {{ error }}
     </div>
 
-    <div class="card__actions">
-      <span class="pill">Suggested</span>
+    <div *ngIf="!loading && !error && items.length === 0" class="state">
+      No suggestions yet. Complete meetings to grow your network.
+    </div>
+
+    <div class="grid" *ngIf="!loading && !error && items.length > 0">
+      <button
+        class="card suggestion-card"
+        type="button"
+        *ngFor="let u of items; trackBy: trackByUserId"
+        (click)="openUser(u.userId)"
+      >
+        <div class="card-header">
+          <div class="title">{{ u.userName }}</div>
+          <span class="pill">Suggested</span>
+        </div>
+
+        <div class="mutual">
+          <span class="mutual__num">{{ u.mutualFriends }}</span>
+          <span class="mutual__label">mutual connection(s)</span>
+        </div>
+
+        <div class="hint">
+          Click to view profile and propose a 1:1 meeting.
+        </div>
+      </button>
     </div>
   </div>
-</div>
+</section>
 
-<!-- user details modal (reuses same component as search) -->
 <app-base-modal
   *ngIf="isOpen"
   [title]="modalTitle"

@@ -1,50 +1,66 @@
-.state {
-  padding: 12px 0;
-  opacity: 0.8;
+@use '../../../../styles/meeting-panel';
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
 }
 
-.state--error {
-  opacity: 1;
+/* Space between header and content */
+.panel-header {
+  margin-bottom: 12px;
 }
 
-.list {
-  display: grid;
+.suggestion-card {
   gap: 10px;
 }
 
-.card {
+.mutual {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 12px;
+  align-items: baseline;
+  gap: 8px;
 }
 
-.name {
-  font-weight: 600;
+.mutual__num {
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 1;
+  color: v.$color-primary-dark;
 }
 
-.meta {
-  font-size: 0.9rem;
-  opacity: 0.7;
+.mutual__label {
+  font-size: 12px;
+  color: v.$color-text-light;
+}
+
+.hint {
+  font-size: 12px;
+  color: v.$color-text-light;
 }
 
 .pill {
-  font-size: 0.8rem;
-  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.12);
-  opacity: 0.8;
+  font-size: 12px;
+  line-height: 1;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.04);
+  color: v.$color-text;
 }
 
-.card--clickable {
-  cursor: pointer;
+.state {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  color: v.$color-text-light;
+  background: v.$color-surface;
+  border: 1px solid v.$color-border;
 }
 
-.card--clickable:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.25);
-  outline-offset: 2px;
+.state--error {
+  color: v.$color-danger;
+  border-color: rgba(220, 38, 38, 0.25);
+  background: rgba(220, 38, 38, 0.06);
 }
-
