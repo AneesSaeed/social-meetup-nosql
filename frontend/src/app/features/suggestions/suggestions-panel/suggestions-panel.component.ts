@@ -4,6 +4,8 @@ import { SocialGraphApi, RecommendationDto } from 'src/app/core/api/social-graph
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 
+import { SearchUserDetailsModalComponent } from 'src/app/features/search/user-details-modal/search-user-details-modal.component';
+
 @Component({
   selector: 'app-suggestions-panel',
   templateUrl: './suggestions-panel.component.html',
@@ -15,6 +17,12 @@ export class SuggestionsPanelComponent implements OnInit, OnDestroy, OnChanges {
   loading = false;
   error: string | null = null;
   items: RecommendationDto[] = [];
+
+  // modal
+  isOpen = false;
+  modalTitle = 'User details';
+  modalComponent = SearchUserDetailsModalComponent;
+  modalData: any = null;
 
   private sub = new Subscription();
 
@@ -29,7 +37,7 @@ export class SuggestionsPanelComponent implements OnInit, OnDestroy, OnChanges {
       this.meetingEvents.updated$.subscribe((m) => {
         if (!this.userId) return;
         if (m.status !== 'COMPLETED') return;
-        this.load(true); // refreshed due to completion
+        this.load(true);
       })
     );
   }
@@ -41,6 +49,15 @@ export class SuggestionsPanelComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+  }
+
+  openUser(suggestedUserId: string): void {
+    this.modalData = { userId: suggestedUserId };
+    this.isOpen = true;
+  }
+
+  onModalClosed(): void {
+    this.isOpen = false;
   }
 
   load(fromCompletion: boolean): void {
@@ -59,11 +76,7 @@ export class SuggestionsPanelComponent implements OnInit, OnDestroy, OnChanges {
       })
     ).subscribe((list) => {
       this.items = list ?? [];
-
-      // Optional: success toast only when this reload is triggered by completing a meeting
-      if (fromCompletion) {
-        this.toast.success('Suggestions updated');
-      }
+      if (fromCompletion) this.toast.success('Suggestions updated');
     });
   }
 
