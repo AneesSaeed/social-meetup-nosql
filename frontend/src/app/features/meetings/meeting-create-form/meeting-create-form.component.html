@@ -25,9 +25,9 @@
       <input id="location" type="text" formControlName="location" placeholder="e.g. Brussels, Central Station" />
     </div>
 
-    <div class="field">
+    <div class="field" *ngIf="!isOneToOne">
       <label for="maxParticipants">Max participants</label>
-      <input id="maxParticipants" type="number" formControlName="maxParticipants" min="1" placeholder="e.g. 8" />
+      <input id="maxParticipants" type="number" formControlName="maxParticipants" min="1" />
     </div>
 
     <!-- INTERESTS -->

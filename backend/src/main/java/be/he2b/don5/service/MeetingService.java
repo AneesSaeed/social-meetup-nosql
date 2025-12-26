@@ -2,8 +2,10 @@ package be.he2b.don5.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,7 +63,37 @@ public class MeetingService {
                 request.getLocation(),
                 organizerId,
                 max,
-                request.getInterests());
+                request.getInterests()
+        );
+
+        List<String> reqParts = request.getParticipants();
+        Set<String> unique = new LinkedHashSet<>();
+        unique.add(organizerId);
+
+        if (reqParts != null) {
+            for (String id : reqParts) {
+                if (id == null) continue;
+                String trimmed = id.trim();
+                if (!trimmed.isEmpty()) unique.add(trimmed);
+            }
+        }
+
+        List<String> participants = new ArrayList<>(unique);
+
+        // Validate capacity
+        if (participants.size() > max) {
+            throw new RuntimeException("Too many participants for maxParticipants=" + max);
+        }
+
+        // Validate users exist (skip organizer, already checked)
+        for (String pid : participants) {
+            if (!pid.equals(organizerId) && !userRepo.existsById(pid)) {
+                throw new RuntimeException("User " + pid + " not found");
+            }
+        }
+
+        // Override participants set by constructor
+        meeting.setParticipants(participants);
 
         return meetingRepo.save(meeting);
     }

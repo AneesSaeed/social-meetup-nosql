@@ -35,7 +35,16 @@
     </div>
 
     <div class="actions">
-      <button type="button" class="btn-meet">Meet</button>
+        <button type="button" class="btn-meet" (click)="meet(u)">Meet</button>
     </div>
   </ng-container>
 </div>
+
+
+<app-base-modal
+  *ngIf="isMeetOpen"
+  [title]="meetTitle"
+  [component]="meetComponent"
+  [data]="meetData"
+  (closed)="onMeetClosed()">
+</app-base-modal>

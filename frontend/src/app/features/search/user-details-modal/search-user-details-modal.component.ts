@@ -1,8 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { take } from 'rxjs';
+
 import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
 import { UserApi } from 'src/app/core/api/user.api';
 import { User } from 'src/app/core/models/user.model';
-import { take } from 'rxjs';
+
+import { SessionService } from 'src/app/core/state/session.service';
+import { MeetingCreateFormComponent } from '../../meetings/meeting-create-form/meeting-create-form.component';
 
 @Component({
   selector: 'app-search-user-details-modal',
@@ -14,9 +18,16 @@ export class SearchUserDetailsModalComponent implements OnInit {
   errorMsg = '';
   user: User | null = null;
 
+  // meeting modal (nested)
+  isMeetOpen = false;
+  meetTitle = 'Create 1:1 meeting';
+  meetComponent = MeetingCreateFormComponent;
+  meetData: any = null;
+
   constructor(
     @Inject(MODAL_DATA) public data: { userId: string },
-    private userApi: UserApi
+    private userApi: UserApi,
+    private session: SessionService
   ) {}
 
   ngOnInit(): void {
@@ -42,5 +53,43 @@ export class SearchUserDetailsModalComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  meet(u: User) {
+    const me = this.session.currentUser;
+    if (!me?.id) return;
+
+    const interests = this.unionInterests(me.interests ?? [], u.interests ?? []);
+
+    this.meetData = {
+      userId: me.id,              // organizer (logged-in user)
+      oneToOne: true,             // enable 1:1 behavior in MeetingCreateForm
+      otherUserId: u.id,          // optional: if backend later supports "invitee"
+      seedInterests: interests    // union set
+    };
+
+    this.isMeetOpen = true;
+  }
+
+  onMeetClosed() {
+    this.isMeetOpen = false;
+  }
+
+  private unionInterests(a: string[], b: string[]): string[] {
+    const seen = new Set<string>();
+    const out: string[] = [];
+
+    [...a, ...b].forEach(raw => {
+      const v = String(raw ?? '').trim();
+      if (!v) return;
+
+      const key = v.toLowerCase();
+      if (seen.has(key)) return;
+
+      seen.add(key);
+      out.push(v);
+    });
+
+    return out;
   }
 }
