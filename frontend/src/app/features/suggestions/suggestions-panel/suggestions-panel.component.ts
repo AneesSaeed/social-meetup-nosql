@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, catchError, finalize, of } from 'rxjs';
-import { SocialGraphApi, RecommendationDto } from 'src/app/core/api/social-graph.api';
+import { SocialGraphApi, NetworkDto } from 'src/app/core/api/social-graph.api';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 
@@ -16,7 +16,7 @@ export class SuggestionsPanelComponent implements OnInit, OnDestroy, OnChanges {
 
   loading = false;
   error: string | null = null;
-  items: RecommendationDto[] = [];
+  items: NetworkDto[] = [];
 
   // modal
   isOpen = false;
@@ -64,23 +64,21 @@ export class SuggestionsPanelComponent implements OnInit, OnDestroy, OnChanges {
     this.loading = true;
     this.error = null;
 
-    this.api.recommendations(this.userId).pipe(
+    this.api.network(this.userId).pipe(
       catchError((e) => {
         const msg = this.extractError(e, 'Failed to load suggestions');
         this.error = msg;
         this.toast.error(msg);
         return of([]);
       }),
-      finalize(() => {
-        this.loading = false;
-      })
+      finalize(() => { this.loading = false; })
     ).subscribe((list) => {
       this.items = list ?? [];
       if (fromCompletion) this.toast.success('Suggestions updated');
     });
   }
 
-  trackByUserId(_: number, item: RecommendationDto) {
+  trackByUserId(_: number, item: NetworkDto) {
     return item.userId;
   }
 

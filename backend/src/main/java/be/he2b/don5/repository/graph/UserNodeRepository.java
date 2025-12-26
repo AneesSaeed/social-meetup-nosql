@@ -1,6 +1,7 @@
 package be.he2b.don5.repository.graph;
 
 import be.he2b.don5.domain.graph.UserNode;
+import be.he2b.don5.dto.NetworkDto;
 import be.he2b.don5.dto.RecommendationDto;
 
 import org.springframework.data.neo4j.repository.Neo4jRepository;
@@ -44,10 +45,14 @@ public interface UserNodeRepository extends Neo4jRepository<UserNode, String> {
                      "ORDER BY mutualFriends DESC")
        List<RecommendationDto> getRecommendations(@Param("userId") String userId);
 
-       @Query("MATCH (u:User {id: $userId})-[r:MET*1..3]-(connected:User) " +
-                     "RETURN DISTINCT connected.id as userId, connected.name as userName, length(r) as distance " +
-                     "ORDER BY distance, userName")
-       List<Map<String, Object>> getSocialNetwork(@Param("userId") String userId);
+       @Query(
+              "MATCH p = (u:User {id: $userId})-[:MET*1..3]-(connected:User) " +
+              "WHERE connected.id <> $userId AND NOT (u)-[:MET]-(connected) " +
+              "WITH connected, min(length(p)) AS distance " +
+              "RETURN connected.id AS userId, connected.name AS userName, distance AS distance " +
+              "ORDER BY distance, userName"
+       )
+       List<NetworkDto> getSocialNetwork(@Param("userId") String userId);
 
        @Query("MATCH (a:User {id: $userId1})-[r:MET]-(b:User {id: $userId2}) " +
                      "RETURN count(r) as meetingCount")

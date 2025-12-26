@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import be.he2b.don5.domain.graph.UserNode;
+import be.he2b.don5.dto.NetworkDto;
 import be.he2b.don5.dto.RecommendationDto;
 import be.he2b.don5.repository.graph.UserNodeRepository;
 import lombok.AllArgsConstructor;
@@ -62,7 +63,7 @@ public class SocialGraphService {
         return userNodeRepo.getRecommendations(userId);
     }
 
-    public List<Map<String, Object>> getSocialNetwork(String userId) {
+    public List<NetworkDto> getSocialNetwork(String userId) {
         return userNodeRepo.getSocialNetwork(userId);
     }
 }
