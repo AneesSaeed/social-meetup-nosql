@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,18 +29,21 @@ public class MeetingService {
     private final SocialGraphService socialGraphService;
     private final PointsCalculationService pointsCalculationService;
     private final SearchService searchService;
+    private final CacheManager cacheManager;
 
     public MeetingService(
             MeetingRepository meetingRepo,
             UserRepository userRepo,
             SocialGraphService socialGraphService,
             PointsCalculationService pointsCalculationService,
-            SearchService searchService) {
+            SearchService searchService,
+            CacheManager cacheManager) {
         this.meetingRepo = meetingRepo;
         this.userRepo = userRepo;
         this.socialGraphService = socialGraphService;
         this.pointsCalculationService = pointsCalculationService;
         this.searchService = searchService;
+        this.cacheManager = cacheManager;
     }
 
     @Transactional
@@ -95,7 +101,9 @@ public class MeetingService {
         // Override participants set by constructor
         meeting.setParticipants(participants);
 
-        return meetingRepo.save(meeting);
+        Meeting saved = meetingRepo.save(meeting);
+        evictStatusCaches(Completion.UPCOMING);
+        return saved;
     }
 
     public List<Meeting> getAllMeetings() {
@@ -115,6 +123,7 @@ public class MeetingService {
         return meetingRepo.findByOrganizer(userId);
     }
 
+    @Cacheable(cacheNames = "meetingsByStatus", key = "#status.name()")
     public List<Meeting> getMeetingsByStatus(Completion status) {
         return meetingRepo.findByStatus(status);
     }
@@ -150,7 +159,9 @@ public class MeetingService {
         }
 
         participants.add(userId);
-        return meetingRepo.save(meeting);
+        Meeting saved = meetingRepo.save(meeting);
+        evictStatusCaches(meeting.getStatus());
+        return saved;
     }
 
     @Transactional
@@ -170,7 +181,9 @@ public class MeetingService {
             participants.remove(userId);
         }
 
-        return meetingRepo.save(meeting);
+        Meeting saved = meetingRepo.save(meeting);
+        evictStatusCaches(meeting.getStatus());
+        return saved;
     }
 
     /**
@@ -188,6 +201,8 @@ public class MeetingService {
         if (meeting.getStatus() == Completion.COMPLETED) {
             return meeting;
         }
+
+        Completion previousStatus = meeting.getStatus();
 
         meeting.setStatus(Completion.COMPLETED);
 
@@ -214,6 +229,8 @@ public class MeetingService {
                 user.setTotalMeetings(user.getTotalMeetings() + 1);
                 userRepo.save(user);
 
+                evictUserAndSearchCaches(user.getId());
+
                 /**
                  * Synchro ElasticSearch
                  * ElasticSearch va créer l'user s'il n'existe pas.
@@ -236,7 +253,9 @@ public class MeetingService {
                     interestsStr);
         }
 
-        return meetingRepo.save(meeting);
+        Meeting saved = meetingRepo.save(meeting);
+        evictStatusCaches(previousStatus, meeting.getStatus());
+        return saved;
     }
 
     @Transactional
@@ -247,7 +266,43 @@ public class MeetingService {
             throw new RuntimeException("Completed meeting cannot be cancelled");
         }
 
+        Completion previousStatus = meeting.getStatus();
+
         meeting.setStatus(Completion.CANCELLED);
-        return meetingRepo.save(meeting);
+        Meeting saved = meetingRepo.save(meeting);
+        evictStatusCaches(previousStatus, meeting.getStatus());
+        return saved;
+    }
+
+    private void evictUserAndSearchCaches(String userId) {
+        if (cacheManager == null) return;
+
+        Cache userCache = cacheManager.getCache("user");
+        if (userCache != null) {
+            userCache.evict(userId);
+        }
+
+        Cache searchCache = cacheManager.getCache("search");
+        if (searchCache != null) {
+            searchCache.clear();
+        }
+    }
+
+    private void evictStatusCaches(Completion... statuses) {
+        if (cacheManager == null) return;
+
+        Cache cache = cacheManager.getCache("meetingsByStatus");
+        if (cache == null) return;
+
+        if (statuses == null || statuses.length == 0) {
+            cache.clear();
+            return;
+        }
+
+        for (Completion status : statuses) {
+            if (status != null) {
+                cache.evict(status.name());
+            }
+        }
     }
 }

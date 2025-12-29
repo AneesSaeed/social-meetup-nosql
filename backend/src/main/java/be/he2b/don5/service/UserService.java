@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import be.he2b.don5.dto.UpdateUserProfileRequest;
@@ -21,6 +24,7 @@ public class UserService {
         return userRepo.findAll();
     }
 
+    @Cacheable(cacheNames = "interests", key = "'all'")
     public List<String> getAllUniqueInterests() {
         return userRepo.findAll()
                 .stream()
@@ -31,10 +35,16 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(cacheNames = "user", key = "#id")
     public Optional<User> getById(String id) {
         return userRepo.findById(id);
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "user", key = "#id"),
+            @CacheEvict(cacheNames = "search", allEntries = true),
+            @CacheEvict(cacheNames = "interests", allEntries = true)
+    })
     public User updateProfile(String id, UpdateUserProfileRequest req) {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
