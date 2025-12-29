@@ -1,0 +1,104 @@
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/badges';
+
+.user-details {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  padding-bottom: 52px; // space for bottom-right button
+}
+
+.status {
+  margin: 0;
+  font-size: 14px;
+  color: v.$color-text;
+
+  &.error {
+    color: v.$color-danger;
+  }
+}
+
+.head {
+  display: grid;
+  gap: 4px;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: 700;
+  color: v.$color-text;
+}
+
+.email {
+  font-size: 13px;
+  color: v.$color-text-light;
+}
+
+.section {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: v.$color-text-light;
+}
+
+.value {
+  font-size: 14px;
+  line-height: 1.4;
+  color: v.$color-text;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stat {
+  border: 1px solid v.$color-border;
+  border-radius: 12px;
+  padding: 10px;
+  background: v.$color-surface;
+  box-shadow: v.$shadow-header;
+}
+
+.k {
+  font-size: 12px;
+  color: v.$color-text-light;
+}
+
+.v {
+  margin-top: 4px;
+  font-size: 18px;
+  font-weight: 700;
+  color: v.$color-text;
+}
+
+.actions {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.btn-meet {
+  border: 0;
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  background: v.$color-secondary;
+  color: v.$color-accent-contrast;
+  box-shadow: v.$shadow-card;
+
+  &:hover {
+    background: v.$color-secondary-dark;
+  }
+
+  &:focus-visible {
+    outline: 3px solid v.$color-hover;
+    outline-offset: 2px;
+  }
+}

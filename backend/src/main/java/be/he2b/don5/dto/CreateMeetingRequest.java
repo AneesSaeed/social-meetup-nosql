@@ -15,4 +15,5 @@ public class CreateMeetingRequest {
     private String organizer;      // user id
     private int maxParticipants;
     private List<String> interests;
+    private List<String> participants;
 }

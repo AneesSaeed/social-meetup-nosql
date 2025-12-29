@@ -32,4 +32,5 @@ export interface CreateMeetingRequest {
   organizer: string;
   maxParticipants: number;
   interests: string[];
+  participants?: string[];
 }

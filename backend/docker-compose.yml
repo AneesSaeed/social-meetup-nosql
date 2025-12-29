@@ -99,8 +99,18 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
+  redis:
+    image: redis:7.4
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    volumes:
+      - don_project_redis_data:/data
+
 volumes:
   don_project_mongo_data:
   don_project_neo4j_data:
   don_project_neo4j_logs:
   don_project_es_data:
+  don_project_redis_data:

@@ -1,5 +1,6 @@
 package be.he2b.don5.controller.graph;
 
+import be.he2b.don5.dto.NetworkDto;
 import be.he2b.don5.dto.RecommendationDto;
 import be.he2b.don5.service.graph.SocialGraphService;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class SocialGraphController {
     }
 
     @GetMapping("/network/{userId}")
-    public List<Map<String, Object>> getSocialNetwork(@PathVariable String userId) {
+    public List<NetworkDto> getSocialNetwork(@PathVariable String userId) {
         return socialGraphService.getSocialNetwork(userId);
     }
 }

@@ -2,9 +2,14 @@ package be.he2b.don5.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,16 +29,22 @@ public class MeetingService {
     private final UserRepository userRepo;
     private final PointsCalculationService pointsCalculationService;
     private final OutboxService outboxService;
+    private final SearchService searchService;
+    private final CacheManager cacheManager;
 
     public MeetingService(
             MeetingRepository meetingRepo,
             UserRepository userRepo,
             PointsCalculationService pointsCalculationService,
             OutboxService outboxService) {
+            SearchService searchService,
+            CacheManager cacheManager) {
         this.meetingRepo = meetingRepo;
         this.userRepo = userRepo;
         this.pointsCalculationService = pointsCalculationService;
         this.outboxService = outboxService;
+        this.searchService = searchService;
+        this.cacheManager = cacheManager;
     }
 
     @Transactional
@@ -59,9 +70,41 @@ public class MeetingService {
                 request.getLocation(),
                 organizerId,
                 max,
-                request.getInterests());
+                request.getInterests()
+        );
 
-        return meetingRepo.save(meeting);
+        List<String> reqParts = request.getParticipants();
+        Set<String> unique = new LinkedHashSet<>();
+        unique.add(organizerId);
+
+        if (reqParts != null) {
+            for (String id : reqParts) {
+                if (id == null) continue;
+                String trimmed = id.trim();
+                if (!trimmed.isEmpty()) unique.add(trimmed);
+            }
+        }
+
+        List<String> participants = new ArrayList<>(unique);
+
+        // Validate capacity
+        if (participants.size() > max) {
+            throw new RuntimeException("Too many participants for maxParticipants=" + max);
+        }
+
+        // Validate users exist (skip organizer, already checked)
+        for (String pid : participants) {
+            if (!pid.equals(organizerId) && !userRepo.existsById(pid)) {
+                throw new RuntimeException("User " + pid + " not found");
+            }
+        }
+
+        // Override participants set by constructor
+        meeting.setParticipants(participants);
+
+        Meeting saved = meetingRepo.save(meeting);
+        evictStatusCaches(Completion.UPCOMING);
+        return saved;
     }
 
     public List<Meeting> getAllMeetings() {
@@ -81,6 +124,7 @@ public class MeetingService {
         return meetingRepo.findByOrganizer(userId);
     }
 
+    @Cacheable(cacheNames = "meetingsByStatus", key = "#status.name()")
     public List<Meeting> getMeetingsByStatus(Completion status) {
         return meetingRepo.findByStatus(status);
     }
@@ -116,7 +160,9 @@ public class MeetingService {
         }
 
         participants.add(userId);
-        return meetingRepo.save(meeting);
+        Meeting saved = meetingRepo.save(meeting);
+        evictStatusCaches(meeting.getStatus());
+        return saved;
     }
 
     @Transactional
@@ -136,7 +182,9 @@ public class MeetingService {
             participants.remove(userId);
         }
 
-        return meetingRepo.save(meeting);
+        Meeting saved = meetingRepo.save(meeting);
+        evictStatusCaches(meeting.getStatus());
+        return saved;
     }
 
     /**
@@ -154,6 +202,8 @@ public class MeetingService {
         if (meeting.getStatus() == Completion.COMPLETED) {
             return meeting;
         }
+
+        Completion previousStatus = meeting.getStatus();
 
         meeting.setStatus(Completion.COMPLETED);
 
@@ -194,6 +244,14 @@ public class MeetingService {
                     "UserUpdatedEvent",
                     userEvent
                 );
+                evictUserAndSearchCaches(user.getId());
+
+                /**
+                 * Synchro ElasticSearch
+                 * ElasticSearch va créer l'user s'il n'existe pas.
+                 * Sinon, il va faire un update partiel des champs modifiés.
+                 */
+                searchService.syncUserToElasticsearch(user);
             }
 
             String interestsStr = meeting.getInterests() != null && !meeting.getInterests().isEmpty()
@@ -217,7 +275,9 @@ public class MeetingService {
             );
         }
 
-        return meetingRepo.save(meeting);
+        Meeting saved = meetingRepo.save(meeting);
+        evictStatusCaches(previousStatus, meeting.getStatus());
+        return saved;
     }
 
     @Transactional
@@ -228,7 +288,43 @@ public class MeetingService {
             throw new RuntimeException("Completed meeting cannot be cancelled");
         }
 
+        Completion previousStatus = meeting.getStatus();
+
         meeting.setStatus(Completion.CANCELLED);
-        return meetingRepo.save(meeting);
+        Meeting saved = meetingRepo.save(meeting);
+        evictStatusCaches(previousStatus, meeting.getStatus());
+        return saved;
+    }
+
+    private void evictUserAndSearchCaches(String userId) {
+        if (cacheManager == null) return;
+
+        Cache userCache = cacheManager.getCache("user");
+        if (userCache != null) {
+            userCache.evict(userId);
+        }
+
+        Cache searchCache = cacheManager.getCache("search");
+        if (searchCache != null) {
+            searchCache.clear();
+        }
+    }
+
+    private void evictStatusCaches(Completion... statuses) {
+        if (cacheManager == null) return;
+
+        Cache cache = cacheManager.getCache("meetingsByStatus");
+        if (cache == null) return;
+
+        if (statuses == null || statuses.length == 0) {
+            cache.clear();
+            return;
+        }
+
+        for (Completion status : statuses) {
+            if (status != null) {
+                cache.evict(status.name());
+            }
+        }
     }
 }

@@ -14,6 +14,8 @@ import {
 import { SearchApi } from 'src/app/core/api/search.api';
 import { UserSearchDocument } from 'src/app/core/models/user-search.model';
 
+import { SearchUserDetailsModalComponent } from './user-details-modal/search-user-details-modal.component';
+
 // Two search modes: default (users) and interests mode
 type SearchMode = 'users' | 'interests';
 
@@ -34,6 +36,12 @@ export class SearchComponent implements OnInit, OnDestroy {
   error: string | null = null;
   results: UserSearchDocument[] = [];
   open = false; // dropdown open/closed
+
+  // modal
+  isOpen = false;
+  modalTitle = 'User details';
+  modalComponent = SearchUserDetailsModalComponent;
+  modalData: any = null;
 
   // Used to stop RxJS streams when component is destroyed
   private destroy$ = new Subject<void>();
@@ -136,6 +144,18 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.open = false;
   }
 
+  openUser(u: UserSearchDocument): void {
+    // Close dropdown for a cleaner UX
+    this.open = false;
+    // Pass userId to the modal component; the modal will fetch full user from Mongo
+    this.modalData = { userId: u.userId };
+    this.isOpen = true;
+  }
+
+  onModalClosed(): void {
+    this.isOpen = false;
+  }
+
   // Close dropdown when clicking outside the component
   @HostListener('document:mousedown', ['$event'])
   onDocMouseDown(e: MouseEvent): void {
@@ -160,7 +180,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   public isReadyToSearch(input: string): boolean {
     // Users mode: need at least 2 chars
     if (this.mode === 'users') return input.length >= 2;
-
     // Interests mode: need at least 1 token
     return this.parseInterests(input).length >= 1;
   }

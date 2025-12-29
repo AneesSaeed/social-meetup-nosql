@@ -23,6 +23,7 @@ import { ProfileDrawerComponent } from './features/profile-drawer/profile-drawer
 import { ToastHostComponent } from './shared/toast/toast-host.component';
 import { SuggestionsPanelComponent } from './features/suggestions/suggestions-panel/suggestions-panel.component';
 import { PastMeetingsPanelComponent } from './features/meetings/past-meetings-panel/past-meetings-panel.component';
+import { SearchUserDetailsModalComponent } from './features/search/user-details-modal/search-user-details-modal.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { PastMeetingsPanelComponent } from './features/meetings/past-meetings-pa
     ToastHostComponent,
     SuggestionsPanelComponent,
     PastMeetingsPanelComponent,
+    SearchUserDetailsModalComponent,
   ],
   imports: [
     BrowserModule,

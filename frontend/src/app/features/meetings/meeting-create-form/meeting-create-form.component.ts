@@ -9,7 +9,12 @@ import { SessionService } from 'src/app/core/state/session.service';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 
-type MeetingCreateModalData = { userId: string };
+type MeetingCreateModalData = {
+  userId: string;          // organizer
+  oneToOne?: boolean;
+  otherUserId?: string;    // searched user id
+  seedInterests?: string[];
+};
 
 function minArrayLength(min: number) {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -50,17 +55,28 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.sub.add(
-      this.session.user$.subscribe(user => {
-        if (!user) return;
-        if (this.interestsArray.length > 0) return;
+    if (this.isOneToOne) {
+      this.form.patchValue({ maxParticipants: 2 });
+      this.form.get('maxParticipants')?.disable({ emitEvent: false });
+    }
+    if (this.interestsArray.length === 0) {
+      const seed = (this.data.seedInterests ?? []).map(s => String(s).trim()).filter(Boolean);
+      seed.forEach(i => this.interestsArray.push(this.fb.control(i)));
+    }
 
-        (user.interests ?? []).forEach((i: string) => {
-          const v = (i ?? '').trim();
-          if (v) this.interestsArray.push(this.fb.control(v));
-        });
-      })
-    );
+    if (!this.isOneToOne) {
+      this.sub.add(
+        this.session.user$.subscribe(user => {
+          if (!user) return;
+          if (this.interestsArray.length > 0) return;
+
+          (user.interests ?? []).forEach((i: string) => {
+            const v = (i ?? '').trim();
+            if (v) this.interestsArray.push(this.fb.control(v));
+          });
+        })
+      );
+    }
   }
 
   ngOnDestroy(): void {
@@ -69,6 +85,10 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
 
   get interestsArray(): FormArray {
     return this.form.get('interests') as FormArray;
+  }
+
+  get isOneToOne(): boolean {
+    return !!this.data?.oneToOne;
   }
 
   addInterest(value: string) {
@@ -109,9 +129,13 @@ export class MeetingCreateFormComponent implements OnInit, OnDestroy {
       date: this.toLocalDateTime(String(v.date)),
       location: String(v.location),
       organizer: this.data.userId,
-      maxParticipants: Number(v.maxParticipants ?? 10),
+      maxParticipants: this.isOneToOne ? 2 : Number(v.maxParticipants ?? 10),
       interests: (this.interestsArray.value as string[]).map(s => String(s).trim()).filter(Boolean),
     };
+
+    if (this.isOneToOne && this.data.otherUserId) {
+      payload.participants = [this.data.userId, this.data.otherUserId];
+    }
 
     this.meetingApi.createMeeting(payload).subscribe({
       next: (created) => {

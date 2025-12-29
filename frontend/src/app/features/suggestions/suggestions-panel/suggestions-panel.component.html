@@ -14,18 +14,35 @@
       No suggestions yet. Complete meetings to grow your network.
     </div>
 
-    <div *ngIf="!loading && !error && items.length > 0" class="list">
-      <div class="card" *ngFor="let u of items; trackBy: trackByUserId">
-        <div class="card__main">
-          <div class="name">{{ u.userName }}</div>
-          <div class="meta">{{ u.mutualFriends }} mutual connection(s)</div>
-        </div>
-
-        <!-- Optional: until you have /users/:id route -->
-        <div class="card__actions">
+    <div class="grid" *ngIf="!loading && !error && items.length > 0">
+      <button
+        class="card suggestion-card"
+        type="button"
+        *ngFor="let u of items; trackBy: trackByUserId"
+        (click)="openUser(u.userId)"
+      >
+        <div class="card-header">
+          <div class="title">{{ u.userName }}</div>
           <span class="pill">Suggested</span>
         </div>
-      </div>
+
+        <div class="mutual">
+          <span class="mutual__num">{{ u.distance }}</span>
+          <span class="mutual__label">hop(s) away</span>
+        </div>
+
+        <div class="hint">
+          Click to view profile and propose a 1:1 meeting.
+        </div>
+      </button>
     </div>
   </div>
 </section>
+
+<app-base-modal
+  *ngIf="isOpen"
+  [title]="modalTitle"
+  [component]="modalComponent"
+  [data]="modalData"
+  (closed)="onModalClosed()">
+</app-base-modal>

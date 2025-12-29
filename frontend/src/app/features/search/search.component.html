@@ -39,21 +39,23 @@
     <div class="search__status error" *ngIf="!loading && error">{{ error }}</div>
 
     <!-- Empty state -->
-    <div class="search__status" *ngIf="!loading && !error && results.length === 0">
-      No results
+    <div class="search__empty" *ngIf="!loading && !error && results.length === 0">
+      <div class="search__empty-title">No results</div>
+      <div class="search__empty-sub">
+        Try a different keyword<span *ngIf="mode === 'interests'">, or separate interests with commas</span>.
+      </div>
     </div>
+
 
     <!-- Results list -->
     <div class="search__list" *ngIf="!loading && !error && results.length > 0">
-      <div class="search__item" *ngFor="let u of results; trackBy: trackByUserId">
-        <div class="row">
-          <div class="name">{{ u.name }}</div>
-          <div class="score" *ngIf="u.totalScore != null">{{ u.totalScore }}</div>
-        </div>
-
-        <!-- Bio (CSS truncates to one line) -->
-        <div class="bio one-line" *ngIf="u.bio">{{ u.bio }}</div>
-
+      <button
+        class="search__item"
+        type="button"
+        *ngFor="let u of results; trackBy: trackByUserId"
+        (click)="openUser(u)"
+      >
+        <div class="name">{{ u.name }}</div>
         <!-- Interests (CSS keeps one line and clips overflow) -->
         <div class="badges one-line" *ngIf="u.interests?.length">
           <span
@@ -64,7 +66,17 @@
             {{ i }}
           </span>
         </div>
-      </div>
+      </button>
     </div>
   </div>
 </div>
+
+
+<app-base-modal
+  *ngIf="isOpen"
+  [title]="modalTitle"
+  [component]="modalComponent"
+  [data]="modalData"
+  (closed)="onModalClosed()"
+>
+</app-base-modal>
