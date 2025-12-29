@@ -36,9 +36,10 @@ public class MeetingService {
             MeetingRepository meetingRepo,
             UserRepository userRepo,
             PointsCalculationService pointsCalculationService,
-            OutboxService outboxService) {
+            OutboxService outboxService,
             SearchService searchService,
-            CacheManager cacheManager) {
+            CacheManager cacheManager) 
+    {
         this.meetingRepo = meetingRepo;
         this.userRepo = userRepo;
         this.pointsCalculationService = pointsCalculationService;

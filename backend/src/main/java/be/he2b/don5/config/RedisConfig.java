@@ -37,16 +37,17 @@ public class RedisConfig {
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        
         RedisCacheConfiguration baseConfig = RedisCacheConfiguration.defaultCacheConfig()
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()))
-                .entryTtl(Duration.ofMinutes(10));
+            .entryTtl(Duration.ofMinutes(10));
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(baseConfig)
                 .withCacheConfiguration("user", baseConfig.entryTtl(Duration.ofHours(1)))
                 .withCacheConfiguration("search", baseConfig.entryTtl(Duration.ofMinutes(5)))
-            .withCacheConfiguration("interests", baseConfig.entryTtl(Duration.ofMinutes(10)))
-            .withCacheConfiguration("meetingsByStatus", baseConfig.entryTtl(Duration.ofMinutes(5)))
+                .withCacheConfiguration("interests", baseConfig.entryTtl(Duration.ofMinutes(10)))
+                .withCacheConfiguration("meetingsByStatus", baseConfig.entryTtl(Duration.ofMinutes(5)))
                 .withCacheConfiguration("score", baseConfig.entryTtl(Duration.ofMinutes(10)))
                 .build();
     }
