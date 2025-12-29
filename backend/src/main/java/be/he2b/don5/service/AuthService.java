@@ -2,27 +2,30 @@ package be.he2b.don5.service;
 
 import be.he2b.don5.dto.LoginRequest;
 import be.he2b.don5.dto.RegisterRequest;
+import be.he2b.don5.dto.event.UserCreatedEvent;
 import be.he2b.don5.model.User;
 import be.he2b.don5.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import be.he2b.don5.service.graph.SocialGraphService;
+import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Service
 public class AuthService {
 
     private final UserRepository userRepo;
-    private final SearchService searchService;
-    private final SocialGraphService socialGraphService;
+    private final OutboxService outboxService;
 
     public User login(LoginRequest request) {
         return userRepo.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    /**
+     * Transactional : Guarantees atomic user creation and event publishing.
+     */
+    @Transactional
     public User register(RegisterRequest request) {
-        // Prevent duplicate email
         if (userRepo.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered");
         }
@@ -35,11 +38,23 @@ public class AuthService {
         );
         User savedUser = userRepo.save(newUser);
         
-        // Créer node Neo4j
-        socialGraphService.createUserNode(savedUser.getId(), savedUser.getName());
+        // Create and publish UserCreatedEvent to the outbox
+        UserCreatedEvent event = new UserCreatedEvent(
+            savedUser.getId(),
+            savedUser.getName(),
+            savedUser.getEmail(),
+            savedUser.getBio(),
+            savedUser.getInterests(),
+            savedUser.getTotalPoints()
+        );
         
-        // Synchroniser avec Elasticsearch
-        searchService.syncUserToElasticsearch(savedUser);
+        // Publish the event to Kafka via the outbox
+        outboxService.publishEvent(
+            savedUser.getId(),
+            "User",
+            "UserCreatedEvent",
+            event
+        );
         
         return savedUser;
     }

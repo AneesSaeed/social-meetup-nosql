@@ -8,17 +8,20 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import be.he2b.don5.dto.UpdateUserProfileRequest;
+import be.he2b.don5.dto.event.UserUpdatedEvent;
 import be.he2b.don5.model.User;
 import be.he2b.don5.repository.UserRepository;
 import lombok.AllArgsConstructor;
+
 @Service
 @AllArgsConstructor
 public class UserService {
 
     private final UserRepository userRepo;
-    private final SearchService searchService;
+    private final OutboxService outboxService;
     
     public List<User> allUsers() {
         return userRepo.findAll();
@@ -40,6 +43,7 @@ public class UserService {
         return userRepo.findById(id);
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(cacheNames = "user", key = "#id"),
             @CacheEvict(cacheNames = "search", allEntries = true),
@@ -49,14 +53,11 @@ public class UserService {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // bio (allow empty string)
         if (req.bio() != null) {
             user.setBio(req.bio());
         }
 
-        // interests (replace list)
         if (req.interests() != null) {
-            // normalize: trim + remove blanks + de-dupe (case-insensitive)
             List<String> cleaned = req.interests().stream()
                     .filter(s -> s != null && !s.trim().isEmpty())
                     .map(String::trim)
@@ -67,8 +68,20 @@ public class UserService {
 
         User saved = userRepo.save(user);
 
-        // Sync Elasticsearch so search stays consistent
-        searchService.syncUserToElasticsearch(saved);
+        UserUpdatedEvent event = new UserUpdatedEvent(
+            saved.getId(),
+            saved.getBio(),
+            saved.getInterests(),
+            saved.getTotalPoints(),
+            saved.getTotalMeetings()
+        );
+        
+        outboxService.publishEvent(
+            saved.getId(),
+            "User",
+            "UserUpdatedEvent",
+            event
+        );
 
         return saved;
     }
