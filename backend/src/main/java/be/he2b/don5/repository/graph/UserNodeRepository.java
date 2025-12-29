@@ -46,7 +46,7 @@ public interface UserNodeRepository extends Neo4jRepository<UserNode, String> {
        List<RecommendationDto> getRecommendations(@Param("userId") String userId);
 
        @Query(
-              "MATCH p = (u:User {id: $userId})-[:MET*1..3]-(connected:User) " +
+              "MATCH p = (u:User {id: $userId})-[:MET*1..5]-(connected:User) " +
               "WHERE connected.id <> $userId AND NOT (u)-[:MET]-(connected) " +
               "WITH connected, min(length(p)) AS distance " +
               "RETURN connected.id AS userId, connected.name AS userName, distance AS distance " +
