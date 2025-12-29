@@ -104,6 +104,7 @@ public class MeetingService {
         meeting.setParticipants(participants);
 
         Meeting saved = meetingRepo.save(meeting);
+        searchService.syncMeetingToElasticsearch(saved);
         evictStatusCaches(Completion.UPCOMING);
         return saved;
     }
@@ -162,6 +163,7 @@ public class MeetingService {
 
         participants.add(userId);
         Meeting saved = meetingRepo.save(meeting);
+        searchService.syncMeetingToElasticsearch(saved);
         evictStatusCaches(meeting.getStatus());
         return saved;
     }
@@ -184,6 +186,7 @@ public class MeetingService {
         }
 
         Meeting saved = meetingRepo.save(meeting);
+        searchService.syncMeetingToElasticsearch(saved);
         evictStatusCaches(meeting.getStatus());
         return saved;
     }
@@ -277,6 +280,7 @@ public class MeetingService {
         }
 
         Meeting saved = meetingRepo.save(meeting);
+        searchService.syncMeetingToElasticsearch(saved);
         evictStatusCaches(previousStatus, meeting.getStatus());
         return saved;
     }
@@ -293,6 +297,7 @@ public class MeetingService {
 
         meeting.setStatus(Completion.CANCELLED);
         Meeting saved = meetingRepo.save(meeting);
+        searchService.syncMeetingToElasticsearch(saved);
         evictStatusCaches(previousStatus, meeting.getStatus());
         return saved;
     }

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import be.he2b.don5.domain.search.UserSearchDocument;
+import be.he2b.don5.model.Completion;
+import be.he2b.don5.domain.search.MeetingSearchDocument;
 import be.he2b.don5.service.SearchService;
 import lombok.AllArgsConstructor;
 
@@ -39,5 +41,25 @@ public class SearchController {
     @GetMapping("/users/by-interests-all")
     public List<UserSearchDocument> searchUsersByInterestsAll(@RequestParam List<String> interests) {
         return searchService.searchByInterestsAll(interests);
+    }
+
+    // Meetings
+
+    @PostMapping("/meetings/sync")
+    public String syncMeetings() {
+        searchService.syncAllMeetingsToElasticsearch();
+        return "Meetings synchronized to Elasticsearch";
+    }
+
+    @GetMapping("/meetings")
+    public List<MeetingSearchDocument> searchMeetings(@RequestParam String query) {
+        return searchService.searchMeetingsByLocationOrInterests(query);
+    }
+
+    @GetMapping("/meetings/by-status")
+    public List<MeetingSearchDocument> searchMeetingsByStatus(
+            @RequestParam String status,
+            @RequestParam String query) {
+        return searchService.searchMeetingsByStatusAndLocationOrInterests(Completion.valueOf(status), query);
     }
 }

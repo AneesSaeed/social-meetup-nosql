@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserSearchDocument } from '../models/user-search.model';
+import { MeetingSearchDocument } from '../models/meeting-search.model';
 
 @Injectable({ providedIn: 'root' })
 export class SearchApi {
@@ -32,5 +33,17 @@ export class SearchApi {
       .forEach(i => (params = params.append('interests', i)));
 
     return this.http.get<UserSearchDocument[]>(`${this.baseUrl}/users/by-interests-all`, { params });
+  }
+
+  // Meetings fuzzy search across location and interests
+  searchMeetings(query: string): Observable<MeetingSearchDocument[]> {
+    const params = new HttpParams().set('query', query.trim());
+    return this.http.get<MeetingSearchDocument[]>(`${this.baseUrl}/meetings`, { params });
+  }
+
+  // Meetings fuzzy search filtered by status (UPCOMING/COMPLETED)
+  searchMeetingsByStatus(status: 'UPCOMING' | 'COMPLETED' | 'CANCELLED', query: string): Observable<MeetingSearchDocument[]> {
+    const params = new HttpParams().set('status', status).set('query', query.trim());
+    return this.http.get<MeetingSearchDocument[]>(`${this.baseUrl}/meetings/by-status`, { params });
   }
 }
