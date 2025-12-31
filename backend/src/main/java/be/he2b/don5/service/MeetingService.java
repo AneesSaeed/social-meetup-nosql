@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import be.he2b.don5.dto.CreateMeetingRequest;
 import be.he2b.don5.dto.event.MeetingCompletedEvent;
 import be.he2b.don5.dto.event.UserUpdatedEvent;
+import be.he2b.don5.dto.event.MeetingCreatedEvent;
+import be.he2b.don5.dto.event.MeetingUpdatedEvent;
+import be.he2b.don5.dto.event.MeetingCancelledEvent;
 import be.he2b.don5.model.Completion;
 import be.he2b.don5.model.Meeting;
 import be.he2b.don5.model.User;
@@ -104,7 +107,27 @@ public class MeetingService {
         meeting.setParticipants(participants);
 
         Meeting saved = meetingRepo.save(meeting);
-        searchService.syncMeetingToElasticsearch(saved);
+        
+        // Publier l'événement de création
+        MeetingCreatedEvent event = new MeetingCreatedEvent(
+            saved.getId(),
+            saved.getTitle(),
+            saved.getEventType(),
+            saved.getDate(),
+            saved.getLocation(),
+            saved.getOrganizer(),
+            saved.getParticipants(),
+            saved.getMaxParticipants(),
+            saved.getInterests(),
+            saved.getCreatedAt()
+        );
+        outboxService.publishEvent(
+            saved.getId(),
+            "Meeting",
+            "MeetingCreatedEvent",
+            event
+        );
+        
         evictStatusCaches(Completion.UPCOMING);
         return saved;
     }
@@ -163,7 +186,20 @@ public class MeetingService {
 
         participants.add(userId);
         Meeting saved = meetingRepo.save(meeting);
-        searchService.syncMeetingToElasticsearch(saved);
+        
+        // Publier l'événement de mise à jour
+        MeetingUpdatedEvent event = new MeetingUpdatedEvent(
+            saved.getId(),
+            saved.getParticipants(),
+            "JOIN"
+        );
+        outboxService.publishEvent(
+            saved.getId(),
+            "Meeting",
+            "MeetingUpdatedEvent",
+            event
+        );
+        
         evictStatusCaches(meeting.getStatus());
         return saved;
     }
@@ -186,7 +222,20 @@ public class MeetingService {
         }
 
         Meeting saved = meetingRepo.save(meeting);
-        searchService.syncMeetingToElasticsearch(saved);
+        
+        // Publier l'événement de mise à jour
+        MeetingUpdatedEvent event = new MeetingUpdatedEvent(
+            saved.getId(),
+            saved.getParticipants(),
+            "LEAVE"
+        );
+        outboxService.publishEvent(
+            saved.getId(),
+            "Meeting",
+            "MeetingUpdatedEvent",
+            event
+        );
+        
         evictStatusCaches(meeting.getStatus());
         return saved;
     }
@@ -213,7 +262,7 @@ public class MeetingService {
 
         if (meeting.getParticipants() != null && meeting.getParticipants().size() > 0) {
 
-            // Calculer les points avec tous les intérêts du meeting
+            // Calculer les points avec tous les intÃ©rÃªts du meeting
             Map<String, Integer> pointsPerUser = pointsCalculationService.calculatePointsForMeeting(
                     meeting.getParticipants(),
                     meeting.getInterests());
@@ -280,7 +329,6 @@ public class MeetingService {
         }
 
         Meeting saved = meetingRepo.save(meeting);
-        searchService.syncMeetingToElasticsearch(saved);
         evictStatusCaches(previousStatus, meeting.getStatus());
         return saved;
     }
@@ -297,7 +345,16 @@ public class MeetingService {
 
         meeting.setStatus(Completion.CANCELLED);
         Meeting saved = meetingRepo.save(meeting);
-        searchService.syncMeetingToElasticsearch(saved);
+        
+        // Publier l'événement d'annulation
+        MeetingCancelledEvent event = new MeetingCancelledEvent(saved.getId());
+        outboxService.publishEvent(
+            saved.getId(),
+            "Meeting",
+            "MeetingCancelledEvent",
+            event
+        );
+        
         evictStatusCaches(previousStatus, meeting.getStatus());
         return saved;
     }
