@@ -113,13 +113,13 @@ public class MeetingService {
             saved.getId(),
             saved.getTitle(),
             saved.getEventType(),
-            saved.getDate(),
+            saved.getDate() != null ? saved.getDate().toString() : null,
             saved.getLocation(),
             saved.getOrganizer(),
             saved.getParticipants(),
             saved.getMaxParticipants(),
             saved.getInterests(),
-            saved.getCreatedAt()
+            saved.getCreatedAt() != null ? saved.getCreatedAt().toString() : null
         );
         outboxService.publishEvent(
             saved.getId(),
@@ -298,13 +298,6 @@ public class MeetingService {
                     userEvent
                 );
                 evictUserAndSearchCaches(user.getId());
-
-                /**
-                 * Synchro ElasticSearch
-                 * ElasticSearch va créer l'user s'il n'existe pas.
-                 * Sinon, il va faire un update partiel des champs modifiés.
-                 */
-                searchService.syncUserToElasticsearch(user);
             }
 
             String interestsStr = meeting.getInterests() != null && !meeting.getInterests().isEmpty()

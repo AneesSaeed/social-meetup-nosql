@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
@@ -53,7 +54,7 @@ public class MeetingSearchConsumer {
         doc.setMeetingId(event.getMeetingId());
         doc.setTitle(event.getTitle());
         doc.setEventType(event.getEventType());
-        doc.setDate(event.getDate());
+        doc.setDate(event.getDate() != null ? LocalDateTime.parse(event.getDate()) : null);
         doc.setLocation(event.getLocation());
         doc.setOrganizer(event.getOrganizer());
         doc.setParticipants(event.getParticipants());
@@ -61,7 +62,7 @@ public class MeetingSearchConsumer {
         doc.setInterests(event.getInterests());
         doc.setStatus("upcoming");
         doc.setPoints(0);
-        doc.setCreatedAt(event.getCreatedAt());
+        doc.setCreatedAt(event.getCreatedAt() != null ? LocalDateTime.parse(event.getCreatedAt()) : null);
         meetingSearchRepository.save(doc);
         log.info("Elasticsearch: Indexed new meeting {}", event.getMeetingId());
     }
