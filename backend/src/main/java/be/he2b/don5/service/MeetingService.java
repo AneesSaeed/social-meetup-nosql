@@ -145,6 +145,10 @@ public class MeetingService {
         return meetingRepo.findByParticipantsContaining(userId);
     }
 
+    public List<Meeting> getMeetingsByUserAndStatus(String userId, Completion status) {
+        return meetingRepo.findByParticipantsContainingAndStatus(userId, status);
+    }
+
     public List<Meeting> getMeetingsByOrganizer(String userId) {
         return meetingRepo.findByOrganizer(userId);
     }

@@ -46,4 +46,20 @@ export class SearchApi {
     const params = new HttpParams().set('status', status).set('query', query.trim());
     return this.http.get<MeetingSearchDocument[]>(`${this.baseUrl}/meetings/by-status`, { params });
   }
+
+  searchMeetingsByUserAndStatus(
+    userId: string,
+    status: 'UPCOMING' | 'COMPLETED' | 'CANCELLED',
+    query: string
+  ): Observable<MeetingSearchDocument[]> {
+    const params = new HttpParams()
+      .set('userId', userId)
+      .set('status', status)
+      .set('query', query.trim());
+
+    return this.http.get<MeetingSearchDocument[]>(
+      `${this.baseUrl}/meetings/by-user-status`,
+      { params }
+    );
+  }
 }

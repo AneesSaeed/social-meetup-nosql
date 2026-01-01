@@ -22,4 +22,7 @@ public class MeetingSearchDocument {
     private Integer points;
     private String status;
     private LocalDateTime createdAt;
+
+    private List<String> userIds;
 }
+

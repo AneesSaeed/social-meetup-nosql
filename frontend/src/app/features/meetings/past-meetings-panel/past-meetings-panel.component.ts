@@ -8,6 +8,7 @@ import { MeetingDetailsComponent } from '../meeting-details/meeting-details.comp
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { SearchApi } from 'src/app/core/api/search.api';
 import { MeetingSearchDocument } from 'src/app/core/models/meeting-search.model';
+import { SessionService } from 'src/app/core/state/session.service';
 
 @Component({
   selector: 'app-past-meeting-panel',
@@ -16,6 +17,7 @@ import { MeetingSearchDocument } from 'src/app/core/models/meeting-search.model'
 })
 export class PastMeetingsPanelComponent implements OnInit, OnDestroy {
   meetings: Meeting[] = [];
+  private baseMeetings: Meeting[] = [];
   loading = false;
   errorMsg = '';
 
@@ -34,7 +36,8 @@ export class PastMeetingsPanelComponent implements OnInit, OnDestroy {
     private meetingApi: MeetingApi,
     private meetingEvents: MeetingEventsService,
     private toast: ToastService,
-    private searchApi: SearchApi
+    private searchApi: SearchApi,
+    private session: SessionService
   ) {}
 
   ngOnInit(): void {
@@ -46,12 +49,7 @@ export class PastMeetingsPanelComponent implements OnInit, OnDestroy {
         .subscribe(() => this.applyFilter())
     );
 
-    this.sub.add(
-      this.meetingEvents.updated$.subscribe(() => {
-        // reload base list then apply current filter
-        this.loadPast();
-      })
-    );
+    this.sub.add(this.meetingEvents.updated$.subscribe(() => this.loadPast()));
   }
 
   ngOnDestroy(): void {
@@ -59,18 +57,23 @@ export class PastMeetingsPanelComponent implements OnInit, OnDestroy {
   }
 
   loadPast(): void {
+    const userId = this.session.currentUser?.id;
+    if (!userId) {
+      this.baseMeetings = [];
+      this.meetings = [];
+      return;
+    }
+
     this.loading = true;
     this.errorMsg = '';
 
-    const status: Completion = 'COMPLETED';
-
-    this.meetingApi.getAll(status).subscribe({
+    this.meetingApi.getByUser(userId, 'COMPLETED').subscribe({
       next: (list) => {
-        this.meetings = [...(list ?? [])].sort((a, b) =>
-          a.date < b.date ? 1 : -1
-        );
-        this.applyFilter();
+        this.baseMeetings = [...(list ?? [])].sort((a, b) => (a.date < b.date ? 1 : -1));
+        this.meetings = [...this.baseMeetings]; // default view
         this.loading = false;
+        // if user already typed something, re-apply search
+        this.applyFilter();
       },
       error: (err) => {
         console.error(err);
@@ -82,33 +85,39 @@ export class PastMeetingsPanelComponent implements OnInit, OnDestroy {
   }
 
   private applyFilter() {
-    const qRaw = this.searchQuery.value;
-    const q = (qRaw || '').trim();
+    const userId = this.session.currentUser?.id;
+    const q = (this.searchQuery.value || '').trim();
 
     if (!q) {
-      // no query: keep existing sorted list
+      // restore default list
+      this.meetings = [...this.baseMeetings];
       return;
     }
 
+    if (!userId) return;
+
     this.loading = true;
-    this.searchApi.searchMeetingsByStatus('COMPLETED', q).subscribe({
-      next: (results: MeetingSearchDocument[]) => {
-        const mapped: Meeting[] = (results || []).map(r => ({
-          id: r.meetingId,
-          title: r.title || '',
-          description: '',
-          eventType: r.eventType || '',
-          date: r.date || '',
-          location: r.location || '',
-          organizer: r.organizer || '',
-          participants: r.participants || [],
-          maxParticipants: r.maxParticipants ?? 0,
-          interests: r.interests || [],
-          status: 'COMPLETED' as Completion,
-          points: r.points ?? 0,
-          createdAt: r.createdAt || ''
-        })).sort((a, b) => (a.date < b.date ? 1 : -1));
-        this.meetings = mapped;
+
+    this.searchApi.searchMeetingsByUserAndStatus(userId, 'COMPLETED', q).subscribe({
+      next: (results) => {
+       this.meetings = (results ?? [])
+          .map(r => ({
+            id: r.meetingId,
+            title: r.title || '',
+            description: '',
+            eventType: r.eventType || '',
+            date: r.date || '',
+            location: r.location || '',
+            organizer: r.organizer || '',
+            participants: r.participants || [],
+            maxParticipants: r.maxParticipants ?? 0,
+            interests: r.interests || [],
+            status: 'COMPLETED' as Completion,
+            points: r.points ?? 0,
+            createdAt: r.createdAt || ''
+          }))
+          .sort((a, b) => (a.date < b.date ? 1 : -1));
+
         this.loading = false;
       },
       error: (err) => {

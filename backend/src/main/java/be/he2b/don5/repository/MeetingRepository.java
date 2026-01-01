@@ -12,6 +12,7 @@ public interface MeetingRepository extends MongoRepository<Meeting, String> {
     List<Meeting> findByStatus(Completion status);
     List<Meeting> findByOrganizer(String organizer);
     List<Meeting> findByParticipantsContaining(String userId);
+    List<Meeting> findByParticipantsContainingAndStatus(String userId, Completion status);
     @Query("{ 'interests': { $elemMatch: { $regex: ?0, $options: 'i' } } }")
     List<Meeting> findByInterestsRegexIgnoreCase(String interest);
 }

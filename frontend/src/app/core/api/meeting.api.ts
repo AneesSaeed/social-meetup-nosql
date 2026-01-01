@@ -22,8 +22,11 @@ export class MeetingApi {
     return this.http.get<Meeting>(`${this.baseUrl}/${id}`);
   }
 
-  getByUser(userId: string): Observable<Meeting[]> {
-    return this.http.get<Meeting[]>(`${this.baseUrl}/user/${userId}`);
+  getByUser(userId: string, status?: Completion): Observable<Meeting[]> {
+    const url = status
+      ? `${this.baseUrl}/user/${userId}?status=${status}`
+      : `${this.baseUrl}/user/${userId}`;
+    return this.http.get<Meeting[]>(url);
   }
 
   getByOrganizer(userId: string): Observable<Meeting[]> {

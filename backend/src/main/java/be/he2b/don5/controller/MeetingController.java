@@ -49,7 +49,16 @@ public class MeetingController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<Meeting> getMeetingsByUser(@PathVariable String userId) {
+    public List<Meeting> getMeetingsByUser(
+            @PathVariable String userId,
+            @RequestParam(required = false) String status
+    ) {
+        if (status != null && !status.isBlank()) {
+            return meetingService.getMeetingsByUserAndStatus(
+                    userId,
+                    Completion.valueOf(status.toUpperCase())
+            );
+        }
         return meetingService.getMeetingsByUser(userId);
     }
 

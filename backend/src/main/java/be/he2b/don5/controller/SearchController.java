@@ -62,4 +62,17 @@ public class SearchController {
             @RequestParam String query) {
         return searchService.searchMeetingsByStatusAndLocationOrInterests(Completion.valueOf(status), query);
     }
+
+    @GetMapping("/meetings/by-user-status")
+    public List<MeetingSearchDocument> searchMeetingsByUserAndStatus(
+            @RequestParam String userId,
+            @RequestParam String status,
+            @RequestParam String query
+    ) {
+        return searchService.searchMeetingsByUserStatusAndQuery(
+                userId,
+                Completion.valueOf(status.toUpperCase()),
+                query
+        );
+    }
 }

@@ -1,6 +1,7 @@
 package be.he2b.don5.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,6 +104,14 @@ public class SearchService {
         return meetingSearchRepository.searchByStatusAndLocationOrInterestsFuzzy(status.name(), query);
     }
 
+    public List<MeetingSearchDocument> searchMeetingsByUserStatusAndQuery(String userId, Completion status, String query) {
+        return meetingSearchRepository.searchByUserIdAndStatusAndLocationOrInterestsFuzzy(
+            userId, 
+            status.name(), 
+            query
+        );
+    }
+
     private MeetingSearchDocument convertToMeetingSearchDocument(Meeting m) {
         MeetingSearchDocument doc = new MeetingSearchDocument();
         doc.setMeetingId(m.getId());
@@ -115,8 +124,14 @@ public class SearchService {
         doc.setMaxParticipants(m.getMaxParticipants());
         doc.setInterests(m.getInterests());
         doc.setPoints(m.getPoints());
-        doc.setStatus(m.getStatus() != null ? m.getStatus().name().toLowerCase() : null);
+        doc.setStatus(m.getStatus() != null ? m.getStatus().name() : null);
         doc.setCreatedAt(m.getCreatedAt());
+
+        List<String> userIds = new ArrayList<>();
+        if (m.getOrganizer() != null) userIds.add(m.getOrganizer());
+        if (m.getParticipants() != null) userIds.addAll(m.getParticipants());
+        doc.setUserIds(userIds.stream().distinct().toList());
+
         return doc;
     }
 }
