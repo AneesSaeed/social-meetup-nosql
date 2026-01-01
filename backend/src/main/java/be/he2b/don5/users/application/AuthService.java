@@ -1,6 +1,8 @@
 package be.he2b.don5.users.application;
 
-import be.he2b.don5.integration.events.UserCreatedEvent;
+import be.he2b.don5.integration.events.AggregateType;
+import be.he2b.don5.integration.events.EventType;
+import be.he2b.don5.integration.events.payload.UserCreatedEvent;
 import be.he2b.don5.integration.outbox.OutboxWriter;
 import be.he2b.don5.users.api.dto.LoginRequest;
 import be.he2b.don5.users.api.dto.RegisterRequest;
@@ -50,10 +52,10 @@ public class AuthService {
         );
         
         // Publish the event to Kafka via the outbox
-        outboxService.publishEvent(
+        outboxService.addEvent(
             savedUser.getId(),
-            "User",
-            "UserCreatedEvent",
+            AggregateType.USER,
+            EventType.USER_CREATED,
             event
         );
         

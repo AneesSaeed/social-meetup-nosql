@@ -1,4 +1,4 @@
-package be.he2b.don5.search.infrastructure.elasticsearch;
+package be.he2b.don5.search.infrastructure.elasticsearch.document;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +22,5 @@ public class MeetingSearchDocument {
     private Integer points;
     private String status;
     private LocalDateTime createdAt;
-
-    private List<String> userIds;
 }
 

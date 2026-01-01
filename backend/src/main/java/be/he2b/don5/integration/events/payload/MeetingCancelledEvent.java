@@ -1,4 +1,4 @@
-package be.he2b.don5.integration.events;
+package be.he2b.don5.integration.events.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -13,17 +13,19 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import be.he2b.don5.integration.events.MeetingCancelledEvent;
-import be.he2b.don5.integration.events.MeetingCompletedEvent;
-import be.he2b.don5.integration.events.MeetingCreatedEvent;
-import be.he2b.don5.integration.events.MeetingUpdatedEvent;
-import be.he2b.don5.integration.events.UserUpdatedEvent;
+import be.he2b.don5.integration.events.AggregateType;
+import be.he2b.don5.integration.events.EventType;
+import be.he2b.don5.integration.events.payload.MeetingCancelledEvent;
+import be.he2b.don5.integration.events.payload.MeetingCompletedEvent;
+import be.he2b.don5.integration.events.payload.MeetingCreatedEvent;
+import be.he2b.don5.integration.events.payload.MeetingUpdatedEvent;
+import be.he2b.don5.integration.events.payload.UserUpdatedEvent;
 import be.he2b.don5.integration.outbox.OutboxWriter;
 import be.he2b.don5.meetings.api.dto.CreateMeetingRequest;
 import be.he2b.don5.meetings.domain.Completion;
 import be.he2b.don5.meetings.domain.Meeting;
 import be.he2b.don5.meetings.infrastructure.mongo.MeetingRepository;
-import be.he2b.don5.points.application.PointsCalculationService;
+import be.he2b.don5.points.PointsCalculationService;
 import be.he2b.don5.search.application.SearchService;
 import be.he2b.don5.users.domain.User;
 import be.he2b.don5.users.infrastructure.mongo.UserRepository;
@@ -124,10 +126,10 @@ public class MeetingService {
             saved.getInterests(),
             saved.getCreatedAt() != null ? saved.getCreatedAt().toString() : null
         );
-        outboxService.publishEvent(
+        outboxService.addEvent(
             saved.getId(),
-            "Meeting",
-            "MeetingCreatedEvent",
+            AggregateType.MEETING,
+            EventType.MEETING_CREATED,
             event
         );
         
@@ -200,10 +202,10 @@ public class MeetingService {
             saved.getParticipants(),
             "JOIN"
         );
-        outboxService.publishEvent(
+        outboxService.addEvent(
             saved.getId(),
-            "Meeting",
-            "MeetingUpdatedEvent",
+            AggregateType.MEETING,
+            EventType.MEETING_UPDATED,
             event
         );
         
@@ -236,10 +238,10 @@ public class MeetingService {
             saved.getParticipants(),
             "LEAVE"
         );
-        outboxService.publishEvent(
+        outboxService.addEvent(
             saved.getId(),
-            "Meeting",
-            "MeetingUpdatedEvent",
+            AggregateType.MEETING,
+            EventType.MEETING_UPDATED,
             event
         );
         
@@ -298,10 +300,10 @@ public class MeetingService {
                     user.getTotalMeetings()
                 );
                 
-                outboxService.publishEvent(
+                outboxService.addEvent(
                     user.getId(),
-                    "User",
-                    "UserUpdatedEvent",
+                    AggregateType.USER,
+                    EventType.USER_UPDATED,
                     userEvent
                 );
                 evictUserAndSearchCaches(user.getId());
@@ -320,10 +322,10 @@ public class MeetingService {
                 interestsStr
             );
             
-            outboxService.publishEvent(
+            outboxService.addEvent(
                 meeting.getId(),
-                "Meeting",
-                "MeetingCompletedEvent",
+                AggregateType.MEETING,
+                EventType.MEETING_COMPLETED,
                 meetingEvent
             );
         }
@@ -348,10 +350,10 @@ public class MeetingService {
         
         // Publier l'événement d'annulation
         MeetingCancelledEvent event = new MeetingCancelledEvent(saved.getId());
-        outboxService.publishEvent(
+        outboxService.addEvent(
             saved.getId(),
-            "Meeting",
-            "MeetingCancelledEvent",
+            AggregateType.MEETING,
+            EventType.MEETING_CANCELLED,
             event
         );
         

@@ -1,4 +1,4 @@
-package be.he2b.don5.points.application;
+package be.he2b.don5.points;
 
 import be.he2b.don5.graph.infrastructure.neo4j.UserNodeRepository;
 import be.he2b.don5.users.domain.User;

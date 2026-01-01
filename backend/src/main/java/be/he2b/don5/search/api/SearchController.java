@@ -3,15 +3,14 @@ package be.he2b.don5.search.api;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import be.he2b.don5.meetings.domain.Completion;
 import be.he2b.don5.search.application.SearchService;
-import be.he2b.don5.search.infrastructure.elasticsearch.MeetingSearchDocument;
-import be.he2b.don5.search.infrastructure.elasticsearch.UserSearchDocument;
+import be.he2b.don5.search.infrastructure.elasticsearch.document.MeetingSearchDocument;
+import be.he2b.don5.search.infrastructure.elasticsearch.document.UserSearchDocument;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -20,13 +19,6 @@ import lombok.AllArgsConstructor;
 public class SearchController {
     
     private final SearchService searchService;
-
-    @PostMapping("/sync")
-    public String syncUsers() {
-        searchService.syncAllUsersToElasticsearch();
-        return "Users synchronized to Elasticsearch";
-    }
-
 
     @GetMapping("/users")
     public List<UserSearchDocument> searchUsers(@RequestParam String query) {
@@ -43,14 +35,6 @@ public class SearchController {
         return searchService.searchByInterestsAll(interests);
     }
 
-    // Meetings
-
-    @PostMapping("/meetings/sync")
-    public String syncMeetings() {
-        searchService.syncAllMeetingsToElasticsearch();
-        return "Meetings synchronized to Elasticsearch";
-    }
-
     @GetMapping("/meetings")
     public List<MeetingSearchDocument> searchMeetings(@RequestParam String query) {
         return searchService.searchMeetingsByLocationOrInterests(query);
@@ -60,7 +44,7 @@ public class SearchController {
     public List<MeetingSearchDocument> searchMeetingsByStatus(
             @RequestParam String status,
             @RequestParam String query) {
-        return searchService.searchMeetingsByStatusAndLocationOrInterests(Completion.valueOf(status), query);
+        return searchService.searchMeetingsByStatusAndLocationOrInterests(Completion.valueOf(status.toUpperCase()), query);
     }
 
     @GetMapping("/meetings/by-user-status")

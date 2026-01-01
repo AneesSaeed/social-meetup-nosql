@@ -1,4 +1,4 @@
-package be.he2b.don5.search.infrastructure.elasticsearch;
+package be.he2b.don5.search.infrastructure.elasticsearch.repository.user;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Component;
 
+import be.he2b.don5.search.infrastructure.elasticsearch.document.UserSearchDocument;
 import lombok.AllArgsConstructor;
 
 @Component

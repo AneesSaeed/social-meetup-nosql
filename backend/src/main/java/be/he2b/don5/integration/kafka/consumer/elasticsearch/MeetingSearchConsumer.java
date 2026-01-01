@@ -1,18 +1,19 @@
-package be.he2b.don5.integration.kafka.consumer;
+package be.he2b.don5.integration.kafka.consumer.elasticsearch;
 
-import be.he2b.don5.integration.events.MeetingCancelledEvent;
-import be.he2b.don5.integration.events.MeetingCompletedEvent;
-import be.he2b.don5.integration.events.MeetingCreatedEvent;
-import be.he2b.don5.integration.events.MeetingUpdatedEvent;
-import be.he2b.don5.search.infrastructure.elasticsearch.MeetingSearchDocument;
-import be.he2b.don5.search.infrastructure.elasticsearch.MeetingSearchRepository;
+import be.he2b.don5.integration.events.EventEnvelope;
+import be.he2b.don5.integration.events.payload.MeetingCancelledEvent;
+import be.he2b.don5.integration.events.payload.MeetingCompletedEvent;
+import be.he2b.don5.integration.events.payload.MeetingCreatedEvent;
+import be.he2b.don5.integration.events.payload.MeetingUpdatedEvent;
+import be.he2b.don5.search.infrastructure.elasticsearch.document.MeetingSearchDocument;
+import be.he2b.don5.search.infrastructure.elasticsearch.repository.meeting.MeetingSearchRepository;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 
 @Service
@@ -26,24 +27,14 @@ public class MeetingSearchConsumer {
     @KafkaListener(topics = "meeting-events", groupId = "elasticsearch-meeting-consumer")
     public void consumeForElasticsearch(String message) {
         try {
-            JsonNode root = objectMapper.readTree(message);
-            String eventType = root.get("eventType").asText();
+            EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
 
-            switch (eventType) {
-                case "MeetingCreatedEvent":
-                    handleMeetingCreated(objectMapper.treeToValue(root.get("data"), MeetingCreatedEvent.class));
-                    break;
-                case "MeetingUpdatedEvent":
-                    handleMeetingUpdated(objectMapper.treeToValue(root.get("data"), MeetingUpdatedEvent.class));
-                    break;
-                case "MeetingCompletedEvent":
-                    handleMeetingCompleted(objectMapper.treeToValue(root.get("data"), MeetingCompletedEvent.class));
-                    break;
-                case "MeetingCancelledEvent":
-                    handleMeetingCancelled(objectMapper.treeToValue(root.get("data"), MeetingCancelledEvent.class));
-                    break;
-                default:
-                    log.warn("Unknown event type: {}", eventType);
+            switch (env.getEventType()) {
+                case MEETING_CREATED -> handleMeetingCreated(objectMapper.treeToValue(env.getData(), MeetingCreatedEvent.class));
+                case MEETING_UPDATED -> handleMeetingUpdated(objectMapper.treeToValue(env.getData(), MeetingUpdatedEvent.class));
+                case MEETING_COMPLETED -> handleMeetingCompleted(objectMapper.treeToValue(env.getData(), MeetingCompletedEvent.class));
+                case MEETING_CANCELLED -> handleMeetingCancelled(objectMapper.treeToValue(env.getData(), MeetingCancelledEvent.class));
+                default -> log.warn("Ignored event type: {}", env.getEventType());
             }
         } catch (Exception e) {
             log.error("Elasticsearch meeting consumer error: {}", e.getMessage(), e);
@@ -64,6 +55,7 @@ public class MeetingSearchConsumer {
         doc.setStatus("upcoming");
         doc.setPoints(0);
         doc.setCreatedAt(event.getCreatedAt() != null ? LocalDateTime.parse(event.getCreatedAt()) : null);
+
         meetingSearchRepository.save(doc);
         log.info("Elasticsearch: Indexed new meeting {}", event.getMeetingId());
     }
@@ -80,7 +72,7 @@ public class MeetingSearchConsumer {
         meetingSearchRepository.findById(event.getMeetingId()).ifPresentOrElse(doc -> {
             doc.setStatus("completed");
             doc.setLocation(event.getLocation());
-            doc.setInterests(event.getInterests() != null ? java.util.List.of(event.getInterests()) : doc.getInterests());
+            doc.setInterests(event.getInterests() != null ? event.getInterests() : doc.getInterests());
             doc.setPoints(doc.getPoints() != null ? doc.getPoints() : 0);
             meetingSearchRepository.save(doc);
             log.info("Elasticsearch: Updated meeting {} to COMPLETED", event.getMeetingId());
@@ -88,7 +80,7 @@ public class MeetingSearchConsumer {
             MeetingSearchDocument doc = new MeetingSearchDocument();
             doc.setMeetingId(event.getMeetingId());
             doc.setLocation(event.getLocation());
-            doc.setInterests(event.getInterests() != null ? java.util.List.of(event.getInterests()) : null);
+            doc.setInterests(event.getInterests() != null ? event.getInterests() : doc.getInterests());
             doc.setStatus("completed");
             meetingSearchRepository.save(doc);
             log.info("Elasticsearch: Indexed meeting {} as COMPLETED", event.getMeetingId());

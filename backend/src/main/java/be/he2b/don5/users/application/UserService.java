@@ -10,7 +10,9 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import be.he2b.don5.integration.events.UserUpdatedEvent;
+import be.he2b.don5.integration.events.AggregateType;
+import be.he2b.don5.integration.events.EventType;
+import be.he2b.don5.integration.events.payload.UserUpdatedEvent;
 import be.he2b.don5.integration.outbox.OutboxWriter;
 import be.he2b.don5.users.api.dto.UpdateUserProfileRequest;
 import be.he2b.don5.users.domain.User;
@@ -77,10 +79,10 @@ public class UserService {
             saved.getTotalMeetings()
         );
         
-        outboxService.publishEvent(
+        outboxService.addEvent(
             saved.getId(),
-            "User",
-            "UserUpdatedEvent",
+            AggregateType.USER,
+            EventType.USER_UPDATED,
             event
         );
 

@@ -1,4 +1,4 @@
-package be.he2b.don5.integration.events;
+package be.he2b.don5.integration.events.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,5 +15,5 @@ public class MeetingCompletedEvent {
     private Map<String, Integer> pointsPerUser;
     private String date;
     private String location;
-    private String interests;
+    private List<String> interests;
 }

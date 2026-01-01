@@ -1,14 +1,18 @@
 package be.he2b.don5.integration.kafka;
 
+import be.he2b.don5.integration.events.EventEnvelope;
+import be.he2b.don5.integration.events.EventType;
+import be.he2b.don5.integration.events.Topics;
+import be.he2b.don5.integration.outbox.OutboxEvent;
+import be.he2b.don5.integration.outbox.OutboxEventRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import be.he2b.don5.integration.outbox.OutboxEvent;
-import be.he2b.don5.integration.outbox.OutboxEventRepository;
 
 import java.util.List;
 
@@ -19,53 +23,30 @@ public class OutboxEventPublisher {
 
     private final OutboxEventRepository outboxRepo;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
-    @Scheduled(fixedDelay = 5000) // every 5 seconds
-    @Transactional // atomic operation
+    @Scheduled(fixedDelay = 5000)
+    @Transactional
     public void publishPendingEvents() {
-        // Retrieve unprocessed events
         List<OutboxEvent> pendingEvents = outboxRepo.findByProcessedFalseOrderByCreatedAtAsc();
 
         for (OutboxEvent event : pendingEvents) {
             try {
-                // Determine topic based on event type
-                String topic = "user-events";
-                if (event.getEventType().contains("Meeting")) {
-                    topic = "meeting-events";
-                }
+                EventType type = EventType.valueOf(event.getEventType());
+                String topic = Topics.topicFor(type);
 
-                // Wrapper avec le type d'événement
-                String wrappedPayload = String.format(
-                        "{\"eventType\":\"%s\",\"data\":%s}",
-                        event.getEventType(),
-                        event.getPayload());
+                JsonNode dataNode = objectMapper.readTree(event.getPayload());
+                EventEnvelope envelope = new EventEnvelope(type, dataNode);
+                String wrappedPayload = objectMapper.writeValueAsString(envelope);
 
-                /**
-                 * Example of wrapped payload:
-                 *  {
-                      "eventType": "UserCreatedEvent",
-                      "data": {
-                        "userId": "abc123",
-                        "name": "John Doe",
-                        "email": "john@example.com",
-                        ...
-                      }
-                    }
-                 */
-
-                // Publish to Kafka
                 kafkaTemplate.send(topic, event.getAggregateId(), wrappedPayload);
 
-                // Mark event as processed
                 event.setProcessed(true);
-                // Save the updated event status
                 outboxRepo.save(event);
 
-                log.info("Published event {} for aggregate {}", event.getEventType(), event.getAggregateId());
+                log.info("Published {} for aggregate {}", type, event.getAggregateId());
             } catch (Exception e) {
-                // Log the error but continue processing other events
-                log.error("Failed to publish event {}: {}", event.getId(), e.getMessage());
-                // The event remains unprocessed and will be retried in the next scheduled run
+                log.error("Failed to publish event {}: {}", event.getId(), e.getMessage(), e);
             }
         }
     }

@@ -1,6 +1,8 @@
-package be.he2b.don5.search.infrastructure.elasticsearch;
+package be.he2b.don5.search.infrastructure.elasticsearch.repository.user;
 
 import java.util.List;
+
+import be.he2b.don5.search.infrastructure.elasticsearch.document.UserSearchDocument;
 
 public interface UserSearchRepositoryCustom {
     List<UserSearchDocument> searchByNameOrBioFuzzy(String query);

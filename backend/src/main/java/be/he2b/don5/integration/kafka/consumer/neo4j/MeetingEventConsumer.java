@@ -1,14 +1,15 @@
-package be.he2b.don5.integration.kafka.consumer;
+package be.he2b.don5.integration.kafka.consumer.neo4j;
 
 import be.he2b.don5.graph.application.SocialGraphService;
-import be.he2b.don5.integration.events.MeetingCompletedEvent;
+import be.he2b.don5.integration.events.EventEnvelope;
+import be.he2b.don5.integration.events.EventType;
+import be.he2b.don5.integration.events.payload.MeetingCompletedEvent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
 @AllArgsConstructor
@@ -18,18 +19,13 @@ public class MeetingEventConsumer {
     private final SocialGraphService socialGraphService;
     private final ObjectMapper objectMapper;
 
-    /**
-     * Same logic used in UserEventConsumer.java
-    */
-
     @KafkaListener(topics = "meeting-events", groupId = "neo4j-meeting-consumer")
     public void consumeMeetingCompleted(String message) {
         try {
-            JsonNode root = objectMapper.readTree(message);
-            String eventType = root.get("eventType").asText();
+            EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
 
-            if ("MeetingCompletedEvent".equals(eventType)) {
-                MeetingCompletedEvent event = objectMapper.treeToValue(root.get("data"), MeetingCompletedEvent.class);
+            if (env.getEventType() == EventType.MEETING_COMPLETED) {
+                MeetingCompletedEvent event = objectMapper.treeToValue(env.getData(), MeetingCompletedEvent.class);
 
                 socialGraphService.createMeetingRelations(
                         event.getMeetingId(),
@@ -37,7 +33,8 @@ public class MeetingEventConsumer {
                         event.getPointsPerUser(),
                         event.getDate(),
                         event.getLocation(),
-                        event.getInterests());
+                        event.getInterests()
+                );
 
                 log.info("Neo4j: Created meeting relations for {}", event.getMeetingId());
             }
