@@ -54,7 +54,7 @@ public interface UserNodeRepository extends Neo4jRepository<UserNode, String> {
        )
        List<NetworkDto> getSocialNetwork(@Param("userId") String userId);
 
-       @Query("MATCH (a:User {id: $userId1})-[r:MET]-(b:User {id: $userId2}) " +
+       @Query("MATCH (a:User {id: $userId1})-[r:MET]->(b:User {id: $userId2}) " +
                      "RETURN count(r) as meetingCount")
        Integer countMeetingsBetweenUsers(@Param("userId1") String userId1, @Param("userId2") String userId2);
 }
