@@ -6,6 +6,9 @@ public class EventEnvelope {
     private EventType eventType;
     private JsonNode data;
 
+    // REQUIRED for Jackson deserialization
+    public EventEnvelope() {}
+
     public EventEnvelope(EventType eventType, JsonNode data) {
         this.eventType = eventType;
         this.data = data;

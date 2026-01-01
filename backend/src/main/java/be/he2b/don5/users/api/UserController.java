@@ -33,11 +33,6 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/interests")
-    public List<String> getAllUniqueInterests() {
-        return userService.getAllUniqueInterests();
-    }
-
     @PatchMapping("/users/{id}")
     public ResponseEntity<User> updateProfile(@PathVariable String id,
                                               @RequestBody UpdateUserProfileRequest req) {

@@ -25,19 +25,9 @@ public class SearchController {
         return searchService.searchByNameOrBio(query);
     }
 
-    @GetMapping("/users/by-interests")
-    public List<UserSearchDocument> searchUsersByInterests(@RequestParam List<String> interests) {
-        return searchService.searchByInterests(interests);
-    }
-
     @GetMapping("/users/by-interests-all")
     public List<UserSearchDocument> searchUsersByInterestsAll(@RequestParam List<String> interests) {
         return searchService.searchByInterestsAll(interests);
-    }
-
-    @GetMapping("/meetings")
-    public List<MeetingSearchDocument> searchMeetings(@RequestParam String query) {
-        return searchService.searchMeetingsByLocationOrInterests(query);
     }
 
     @GetMapping("/meetings/by-status")

@@ -21,11 +21,7 @@ export class SocialGraphApi {
 
   constructor(private http: HttpClient) {}
 
-  recommendations(userId: string): Observable<RecommendationDto[]> {
-    return this.http.get<RecommendationDto[]>(`${this.baseUrl}/recommendations/${userId}`);
-  }
-
-     network(userId: string): Observable<NetworkDto[]> {
+  network(userId: string): Observable<NetworkDto[]> {
     return this.http.get<NetworkDto[]>(`${this.baseUrl}/network/${userId}`);
   }
 }

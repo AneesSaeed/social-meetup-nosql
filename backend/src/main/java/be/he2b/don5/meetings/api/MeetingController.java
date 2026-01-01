@@ -43,11 +43,6 @@ public class MeetingController {
         return meetingService.getMeetingById(id);
     }
 
-    @GetMapping("/organizer/{userId}")
-    public List<Meeting> getMeetingsByOrganizer(@PathVariable String userId) {
-        return meetingService.getMeetingsByOrganizer(userId);
-    }
-
     @GetMapping("/user/{userId}")
     public List<Meeting> getMeetingsByUser(
             @PathVariable String userId,
@@ -80,10 +75,5 @@ public class MeetingController {
     @PostMapping("/{id}/cancel")
     public Meeting cancel(@PathVariable String id) {
         return meetingService.cancelMeeting(id);
-    }
-
-    @GetMapping("/search")
-    public List<Meeting> searchMeetingsByInterest(@RequestParam String interest) {
-        return meetingService.searchMeetingsByInterest(interest);
     }
 }

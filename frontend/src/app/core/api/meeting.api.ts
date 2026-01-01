@@ -29,10 +29,6 @@ export class MeetingApi {
     return this.http.get<Meeting[]>(url);
   }
 
-  getByOrganizer(userId: string): Observable<Meeting[]> {
-    return this.http.get<Meeting[]>(`${this.baseUrl}/organizer/${userId}`);
-  }
-
   join(meetingId: string, userId: string): Observable<Meeting> {
     return this.http.post<Meeting>(`${this.baseUrl}/${meetingId}/join?userId=${userId}`, {});
   }

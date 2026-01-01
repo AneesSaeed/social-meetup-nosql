@@ -15,16 +15,6 @@ export class SearchApi {
     return this.http.get<UserSearchDocument[]>(`${this.baseUrl}/users`, { params });
   }
 
-  searchByInterests(interests: string[]): Observable<UserSearchDocument[]> {
-    let params = new HttpParams();
-    interests
-      .map(i => i.trim())
-      .filter(Boolean)
-      .forEach(i => (params = params.append('interests', i)));
-
-    return this.http.get<UserSearchDocument[]>(`${this.baseUrl}/users/by-interests`, { params });
-  }
-
   searchByInterestsAll(interests: string[]): Observable<UserSearchDocument[]> {
     let params = new HttpParams();
     interests
@@ -33,12 +23,6 @@ export class SearchApi {
       .forEach(i => (params = params.append('interests', i)));
 
     return this.http.get<UserSearchDocument[]>(`${this.baseUrl}/users/by-interests-all`, { params });
-  }
-
-  // Meetings fuzzy search across location and interests
-  searchMeetings(query: string): Observable<MeetingSearchDocument[]> {
-    const params = new HttpParams().set('query', query.trim());
-    return this.http.get<MeetingSearchDocument[]>(`${this.baseUrl}/meetings`, { params });
   }
 
   // Meetings fuzzy search filtered by status (UPCOMING/COMPLETED)

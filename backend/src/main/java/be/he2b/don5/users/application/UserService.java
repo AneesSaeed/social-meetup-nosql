@@ -30,17 +30,6 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    @Cacheable(cacheNames = "interests", key = "'all'")
-    public List<String> getAllUniqueInterests() {
-        return userRepo.findAll()
-                .stream()
-                .flatMap(user -> user.getInterests().stream())
-                .map(String::toLowerCase)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
     @Cacheable(cacheNames = "user", key = "#id")
     public Optional<User> getById(String id) {
         return userRepo.findById(id);

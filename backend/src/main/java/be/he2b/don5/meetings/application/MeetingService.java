@@ -152,18 +152,12 @@ public class MeetingService {
         return meetingRepo.findByParticipantsContainingAndStatus(userId, status);
     }
 
-    public List<Meeting> getMeetingsByOrganizer(String userId) {
-        return meetingRepo.findByOrganizer(userId);
-    }
 
     @Cacheable(cacheNames = "meetingsByStatus", key = "#status.name()")
     public List<Meeting> getMeetingsByStatus(Completion status) {
         return meetingRepo.findByStatus(status);
     }
 
-    public List<Meeting> searchMeetingsByInterest(String interest) {
-        return meetingRepo.findByInterestsRegexIgnoreCase(interest);
-    }
 
     @Transactional
     public Meeting joinMeeting(String meetingId, String userId) {

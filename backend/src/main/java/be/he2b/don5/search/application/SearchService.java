@@ -24,21 +24,10 @@ public class SearchService {
         return userSearchRepository.searchByNameOrBioFuzzy(query);
     }
 
-    // Recherche par intérêts
-    @Cacheable(cacheNames = "search", key = "'interestsAny:' + #interests")
-    public List<UserSearchDocument> searchByInterests(List<String> interests) {
-        return userSearchRepository.searchByInterestsAnyFuzzy(interests);
-    }
-
     // Recherche par intérêts avec condition AND: l'utilisateur doit contenir TOUS les intérêts
     @Cacheable(cacheNames = "search", key = "'interestsAll:' + #interests")
     public List<UserSearchDocument> searchByInterestsAll(List<String> interests) {
         return userSearchRepository.searchByInterestsAllFuzzy(interests);
-    }
-
-    @Cacheable(cacheNames = "search", key = "'meetingsFuzzy:' + #query")
-    public List<MeetingSearchDocument> searchMeetingsByLocationOrInterests(String query) {
-        return meetingSearchRepository.searchByLocationOrInterestsFuzzy(query);
     }
 
     @Cacheable(cacheNames = "search", key = "'meetingsByStatusFuzzy:' + #status + ':' + #query")
