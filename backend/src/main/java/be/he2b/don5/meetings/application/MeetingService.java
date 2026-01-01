@@ -37,7 +37,6 @@ public class MeetingService {
     private final UserRepository userRepo;
     private final PointsCalculationService pointsCalculationService;
     private final OutboxWriter outboxService;
-    private final SearchService searchService;
     private final CacheManager cacheManager;
 
     public MeetingService(
@@ -52,7 +51,6 @@ public class MeetingService {
         this.userRepo = userRepo;
         this.pointsCalculationService = pointsCalculationService;
         this.outboxService = outboxService;
-        this.searchService = searchService;
         this.cacheManager = cacheManager;
     }
 
@@ -309,17 +307,13 @@ public class MeetingService {
                 evictUserAndSearchCaches(user.getId());
             }
 
-            String interestsStr = meeting.getInterests() != null && !meeting.getInterests().isEmpty()
-                    ? String.join(", ", meeting.getInterests())
-                    : meeting.getEventType();
-
             MeetingCompletedEvent meetingEvent = new MeetingCompletedEvent(
                 meeting.getId(),
                 meeting.getParticipants(),
                 pointsPerUser,
                 meeting.getDate().toString(),
                 meeting.getLocation(),
-                interestsStr
+                meeting.getInterests()
             );
             
             outboxService.addEvent(

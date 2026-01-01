@@ -32,8 +32,12 @@ public class SocialGraphService {
             Map<String, Integer> pointsPerUser, 
             String date,
             String location, 
-            String interest
+            List<String> interests
     ) {
+        String interestStr = (interests == null || interests.isEmpty())
+            ? null
+            : String.join(", ", interests);
+
         // Créer relations bidirectionnelles entre tous les participants
         for (int i = 0; i < participants.size(); i++) {
             for (int j = i + 1; j < participants.size(); j++) {
@@ -44,8 +48,8 @@ public class SocialGraphService {
                 int pointsUser2 = pointsPerUser.getOrDefault(user2, 10);
 
                 // Chaque utilisateur a ses propres points dans la relation
-                userNodeRepo.createMeetingRelation(user1, user2, meetingId, pointsUser1, date, location, interest);
-                userNodeRepo.createMeetingRelation(user2, user1, meetingId, pointsUser2, date, location, interest);
+                userNodeRepo.createMeetingRelation(user1, user2, meetingId, pointsUser1, date, location, interestStr);
+                userNodeRepo.createMeetingRelation(user2, user1, meetingId, pointsUser2, date, location, interestStr);
             }
         }
     }
