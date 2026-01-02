@@ -6,6 +6,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import lombok.Data;
 
+/**
+ * Elasticsearch document for meetings.
+ *
+ * <p>This is the indexed version of a meeting, stored in the "meetings" index
+ * for fast search.</p>
+ */
 @Data
 @Document(indexName = "meetings")
 public class MeetingSearchDocument {

@@ -4,4 +4,10 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 import be.he2b.don5.search.infrastructure.elasticsearch.document.UserSearchDocument;
 
-public interface UserSearchRepository extends ElasticsearchRepository<UserSearchDocument, String>, UserSearchRepositoryCustom {}
+/**
+ * Elasticsearch repository for {@link UserSearchDocument}.
+ *
+ * <p>Provides basic index operations and custom fuzzy search queries.</p>
+ */
+public interface UserSearchRepository 
+        extends ElasticsearchRepository<UserSearchDocument, String>, UserSearchRepositoryCustom {}

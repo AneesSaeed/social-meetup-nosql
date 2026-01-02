@@ -11,30 +11,69 @@ import be.he2b.don5.search.infrastructure.elasticsearch.repository.meeting.Meeti
 import be.he2b.don5.search.infrastructure.elasticsearch.repository.user.UserSearchRepository;
 import lombok.AllArgsConstructor;
 
+/**
+ * Application service for search operations.
+ *
+ * <p>Uses Elasticsearch repositories to search users and meetings.
+ * Some results are cached to reduce repeated queries.</p>
+ */
 @Service
 @AllArgsConstructor
 public class SearchService {
     
+    /**
+     * Elasticsearch repository for user search.
+     */
     private final UserSearchRepository userSearchRepository;
+
+    /**
+     * Elasticsearch repository for meeting search.
+     */
     private final MeetingSearchRepository meetingSearchRepository;
 
-    // Recherche par nom ou bio avec fuzzy matching
+    /**
+     * Searches users by name or bio (fuzzy).
+     *
+     * @param query search text
+     * @return matching users
+     */
     @Cacheable(cacheNames = "search", key = "'nameBio:' + #query")
     public List<UserSearchDocument> searchByNameOrBio(String query) {
         return userSearchRepository.searchByNameOrBioFuzzy(query);
     }
 
-    // Recherche par intérêts avec condition AND: l'utilisateur doit contenir TOUS les intérêts
+    /**
+     * Searches users that contain all given interests (AND, fuzzy).
+     *
+     * @param interests interests that must all match
+     * @return matching users
+     */
     @Cacheable(cacheNames = "search", key = "'interestsAll:' + #interests")
     public List<UserSearchDocument> searchByInterestsAll(List<String> interests) {
         return userSearchRepository.searchByInterestsAllFuzzy(interests);
     }
 
+    /**
+     * Searches meetings by status and by location or interests (fuzzy).
+     *
+     * @param status meeting status
+     * @param query search text
+     * @return matching meetings
+     */
     @Cacheable(cacheNames = "search", key = "'meetingsByStatusFuzzy:' + #status + ':' + #query")
     public List<MeetingSearchDocument> searchMeetingsByStatusAndLocationOrInterests(Completion status, String query) {
         return meetingSearchRepository.searchByStatusAndLocationOrInterestsFuzzy(status.name(), query);
     }
 
+    /**
+     * Searches meetings for a specific user (organizer or participant), filtered by status,
+     * and matching location or interests (fuzzy).
+     *
+     * @param userId user id
+     * @param status meeting status
+     * @param query search text
+     * @return matching meetings
+     */
     public List<MeetingSearchDocument> searchMeetingsByUserStatusAndQuery(String userId, Completion status, String query) {
         return meetingSearchRepository.searchByUserIdAndStatusAndLocationOrInterestsFuzzy(
             userId, 

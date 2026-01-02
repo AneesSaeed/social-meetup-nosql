@@ -6,6 +6,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import lombok.Data;
 
+/**
+ * Elasticsearch document for users.
+ *
+ * <p>This is the indexed version of a user, stored in the "users" index
+ * for fast search.</p>
+ */
 @Data
 @Document(indexName = "users")
 public class UserSearchDocument {

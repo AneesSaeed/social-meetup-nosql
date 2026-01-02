@@ -11,15 +11,26 @@ import org.springframework.stereotype.Component;
 import be.he2b.don5.search.infrastructure.elasticsearch.document.UserSearchDocument;
 import lombok.AllArgsConstructor;
 
+/**
+ * Implementation of custom user search queries.
+ *
+ * <p>Builds Elasticsearch JSON queries (fuzzy matching) and executes them
+ * using {@link ElasticsearchOperations}.</p>
+ */
 @Component
 @AllArgsConstructor
 public class UserSearchRepositoryCustomImpl implements UserSearchRepositoryCustom {
     
+    /**
+     * Low-level Elasticsearch operations used to run queries.
+     */    
     private final ElasticsearchOperations elasticsearchOperations;
-    
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UserSearchDocument> searchByNameOrBioFuzzy(String query) {
-        // Fuzzy multi-match query with AUTO fuzziness (1-2 edits depending on term length)
         String elasticsearchQuery = "{\n" +
             "  \"multi_match\": {\n" +
             "    \"query\": \"" + query + "\",\n" +
@@ -29,13 +40,20 @@ public class UserSearchRepositoryCustomImpl implements UserSearchRepositoryCusto
             "}";
         
         StringQuery stringQuery = new StringQuery(elasticsearchQuery);
-        SearchHits<UserSearchDocument> hits = elasticsearchOperations.search(stringQuery, UserSearchDocument.class);
+        SearchHits<UserSearchDocument> hits = 
+                elasticsearchOperations.search(stringQuery, UserSearchDocument.class);
         
         return hits.getSearchHits().stream()
                 .map(hit -> hit.getContent())
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Searches users by interests (OR condition, fuzzy).
+     *
+     * @param interests list of interests
+     * @return matching users
+     */
     @Override
     public List<UserSearchDocument> searchByInterestsAnyFuzzy(List<String> interests) {
         if (interests == null || interests.isEmpty()) {
@@ -58,10 +76,20 @@ public class UserSearchRepositoryCustomImpl implements UserSearchRepositoryCusto
         sb.append("    ],\n    \"minimum_should_match\": 1\n  }\n}");
 
         StringQuery stringQuery = new StringQuery(sb.toString());
-        SearchHits<UserSearchDocument> hits = elasticsearchOperations.search(stringQuery, UserSearchDocument.class);
-        return hits.getSearchHits().stream().map(hit -> hit.getContent()).collect(Collectors.toList());
+        SearchHits<UserSearchDocument> hits = 
+            elasticsearchOperations.search(stringQuery, UserSearchDocument.class);
+        
+        return hits.getSearchHits().stream()
+                .map(hit -> hit.getContent())
+                .collect(Collectors.toList());
     }
 
+    /**
+     * Searches users by interests (AND condition, fuzzy).
+     *
+     * @param interests list of interests
+     * @return matching users
+     */
     @Override
     public List<UserSearchDocument> searchByInterestsAllFuzzy(List<String> interests) {
         if (interests == null || interests.isEmpty()) {

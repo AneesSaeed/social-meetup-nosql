@@ -11,12 +11,25 @@ import org.springframework.stereotype.Component;
 import be.he2b.don5.search.infrastructure.elasticsearch.document.MeetingSearchDocument;
 import lombok.AllArgsConstructor;
 
+/**
+ * Implementation of custom meeting search queries.
+ *
+ * <p>Builds Elasticsearch JSON queries (fuzzy matching) and executes them
+ * using {@link ElasticsearchOperations}.</p>
+ */
 @Component
 @AllArgsConstructor
 public class MeetingSearchRepositoryCustomImpl implements MeetingSearchRepositoryCustom {
-
+    
+    /**
+     * Low-level Elasticsearch operations used to run queries.
+     */
     private final ElasticsearchOperations elasticsearchOperations;
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<MeetingSearchDocument> searchByLocationOrInterestsFuzzy(String query) {
         String elasticsearchQuery = "{\n" +
@@ -27,10 +40,17 @@ public class MeetingSearchRepositoryCustomImpl implements MeetingSearchRepositor
             "  }\n" +
             "}";
 
-        SearchHits<MeetingSearchDocument> hits = elasticsearchOperations.search(new StringQuery(elasticsearchQuery), MeetingSearchDocument.class);
-        return hits.getSearchHits().stream().map(h -> h.getContent()).collect(Collectors.toList());
+        SearchHits<MeetingSearchDocument> hits = 
+                elasticsearchOperations.search(new StringQuery(elasticsearchQuery), MeetingSearchDocument.class);
+        
+        return hits.getSearchHits().stream()
+                .map(h -> h.getContent())
+                .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<MeetingSearchDocument> searchByStatusAndLocationOrInterestsFuzzy(String status, String query) {
         String elasticsearchQuery = "{\n" +
@@ -46,10 +66,17 @@ public class MeetingSearchRepositoryCustomImpl implements MeetingSearchRepositor
             "  }\n" +
             "}";
 
-        SearchHits<MeetingSearchDocument> hits = elasticsearchOperations.search(new StringQuery(elasticsearchQuery), MeetingSearchDocument.class);
-        return hits.getSearchHits().stream().map(h -> h.getContent()).collect(Collectors.toList());
+        SearchHits<MeetingSearchDocument> hits = 
+                elasticsearchOperations.search(new StringQuery(elasticsearchQuery), MeetingSearchDocument.class);
+        
+        return hits.getSearchHits().stream()
+                .map(h -> h.getContent())
+                .collect(Collectors.toList());
         }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<MeetingSearchDocument> searchByUserIdAndStatusAndLocationOrInterestsFuzzy(
             String userId, String status, String query
@@ -78,6 +105,8 @@ public class MeetingSearchRepositoryCustomImpl implements MeetingSearchRepositor
         SearchHits<MeetingSearchDocument> hits =
             elasticsearchOperations.search(new StringQuery(elasticsearchQuery), MeetingSearchDocument.class);
 
-        return hits.getSearchHits().stream().map(h -> h.getContent()).collect(Collectors.toList());
+        return hits.getSearchHits().stream()
+                .map(h -> h.getContent())
+                .collect(Collectors.toList());
     }
 }
