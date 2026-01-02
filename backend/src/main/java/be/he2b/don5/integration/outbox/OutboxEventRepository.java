@@ -5,9 +5,15 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 /**
- * Repository interface for managing OutboxEvent entities in MongoDB.
- * Provides a method to retrieve unprocessed outbox events ordered by their creation time.
+ * MongoDB repository for {@link OutboxEvent}.
+ *
+ * <p>Provides a query to fetch all pending events (processed=false) in creation order.</p>
  */
 public interface OutboxEventRepository extends MongoRepository<OutboxEvent, String> {
+    /**
+     * Returns all not-yet-processed outbox events ordered by creation time.
+     *
+     * @return pending outbox events
+     */
     List<OutboxEvent> findByProcessedFalseOrderByCreatedAtAsc();
 }

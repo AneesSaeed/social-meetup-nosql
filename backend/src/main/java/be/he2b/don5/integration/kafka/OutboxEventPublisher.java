@@ -16,15 +16,43 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Publishes outbox events to Kafka.
+ *
+ * <p>This service runs on a schedule. It:
+ * <ul>
+ *   <li>loads pending outbox events from MongoDB</li>
+ *   <li>wraps the payload into an {@link EventEnvelope}</li>
+ *   <li>sends it to the correct Kafka topic</li>
+ *   <li>marks the outbox event as processed</li>
+ * </ul>
+ * </p>
+ */
 @Service
 @AllArgsConstructor
 @Slf4j
 public class OutboxEventPublisher {
-
+    /**
+     * Repository used to read and update outbox events.
+     */
     private final OutboxEventRepository outboxRepo;
+
+    /**
+     * Kafka producer used to send messages.
+     */
     private final KafkaTemplate<String, String> kafkaTemplate;
+
+    /**
+     * JSON mapper used to wrap payloads into an {@link EventEnvelope}.
+     */
     private final ObjectMapper objectMapper;
 
+    /**
+     * Publishes all unprocessed outbox events to Kafka.
+     *
+     * <p>Runs every 5 seconds. If publishing fails, the event stays unprocessed
+     * and will be retried later.</p>
+     */
     @Scheduled(fixedDelay = 5000)
     @Transactional
     public void publishPendingEvents() {

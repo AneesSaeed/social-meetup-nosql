@@ -16,15 +16,41 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * Kafka consumers for user events.
+ *
+ * <p>This class contains two listeners:
+ * <ul>
+ *   <li>one updates Neo4j (create user nodes)</li>
+ *   <li>one updates Elasticsearch (index/update user documents)</li>
+ * </ul>
+ * </p>
+ */
 @Service
 @AllArgsConstructor
 @Slf4j
 public class UserEventConsumer {
 
+    /**
+     * Service used to update the social graph in Neo4j.
+     */
     private final SocialGraphService socialGraphService;
+
+    /**
+     * Elasticsearch repository for user documents.
+     */
     private final UserSearchRepository userSearchRepository;
+
+    /**
+     * JSON mapper used to deserialize Kafka messages.
+     */
     private final ObjectMapper objectMapper;
 
+    /**
+     * Creates a user node in Neo4j when a user is created.
+     *
+     * @param message Kafka message containing an {@link EventEnvelope} as JSON
+     */
     @KafkaListener(topics = "user-events", groupId = "neo4j-consumer")
     public void consumeForNeo4j(String message) {
         try {
@@ -40,6 +66,14 @@ public class UserEventConsumer {
         }
     }
 
+    /**
+     * Creates or updates the user document in Elasticsearch.
+     *
+     * <p>On USER_CREATED: creates a new {@link UserSearchDocument}.</p>
+     * <p>On USER_UPDATED: updates bio/interests/score and refreshes lastActive.</p>
+     *
+     * @param message Kafka message containing an {@link EventEnvelope} as JSON
+     */
     @KafkaListener(topics = "user-events", groupId = "elasticsearch-consumer")
     public void consumeForElasticsearch(String message) {
         try {

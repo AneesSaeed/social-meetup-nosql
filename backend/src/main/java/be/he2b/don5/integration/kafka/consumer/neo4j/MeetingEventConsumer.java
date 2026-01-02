@@ -11,14 +11,32 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+/**
+ * Kafka consumer that updates Neo4j when meetings are completed.
+ *
+ * <p>Listens to "meeting-events". Only {@link EventType#MEETING_COMPLETED}
+ * is processed here.</p>
+ */
 @Service
 @AllArgsConstructor
 @Slf4j
 public class MeetingEventConsumer {
 
+    /**
+     * Service used to create meeting relations in Neo4j.
+     */
     private final SocialGraphService socialGraphService;
+
+    /**
+     * JSON mapper used to deserialize Kafka messages.
+     */
     private final ObjectMapper objectMapper;
 
+    /**
+     * Consumes meeting events and creates Neo4j relations for completed meetings.
+     *
+     * @param message Kafka message containing an {@link EventEnvelope} as JSON
+     */
     @KafkaListener(topics = "meeting-events", groupId = "neo4j-meeting-consumer")
     public void consumeMeetingCompleted(String message) {
         try {

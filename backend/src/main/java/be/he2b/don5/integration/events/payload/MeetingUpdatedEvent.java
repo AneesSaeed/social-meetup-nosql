@@ -1,15 +1,33 @@
 package be.he2b.don5.integration.events.payload;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 
+/**
+ * Payload sent when a meeting is updated.
+ *
+ * <p>Currently used for join/leave actions.</p>
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MeetingUpdatedEvent {
+
+    /**
+     * Meeting id.
+     */
     private String meetingId;
+
+    /**
+     * Updated participant list.
+     */
     private List<String> participants;
-    private String action; // "JOIN" or "LEAVE"
+
+    /**
+     * Update action (example: "JOIN" or "LEAVE").
+     */
+    private String action;
 }

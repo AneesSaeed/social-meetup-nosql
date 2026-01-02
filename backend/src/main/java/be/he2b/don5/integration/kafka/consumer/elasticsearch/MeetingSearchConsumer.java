@@ -16,24 +16,46 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * Kafka consumer that updates the Elasticsearch "meetings" index.
+ *
+ * <p>Listens to "meeting-events" and keeps the {@link MeetingSearchDocument}
+ * index in sync with meeting events.</p>
+ */
 @Service
 @AllArgsConstructor
 @Slf4j
 public class MeetingSearchConsumer {
 
+    /**
+     * Elasticsearch repository for meeting documents.
+     */
     private final MeetingSearchRepository meetingSearchRepository;
+
+    /**
+     * JSON mapper used to deserialize Kafka messages.
+     */
     private final ObjectMapper objectMapper;
 
+    /**
+     * Receives meeting events and updates Elasticsearch.
+     *
+     * @param message Kafka message containing an {@link EventEnvelope} as JSON
+     */
     @KafkaListener(topics = "meeting-events", groupId = "elasticsearch-meeting-consumer")
     public void consumeForElasticsearch(String message) {
         try {
             EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
 
             switch (env.getEventType()) {
-                case MEETING_CREATED -> handleMeetingCreated(objectMapper.treeToValue(env.getData(), MeetingCreatedEvent.class));
-                case MEETING_UPDATED -> handleMeetingUpdated(objectMapper.treeToValue(env.getData(), MeetingUpdatedEvent.class));
-                case MEETING_COMPLETED -> handleMeetingCompleted(objectMapper.treeToValue(env.getData(), MeetingCompletedEvent.class));
-                case MEETING_CANCELLED -> handleMeetingCancelled(objectMapper.treeToValue(env.getData(), MeetingCancelledEvent.class));
+                case MEETING_CREATED -> 
+                        handleMeetingCreated(objectMapper.treeToValue(env.getData(), MeetingCreatedEvent.class));
+                case MEETING_UPDATED -> 
+                        handleMeetingUpdated(objectMapper.treeToValue(env.getData(), MeetingUpdatedEvent.class));
+                case MEETING_COMPLETED -> 
+                        handleMeetingCompleted(objectMapper.treeToValue(env.getData(), MeetingCompletedEvent.class));
+                case MEETING_CANCELLED -> 
+                        handleMeetingCancelled(objectMapper.treeToValue(env.getData(), MeetingCancelledEvent.class));
                 default -> log.warn("Ignored event type: {}", env.getEventType());
             }
         } catch (Exception e) {
@@ -41,6 +63,11 @@ public class MeetingSearchConsumer {
         }
     }
 
+    /**
+     * Indexes a new meeting document when a meeting is created.
+     *
+     * @param event meeting created payload
+     */
     private void handleMeetingCreated(MeetingCreatedEvent event) {
         MeetingSearchDocument doc = new MeetingSearchDocument();
         doc.setMeetingId(event.getMeetingId());
@@ -59,7 +86,12 @@ public class MeetingSearchConsumer {
         meetingSearchRepository.save(doc);
         log.info("Elasticsearch: Indexed new meeting {}", event.getMeetingId());
     }
-
+    
+    /**
+     * Updates participants when users join or leave a meeting.
+     *
+     * @param event meeting updated payload
+     */
     private void handleMeetingUpdated(MeetingUpdatedEvent event) {
         meetingSearchRepository.findById(event.getMeetingId()).ifPresent(doc -> {
             doc.setParticipants(event.getParticipants());
@@ -68,6 +100,13 @@ public class MeetingSearchConsumer {
         });
     }
 
+    /**
+     * Marks a meeting as completed in the search index.
+     *
+     * <p>If the document does not exist yet, it creates a minimal one.</p>
+     *
+     * @param event meeting completed payload
+     */
     private void handleMeetingCompleted(MeetingCompletedEvent event) {
         meetingSearchRepository.findById(event.getMeetingId()).ifPresentOrElse(doc -> {
             doc.setStatus("completed");
@@ -86,7 +125,12 @@ public class MeetingSearchConsumer {
             log.info("Elasticsearch: Indexed meeting {} as COMPLETED", event.getMeetingId());
         });
     }
-
+    
+    /**
+     * Marks a meeting as cancelled in the search index.
+     *
+     * @param event meeting cancelled payload
+     */
     private void handleMeetingCancelled(MeetingCancelledEvent event) {
         meetingSearchRepository.findById(event.getMeetingId()).ifPresent(doc -> {
             doc.setStatus("cancelled");
