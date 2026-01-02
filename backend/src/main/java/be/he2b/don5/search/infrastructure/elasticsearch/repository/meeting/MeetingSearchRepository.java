@@ -7,7 +7,7 @@ import be.he2b.don5.search.infrastructure.elasticsearch.document.MeetingSearchDo
 /**
  * Elasticsearch repository for {@link MeetingSearchDocument}.
  *
- * <p>Provides basic index operations and custom fuzzy search queries.</p>
+ * <p>Provides basic index operations and custom fuzzy search queries.
  */
 public interface MeetingSearchRepository 
         extends ElasticsearchRepository<MeetingSearchDocument, String>, MeetingSearchRepositoryCustom {}

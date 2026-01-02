@@ -7,7 +7,7 @@ import be.he2b.don5.search.infrastructure.elasticsearch.document.MeetingSearchDo
 /**
  * Custom Elasticsearch queries for meetings.
  *
- * <p>These methods build fuzzy queries to search meetings by text fields.</p>
+ * <p>These methods build fuzzy queries to search meetings by text fields.
  */
 public interface MeetingSearchRepositoryCustom {
     /**

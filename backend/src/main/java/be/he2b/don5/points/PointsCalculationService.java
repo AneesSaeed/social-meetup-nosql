@@ -19,7 +19,7 @@ import java.util.Map;
  *   <li>a reduction if two users already met before</li>
  *   <li>a bonus when the meeting interests are outside the user's interests</li>
  * </ul>
- * </p>
+ * 
  */
 @Service
 @AllArgsConstructor
@@ -52,7 +52,7 @@ public class PointsCalculationService {
      * Calculates points for each participant of a meeting.
      *
      * <p>For each participant, points are the sum of points gained from every
-     * other participant in the meeting.</p>
+     * other participant in the meeting.
      *
      * @param participants list of user ids participating in the meeting
      * @param meetingInterests meeting interests/tags
@@ -98,7 +98,7 @@ public class PointsCalculationService {
      *   <li>Add {@link #OUT_OF_COMFORT_ZONE_BONUS} for each meeting interest not in the user's interests.</li>
      *   <li>Final result is at least 1 point.</li>
      * </ul>
-     * </p>
+     * 
      *
      * @param userId1 user receiving points
      * @param userId2 the other user in the pair

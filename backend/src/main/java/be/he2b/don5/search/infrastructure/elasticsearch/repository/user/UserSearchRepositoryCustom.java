@@ -7,7 +7,7 @@ import be.he2b.don5.search.infrastructure.elasticsearch.document.UserSearchDocum
 /**
  * Custom Elasticsearch queries for users.
  *
- * <p>These methods build fuzzy queries to search users by text fields.</p>
+ * <p>These methods build fuzzy queries to search users by text fields.
  */
 public interface UserSearchRepositoryCustom {
     /**
@@ -22,7 +22,7 @@ public interface UserSearchRepositoryCustom {
     /**
      * Searches users by interests (OR condition, fuzzy).
      *
-     * <p>At least one interest must match.</p>
+     * <p>At least one interest must match.
      *
      * @param interests list of interests
      * @return matching users (empty list if input is empty)
@@ -32,7 +32,7 @@ public interface UserSearchRepositoryCustom {
     /**
      * Searches users by interests (AND condition, fuzzy).
      *
-     * <p>All interests must match.</p>
+     * <p>All interests must match.
      *
      * @param interests list of interests
      * @return matching users (empty list if input is empty)

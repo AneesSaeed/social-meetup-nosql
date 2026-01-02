@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * Kafka consumer that updates Neo4j when meetings are completed.
  *
  * <p>Listens to "meeting-events". Only {@link EventType#MEETING_COMPLETED}
- * is processed here.</p>
+ * is processed here.
  */
 @Service
 @AllArgsConstructor

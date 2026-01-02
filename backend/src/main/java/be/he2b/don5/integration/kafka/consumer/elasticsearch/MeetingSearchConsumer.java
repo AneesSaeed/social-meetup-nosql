@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
  * Kafka consumer that updates the Elasticsearch "meetings" index.
  *
  * <p>Listens to "meeting-events" and keeps the {@link MeetingSearchDocument}
- * index in sync with meeting events.</p>
+ * index in sync with meeting events.
  */
 @Service
 @AllArgsConstructor
@@ -103,7 +103,7 @@ public class MeetingSearchConsumer {
     /**
      * Marks a meeting as completed in the search index.
      *
-     * <p>If the document does not exist yet, it creates a minimal one.</p>
+     * <p>If the document does not exist yet, it creates a minimal one.
      *
      * @param event meeting completed payload
      */

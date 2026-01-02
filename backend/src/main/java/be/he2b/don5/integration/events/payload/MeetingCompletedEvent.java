@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Payload sent when a meeting is completed.
  *
- * <p>Contains the participants and the points given to each user.</p>
+ * <p>Contains the participants and the points given to each user.
  */
 @Data
 @NoArgsConstructor

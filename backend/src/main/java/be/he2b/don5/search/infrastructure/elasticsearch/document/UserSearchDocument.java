@@ -10,7 +10,7 @@ import lombok.Data;
  * Elasticsearch document for users.
  *
  * <p>This is the indexed version of a user, stored in the "users" index
- * for fast search.</p>
+ * for fast search.
  */
 @Data
 @Document(indexName = "users")

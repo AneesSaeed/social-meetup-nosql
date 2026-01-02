@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
  * Application service for authentication-related actions.
  *
  * <p>This service handles simple login and registration. Registration also
- * publishes a {@link UserCreatedEvent} using the outbox mechanism.</p>
+ * publishes a {@link UserCreatedEvent} using the outbox mechanism.
  *
  * <p>Note: login here only checks if the user exists by email; it does not
- * validate passwords.</p>
+ * validate passwords.
  */
 @AllArgsConstructor
 @Service
@@ -31,7 +31,7 @@ public class AuthService {
     /**
      * Logs in a user by email.
      *
-     * <p>This method returns the user if the email exists.</p>
+     * <p>This method returns the user if the email exists.
      *
      * @param request login request containing the email
      * @return the existing user
@@ -46,7 +46,7 @@ public class AuthService {
      * Registers a new user and publishes a creation event.
      *
      * <p>This method is transactional: user creation and outbox event writing
-     * happen in the same transaction.</p>
+     * happen in the same transaction.
      *
      * @param request registration request
      * @return the created user

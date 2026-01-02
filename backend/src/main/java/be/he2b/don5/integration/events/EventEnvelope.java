@@ -10,9 +10,9 @@ import com.fasterxml.jackson.databind.JsonNode;
  *   <li>the event type (what happened)</li>
  *   <li>the event data (payload as JSON)</li>
  * </ul>
- * </p>
+ * 
  *
- * <p>This class has an empty constructor so Jackson can deserialize it.</p>
+ * <p>This class has an empty constructor so Jackson can deserialize it.
  */
 public class EventEnvelope {
     /**

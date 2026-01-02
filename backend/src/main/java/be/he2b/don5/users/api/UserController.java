@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 /**
  * REST controller for user endpoints.
  *
- * <p>Exposes API routes to list users, get one user, and update a user profile.</p>
+ * <p>Exposes API routes to list users, get one user, and update a user profile.
  */
 @RestController
 @RequestMapping("/api")

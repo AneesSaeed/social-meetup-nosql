@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
  * Application service for user-related operations.
  *
  * <p>This service reads and updates users in MongoDB and publishes user update
- * events using the outbox mechanism.</p>
+ * events using the outbox mechanism.
  */
 @Service
 @AllArgsConstructor
@@ -55,8 +55,8 @@ public class UserService {
     /**
      * Updates a user's profile (bio and interests).
      *
-     * <p>Cache is cleared to keep user/search/interests data up to date.</p>
-     * <p>After saving, a {@link UserUpdatedEvent} is written to the outbox.</p>
+     * <p>Cache is cleared to keep user/search/interests data up to date.
+     * <p>After saving, a {@link UserUpdatedEvent} is written to the outbox.
      *
      * @param id user id
      * @param req profile update request

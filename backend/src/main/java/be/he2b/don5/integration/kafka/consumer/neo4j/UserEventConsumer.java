@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
  *   <li>one updates Neo4j (create user nodes)</li>
  *   <li>one updates Elasticsearch (index/update user documents)</li>
  * </ul>
- * </p>
+ * 
  */
 @Service
 @AllArgsConstructor
@@ -69,8 +69,8 @@ public class UserEventConsumer {
     /**
      * Creates or updates the user document in Elasticsearch.
      *
-     * <p>On USER_CREATED: creates a new {@link UserSearchDocument}.</p>
-     * <p>On USER_UPDATED: updates bio/interests/score and refreshes lastActive.</p>
+     * <p>On USER_CREATED: creates a new {@link UserSearchDocument}.
+     * <p>On USER_UPDATED: updates bio/interests/score and refreshes lastActive.
      *
      * @param message Kafka message containing an {@link EventEnvelope} as JSON
      */

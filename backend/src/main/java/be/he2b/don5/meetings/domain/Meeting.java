@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  * Represents a meeting stored in MongoDB.
  *
  * <p>A meeting starts as {@link Completion#UPCOMING}. Users can join or leave
- * until it is completed or cancelled.</p>
+ * until it is completed or cancelled.
  */
 @Document(collection = "meetings")
 @Data
@@ -98,7 +98,7 @@ public class Meeting {
      *   <li>points is 0</li>
      *   <li>createdAt is now</li>
      * </ul>
-     * </p>
+     * 
      *
      * @param title meeting title
      * @param description meeting description

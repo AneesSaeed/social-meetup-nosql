@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 /**
  * Payload sent when a meeting is updated.
  *
- * <p>Currently used for join/leave actions.</p>
+ * <p>Currently used for join/leave actions.
  */
 @Data
 @NoArgsConstructor

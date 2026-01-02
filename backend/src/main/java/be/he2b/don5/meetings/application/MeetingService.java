@@ -42,7 +42,7 @@ import be.he2b.don5.users.infrastructure.mongo.UserRepository;
  *   <li>publishes events using the outbox mechanism</li>
  *   <li>clears caches when needed</li>
  * </ul>
- * </p>
+ * 
  */
 @Service
 public class MeetingService {
@@ -88,7 +88,7 @@ public class MeetingService {
      *
      * <p>Validates that the organizer exists, applies defaults, ensures participants
      * are unique and within the capacity, saves the meeting, and publishes a
-     * {@link MeetingCreatedEvent}.</p>
+     * {@link MeetingCreatedEvent}.
      *
      * @param request meeting creation request
      * @return created meeting
@@ -230,7 +230,7 @@ public class MeetingService {
      *   <li>meeting must be UPCOMING</li>
      *   <li>meeting must not be full</li>
      * </ul>
-     * Publishes a {@link MeetingUpdatedEvent} with action "JOIN".</p>
+     * Publishes a {@link MeetingUpdatedEvent} with action "JOIN".
      *
      * @param meetingId meeting id
      * @param userId user id to join
@@ -289,7 +289,7 @@ public class MeetingService {
      *   <li>meeting must be UPCOMING</li>
      *   <li>organizer cannot leave their own meeting</li>
      * </ul>
-     * Publishes a {@link MeetingUpdatedEvent} with action "LEAVE".</p>
+     * Publishes a {@link MeetingUpdatedEvent} with action "LEAVE".
      *
      * @param meetingId meeting id
      * @param userId user id to leave
@@ -344,7 +344,7 @@ public class MeetingService {
      *   <li>updates users totalPoints and totalMeetings</li>
      *   <li>publishes {@link UserUpdatedEvent} and {@link MeetingCompletedEvent}</li>
      * </ul>
-     * </p>
+     * 
      *
      * @param meetingId meeting id
      * @return updated meeting
@@ -431,7 +431,7 @@ public class MeetingService {
      * <ul>
      *   <li>completed meetings cannot be cancelled</li>
      * </ul>
-     * Publishes a {@link MeetingCancelledEvent}.</p>
+     * Publishes a {@link MeetingCancelledEvent}.
      *
      * @param meetingId meeting id
      * @return updated meeting

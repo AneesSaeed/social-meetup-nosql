@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
  * Represents an event stored in the outbox collection.
  *
  * <p>The outbox pattern stores events in MongoDB first, then a separate
- * publisher sends them to Kafka. This makes event publishing more reliable.</p>
+ * publisher sends them to Kafka. This makes event publishing more reliable.
  */
 @Document(collection = "outbox_events")
 @Data

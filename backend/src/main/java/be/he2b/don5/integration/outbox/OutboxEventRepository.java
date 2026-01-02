@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * MongoDB repository for {@link OutboxEvent}.
  *
- * <p>Provides a query to fetch all pending events (processed=false) in creation order.</p>
+ * <p>Provides a query to fetch all pending events (processed=false) in creation order.
  */
 public interface OutboxEventRepository extends MongoRepository<OutboxEvent, String> {
     /**

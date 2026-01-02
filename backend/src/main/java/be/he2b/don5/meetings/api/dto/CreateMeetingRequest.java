@@ -9,7 +9,7 @@ import lombok.Data;
  * Request body used to create a new meeting.
  *
  * <p>Contains the event information (title, date, location, etc.) and the initial
- * meeting settings (max participants, interests, initial participants).</p>
+ * meeting settings (max participants, interests, initial participants).
  */
 @Data
 public class CreateMeetingRequest {

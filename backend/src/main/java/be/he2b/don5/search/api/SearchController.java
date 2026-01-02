@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 /**
  * REST controller for search endpoints.
  *
- * <p>This controller exposes Elasticsearch-based search for users and meetings.</p>
+ * <p>This controller exposes Elasticsearch-based search for users and meetings.
  */
 @RestController
 @RequestMapping("/api/search")

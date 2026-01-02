@@ -10,7 +10,7 @@ import lombok.Data;
  * Elasticsearch document for meetings.
  *
  * <p>This is the indexed version of a meeting, stored in the "meetings" index
- * for fast search.</p>
+ * for fast search.
  */
 @Data
 @Document(indexName = "meetings")

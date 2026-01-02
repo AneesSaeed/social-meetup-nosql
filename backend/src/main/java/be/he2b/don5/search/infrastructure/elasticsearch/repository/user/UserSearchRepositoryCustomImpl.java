@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
  * Implementation of custom user search queries.
  *
  * <p>Builds Elasticsearch JSON queries (fuzzy matching) and executes them
- * using {@link ElasticsearchOperations}.</p>
+ * using {@link ElasticsearchOperations}.
  */
 @Component
 @AllArgsConstructor

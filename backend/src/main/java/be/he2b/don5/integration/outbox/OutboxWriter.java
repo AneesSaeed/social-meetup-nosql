@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Writes domain events to the outbox collection.
  *
  * <p>Services call this class to store an event in MongoDB as part of the same
- * transaction as the business action.</p>
+ * transaction as the business action.
  */
 @Service
 @AllArgsConstructor

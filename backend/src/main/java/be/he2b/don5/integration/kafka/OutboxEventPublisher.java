@@ -26,7 +26,7 @@ import java.util.List;
  *   <li>sends it to the correct Kafka topic</li>
  *   <li>marks the outbox event as processed</li>
  * </ul>
- * </p>
+ * 
  */
 @Service
 @AllArgsConstructor
@@ -51,7 +51,7 @@ public class OutboxEventPublisher {
      * Publishes all unprocessed outbox events to Kafka.
      *
      * <p>Runs every 5 seconds. If publishing fails, the event stays unprocessed
-     * and will be retried later.</p>
+     * and will be retried later.
      */
     @Scheduled(fixedDelay = 5000)
     @Transactional

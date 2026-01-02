@@ -3,7 +3,7 @@ package be.he2b.don5.integration.events;
 /**
  * Kafka topics used for integration events.
  *
- * <p>Provides a helper method to choose the correct topic based on {@link EventType}.</p>
+ * <p>Provides a helper method to choose the correct topic based on {@link EventType}.
  */
 public final class Topics {
     private Topics() {}

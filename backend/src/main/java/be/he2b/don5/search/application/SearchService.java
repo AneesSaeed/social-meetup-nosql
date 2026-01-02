@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
  * Application service for search operations.
  *
  * <p>Uses Elasticsearch repositories to search users and meetings.
- * Some results are cached to reduce repeated queries.</p>
+ * Some results are cached to reduce repeated queries.
  */
 @Service
 @AllArgsConstructor

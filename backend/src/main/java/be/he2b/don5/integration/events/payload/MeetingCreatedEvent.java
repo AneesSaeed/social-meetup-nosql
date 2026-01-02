@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 /**
  * Payload sent when a meeting is created.
  *
- * <p>Date values are stored as strings for easier transport.</p>
+ * <p>Date values are stored as strings for easier transport.
  */
 @Data
 @NoArgsConstructor

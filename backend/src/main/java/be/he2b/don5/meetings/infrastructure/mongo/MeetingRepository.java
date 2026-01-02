@@ -11,7 +11,7 @@ import be.he2b.don5.meetings.domain.Meeting;
 /**
  * MongoDB repository for {@link Meeting}.
  *
- * <p>Provides basic CRUD operations and a few queries used by the meeting module.</p>
+ * <p>Provides basic CRUD operations and a few queries used by the meeting module.
  */
 public interface MeetingRepository extends MongoRepository<Meeting, String> {
     /**

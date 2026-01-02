@@ -19,7 +19,7 @@ import be.he2b.don5.meetings.domain.Meeting;
  * REST controller for meeting endpoints.
  *
  * <p>Provides routes to create meetings, list meetings, join/leave,
- * and change meeting status (complete/cancel).</p>
+ * and change meeting status (complete/cancel).
  */
 @RestController
 @RequestMapping("/api/meetings")

@@ -13,7 +13,7 @@ import be.he2b.don5.users.domain.User;
 /**
  * REST controller for authentication endpoints.
  *
- * <p>Exposes API routes to login and register users.</p>
+ * <p>Exposes API routes to login and register users.
  */
 @RestController
 @RequestMapping("/api")
