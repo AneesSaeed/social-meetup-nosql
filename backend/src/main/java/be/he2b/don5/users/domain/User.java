@@ -9,6 +9,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a user stored in MongoDB.
+ *
+ * <p>This entity contains basic profile information and simple counters
+ * used by the application (points and number of meetings).</p>
+ */
 @Document(collection = "users")
 @Data
 @NoArgsConstructor
@@ -24,7 +30,16 @@ public class User {
     private int totalPoints;
     private int totalMeetings;
 
-    // Custom constructor for user creation (register)
+    /**
+     * Creates a new user during registration.
+     *
+     * <p>Points and meetings counters start at 0.</p>
+     *
+     * @param name user display name
+     * @param email user email address
+     * @param bio short profile description
+     * @param interests list of user interests
+     */
     public User(String name, String email, String bio, List<String> interests) {
         this.name = name;
         this.email = email;
