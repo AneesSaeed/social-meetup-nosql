@@ -30,13 +30,42 @@ import be.he2b.don5.search.application.SearchService;
 import be.he2b.don5.users.domain.User;
 import be.he2b.don5.users.infrastructure.mongo.UserRepository;
 
+/**
+ * Application service for meeting operations.
+ *
+ * <p>This service:
+ * <ul>
+ *   <li>creates meetings</li>
+ *   <li>lets users join and leave meetings</li>
+ *   <li>marks meetings as completed or cancelled</li>
+ *   <li>awards points to users when a meeting is completed</li>
+ *   <li>publishes events using the outbox mechanism</li>
+ *   <li>clears caches when needed</li>
+ * </ul>
+ * </p>
+ */
 @Service
 public class MeetingService {
 
+    /**
+     * MongoDB repository for meetings.
+     */
     private final MeetingRepository meetingRepo;
+    /**
+     * MongoDB repository for users (validation and points update).
+     */
     private final UserRepository userRepo;
+    /**
+     * Service used to compute points for participants when a meeting completes.
+     */
     private final PointsCalculationService pointsCalculationService;
+    /**
+     * Outbox writer used to publish meeting/user events (Kafka).
+     */    
     private final OutboxWriter outboxService;
+    /**
+     * Cache manager used to clear user/search/meeting caches.
+     */
     private final CacheManager cacheManager;
 
     public MeetingService(
@@ -53,10 +82,19 @@ public class MeetingService {
         this.outboxService = outboxService;
         this.cacheManager = cacheManager;
     }
-
+    
+    /**
+     * Creates a new meeting (status is UPCOMING).
+     *
+     * <p>Validates that the organizer exists, applies defaults, ensures participants
+     * are unique and within the capacity, saves the meeting, and publishes a
+     * {@link MeetingCreatedEvent}.</p>
+     *
+     * @param request meeting creation request
+     * @return created meeting
+     */
     @Transactional
     public Meeting createMeeting(CreateMeetingRequest request) {
-        // organizer must exist
         String organizerId = request.getOrganizer();
         if (organizerId == null || organizerId.isBlank()) {
             throw new RuntimeException("Organizer is required");
@@ -65,7 +103,6 @@ public class MeetingService {
             throw new RuntimeException("User " + organizerId + " not found");
         }
 
-        // sensible defaults
         LocalDateTime date = request.getDate() != null ? request.getDate() : LocalDateTime.now();
         int max = request.getMaxParticipants() > 0 ? request.getMaxParticipants() : 10;
 
@@ -94,24 +131,20 @@ public class MeetingService {
 
         List<String> participants = new ArrayList<>(unique);
 
-        // Validate capacity
         if (participants.size() > max) {
             throw new RuntimeException("Too many participants for maxParticipants=" + max);
         }
 
-        // Validate users exist (skip organizer, already checked)
         for (String pid : participants) {
             if (!pid.equals(organizerId) && !userRepo.existsById(pid)) {
                 throw new RuntimeException("User " + pid + " not found");
             }
         }
 
-        // Override participants set by constructor
         meeting.setParticipants(participants);
 
         Meeting saved = meetingRepo.save(meeting);
         
-        // Publier l'événement de création
         MeetingCreatedEvent event = new MeetingCreatedEvent(
             saved.getId(),
             saved.getTitle(),
@@ -134,31 +167,75 @@ public class MeetingService {
         evictStatusCaches(Completion.UPCOMING);
         return saved;
     }
-
+    
+    /**
+     * Returns all meetings.
+     *
+     * @return list of meetings
+     */
     public List<Meeting> getAllMeetings() {
         return meetingRepo.findAll();
     }
-
+    
+    /**
+     * Returns one meeting by id.
+     *
+     * @param id meeting id
+     * @return meeting
+     * @throws RuntimeException if not found
+     */
     public Meeting getMeetingById(String id) {
         return meetingRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
     }
-
+    
+    /**
+     * Returns meetings where the given user is in the participants list.
+     *
+     * @param userId user id
+     * @return list of meetings
+     */
     public List<Meeting> getMeetingsByUser(String userId) {
         return meetingRepo.findByParticipantsContaining(userId);
     }
-
+    
+    /**
+     * Returns meetings for a user filtered by status.
+     *
+     * @param userId user id
+     * @param status meeting status
+     * @return list of meetings
+     */
     public List<Meeting> getMeetingsByUserAndStatus(String userId, Completion status) {
         return meetingRepo.findByParticipantsContainingAndStatus(userId, status);
     }
 
-
+    /**
+     * Returns meetings filtered by status (cached).
+     *
+     * @param status meeting status
+     * @return list of meetings
+     */
     @Cacheable(cacheNames = "meetingsByStatus", key = "#status.name()")
     public List<Meeting> getMeetingsByStatus(Completion status) {
         return meetingRepo.findByStatus(status);
     }
 
-
+    /**
+     * Adds a user to a meeting.
+     *
+     * <p>Rules:
+     * <ul>
+     *   <li>user must exist</li>
+     *   <li>meeting must be UPCOMING</li>
+     *   <li>meeting must not be full</li>
+     * </ul>
+     * Publishes a {@link MeetingUpdatedEvent} with action "JOIN".</p>
+     *
+     * @param meetingId meeting id
+     * @param userId user id to join
+     * @return updated meeting
+     */
     @Transactional
     public Meeting joinMeeting(String meetingId, String userId) {
         if (!userRepo.existsById(userId)) {
@@ -188,7 +265,6 @@ public class MeetingService {
         participants.add(userId);
         Meeting saved = meetingRepo.save(meeting);
         
-        // Publier l'événement de mise à jour
         MeetingUpdatedEvent event = new MeetingUpdatedEvent(
             saved.getId(),
             saved.getParticipants(),
@@ -205,6 +281,20 @@ public class MeetingService {
         return saved;
     }
 
+    /**
+     * Removes a user from a meeting.
+     *
+     * <p>Rules:
+     * <ul>
+     *   <li>meeting must be UPCOMING</li>
+     *   <li>organizer cannot leave their own meeting</li>
+     * </ul>
+     * Publishes a {@link MeetingUpdatedEvent} with action "LEAVE".</p>
+     *
+     * @param meetingId meeting id
+     * @param userId user id to leave
+     * @return updated meeting
+     */
     @Transactional
     public Meeting leaveMeeting(String meetingId, String userId) {
         Meeting meeting = getMeetingById(meetingId);
@@ -224,7 +314,6 @@ public class MeetingService {
 
         Meeting saved = meetingRepo.save(meeting);
         
-        // Publier l'événement de mise à jour
         MeetingUpdatedEvent event = new MeetingUpdatedEvent(
             saved.getId(),
             saved.getParticipants(),
@@ -242,9 +331,23 @@ public class MeetingService {
     }
 
     /**
-     * Marks a meeting as completed and awards points to all participants.
-     * Call this from a controller endpoint like:
-     * POST /api/meetings/{id}/complete
+     * Marks a meeting as completed and awards points to participants.
+     *
+     * <p>Rules:
+     * <ul>
+     *   <li>cancelled meetings cannot be completed</li>
+     *   <li>if already completed, it returns the meeting</li>
+     * </ul>
+     * When completed:
+     * <ul>
+     *   <li>calculates points for each participant</li>
+     *   <li>updates users totalPoints and totalMeetings</li>
+     *   <li>publishes {@link UserUpdatedEvent} and {@link MeetingCompletedEvent}</li>
+     * </ul>
+     * </p>
+     *
+     * @param meetingId meeting id
+     * @return updated meeting
      */
     @Transactional
     public Meeting completeMeeting(String meetingId) {
@@ -263,7 +366,6 @@ public class MeetingService {
 
         if (meeting.getParticipants() != null && meeting.getParticipants().size() > 0) {
 
-            // Calculer les points avec tous les intÃ©rÃªts du meeting
             Map<String, Integer> pointsPerUser = pointsCalculationService.calculatePointsForMeeting(
                     meeting.getParticipants(),
                     meeting.getInterests());
@@ -274,7 +376,6 @@ public class MeetingService {
                     .orElse(10.0);
             meeting.setPoints(avgPoints);
 
-            // Attribuer points aux participants dans MongoDB + Elasticsearch
             for (String uid : meeting.getParticipants()) {
                 User user = userRepo.findById(uid)
                         .orElseThrow(() -> new RuntimeException("User " + uid + " not found"));
@@ -323,6 +424,18 @@ public class MeetingService {
         return saved;
     }
 
+    /**
+     * Cancels a meeting.
+     *
+     * <p>Rules:
+     * <ul>
+     *   <li>completed meetings cannot be cancelled</li>
+     * </ul>
+     * Publishes a {@link MeetingCancelledEvent}.</p>
+     *
+     * @param meetingId meeting id
+     * @return updated meeting
+     */
     @Transactional
     public Meeting cancelMeeting(String meetingId) {
         Meeting meeting = getMeetingById(meetingId);
@@ -336,7 +449,6 @@ public class MeetingService {
         meeting.setStatus(Completion.CANCELLED);
         Meeting saved = meetingRepo.save(meeting);
         
-        // Publier l'événement d'annulation
         MeetingCancelledEvent event = new MeetingCancelledEvent(saved.getId());
         outboxService.addEvent(
             saved.getId(),
@@ -349,6 +461,15 @@ public class MeetingService {
         return saved;
     }
 
+    // ------------------------
+    // ------- HELPERS --------
+    // ------------------------
+
+    /**
+     * Clears caches related to a single user and the global search cache.
+     *
+     * @param userId user id
+     */
     private void evictUserAndSearchCaches(String userId) {
         if (cacheManager == null) return;
 
@@ -363,6 +484,11 @@ public class MeetingService {
         }
     }
 
+    /**
+     * Clears the "meetingsByStatus" cache for one or more statuses.
+     *
+     * @param statuses statuses to evict (if empty, clears the whole cache)
+     */
     private void evictStatusCaches(Completion... statuses) {
         if (cacheManager == null) return;
 
