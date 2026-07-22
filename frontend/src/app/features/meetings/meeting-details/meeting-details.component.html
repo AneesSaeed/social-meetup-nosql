@@ -1,0 +1,105 @@
+<div class="wrap">
+  <div class="header">
+    <div class="title-row">
+      <div class="meta meta--inline">
+        <span class="meta__item">
+          Organizer:
+          <strong>{{ organizerName || '—' }}</strong>
+        </span>
+      </div>
+
+      <span class="pill"
+            [class.pill--upcoming]="meeting.status === 'UPCOMING'"
+            [class.pill--completed]="meeting.status === 'COMPLETED'"
+            [class.pill--cancelled]="meeting.status === 'CANCELLED'">
+        {{ meeting.status }}
+      </span>
+    </div>
+  </div>
+
+  <div class="top">
+    <div class="line">
+      <span class="label">When</span>
+      <span class="value">{{ meeting.date | date:'full' }}</span>
+    </div>
+
+    <div class="line">
+      <span class="label">Where</span>
+      <span class="value">{{ meeting.location }}</span>
+    </div>
+
+    <div class="line">
+      <span class="label">Type</span>
+      <span class="value">{{ meeting.eventType }}</span>
+    </div>
+
+    <div class="line interests-line">
+      <span class="label">Interests</span>
+
+      <ng-container *ngIf="meeting.interests?.length; else noInterests">
+        <div class="badges">
+          <span class="badge badge--c{{ it | colorBucket }}" *ngFor="let it of meeting.interests">{{ it }}</span>
+        </div>
+      </ng-container>
+
+      <ng-template #noInterests>
+        <span class="value">—</span>
+      </ng-template>
+    </div>
+
+
+    <div class="line">
+      <span class="label">Participants</span>
+      <span class="value">{{ meeting.participants.length }}/{{ meeting.maxParticipants }}</span>
+    </div>
+  </div>
+
+  <p class="desc" *ngIf="meeting.description">{{ meeting.description }}</p>
+
+  <div class="actions">
+    <button class="btn btn-ghost" type="button" (click)="close()">Close</button>
+
+    <ng-container *ngIf="!readonly">
+      <button
+        class="btn btn-primary"
+        type="button"
+        *ngIf="session.isLoggedIn() && !isParticipant"
+        [disabled]="busy || isFull"
+        (click)="join()">
+        <span class="btn__spinner" *ngIf="busy && !isFull" aria-hidden="true"></span>
+        {{ isFull ? 'Full' : (busy ? 'Joining...' : 'Join') }}
+      </button>
+
+      <button
+        class="btn btn-soft"
+        type="button"
+        *ngIf="session.isLoggedIn() && isParticipant"
+        [disabled]="busy"
+        (click)="leave()">
+        <span class="btn__spinner" *ngIf="busy" aria-hidden="true"></span>
+        {{ busy ? 'Leaving...' : 'Leave' }}
+      </button>
+
+      <button
+        class="btn btn-success"
+        type="button"
+        *ngIf="canComplete"
+        [disabled]="busy"
+        (click)="complete()">
+        <span class="btn__spinner" *ngIf="busy" aria-hidden="true"></span>
+        {{ busy ? 'Completing...' : 'Complete' }}
+      </button>
+
+      <button
+        class="btn btn-danger"
+        type="button"
+        *ngIf="canCancel"
+        [disabled]="busy"
+        (click)="cancelMeeting()">
+        <span class="btn__spinner" *ngIf="busy" aria-hidden="true"></span>
+        {{ busy ? 'Cancelling...' : 'Cancel' }}
+      </button>
+    </ng-container>
+  </div>
+
+</div>

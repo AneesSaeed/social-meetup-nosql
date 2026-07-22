@@ -1,0 +1,347 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/badges';
+
+:host {
+  --drawer-w: min(380px, 92vw);
+  --drawer-z-overlay: 2010;
+  --drawer-z-panel: 2020;
+}
+
+/* Overlay */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: var(--drawer-z-overlay);
+  touch-action: none;
+}
+
+/* Drawer panel */
+.drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  height: 100dvh;
+  width: var(--drawer-w);
+  background: v.$color-surface;
+  box-shadow: v.$shadow-card;
+  z-index: var(--drawer-z-panel);
+
+  display: flex;
+  flex-direction: column;
+
+  transform: translateX(100%);
+  transition: transform 0.22s ease, opacity 0.22s ease;
+  opacity: 0.98;
+
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.drawer--open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Header */
+.drawer__header {
+  height: 64px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid v.$color-border;
+  flex: 0 0 auto;
+}
+
+.drawer__title {
+  font-weight: 700;
+  color: v.$color-text;
+  letter-spacing: 0.2px;
+}
+
+.drawer__icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: v.$color-text;
+  padding: 8px;
+  border-radius: 10px;
+  line-height: 1;
+
+  &:hover {
+    background: v.$color-surface-alt;
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-primary;
+    outline-offset: 2px;
+  }
+}
+
+/* Content */
+.drawer__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* keep scrolling inside the section bodies */
+}
+
+/* Labels/values */
+.drawer__label {
+  font-size: 12px;
+  color: v.$color-text-light;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  line-height: 1;
+}
+
+.drawer__value {
+  font-size: 16px;
+  font-weight: 800;
+  color: v.$color-primary-dark;
+  line-height: 1;
+}
+
+.drawer__text {
+  margin: 0;
+  color: v.$color-text;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Stats */
+.drawer__stats {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-bottom: 1px solid v.$color-border;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.drawer__stat {
+  border: 1px solid v.$color-border;
+  background: v.$color-surface-alt;
+  border-radius: 14px;
+  padding: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Wrapper for BIO + INTERESTS: fills remaining space, splits equally */
+.drawer__sections {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 1fr 1fr; /* 50/50 */
+}
+
+/* Each section: header fixed, body scrolls */
+.drawer__section {
+  min-height: 0;
+  padding: 16px;
+  border-bottom: 1px solid v.$color-border;
+
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 10px;
+
+  overflow: hidden;
+}
+
+.drawer__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Only the body scrolls */
+.drawer__section-body {
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Edit mode background hint */
+.drawer__section.is-editing {
+  background: v.$color-hover;
+  border-bottom-color: color-mix(in srgb, v.$color-border 70%, v.$color-primary 30%);
+}
+
+/* Small edit button */
+.drawer__edit-btn {
+  border: 1px solid v.$color-border;
+  background: v.$color-surface-alt;
+  color: v.$color-text;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: v.$color-hover;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.drawer__edit {
+  display: grid;
+  gap: 10px;
+}
+
+/* Bio textarea */
+.drawer__textarea {
+  width: 100%;
+  border: 1px solid v.$color-border;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: v.$color-surface;
+  color: v.$color-text;
+  resize: vertical;
+
+  &:focus-visible {
+    outline: 2px solid v.$color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.drawer__edit-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* Interest add row */
+.interest-input {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Inputs */
+.drawer__input {
+  width: 100%;
+  border: 1px solid v.$color-border;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: v.$color-surface;
+  color: v.$color-text;
+
+  &:focus-visible {
+    outline: 2px solid v.$color-primary;
+    outline-offset: 2px;
+  }
+}
+
+/* Buttons */
+.btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.08s, box-shadow 0.15s, background 0.15s;
+
+  &:disabled {
+    opacity: 0.62;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background: v.$color-primary;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    filter: brightness(0.96);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+}
+
+.btn-ghost {
+  background: rgba(0, 0, 0, 0.06);
+  color: v.$color-text;
+
+  &:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.10);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &.is-accent {
+    background: v.$color-accent;
+    color: v.$color-accent-contrast;
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, v.$color-accent 88%, black);
+    }
+  }
+}
+
+/* Footer pinned */
+.drawer__footer {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-top: 1px solid v.$color-border;
+  background: v.$color-surface;
+}
+
+.drawer__logout {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: none;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+
+  color: v.$color-danger;
+  font-weight: 700;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-danger;
+    outline-offset: 2px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 420px) {
+  .drawer__stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer {
+    transition: none;
+  }
+}

@@ -8,24 +8,42 @@ import { CommonModule } from '@angular/common';
 
 
 import { AppComponent } from './app.component';
-import { BaseModalComponent } from './shared/components/base-modal/base-modal.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { HomeComponent } from './features/home/home.component';
-import { ProfileComponent } from './features/profile/profile.component';
 import { SearchComponent } from './features/search/search.component';
 import { HeaderComponent } from './features/header/header.component';
+import { BaseModalComponent } from './shared/modal/base-modal.component';
+import { MeetingCreateFormComponent } from './features/meetings/meeting-create-form/meeting-create-form.component';
+import { CreateMeetingButtonComponent } from './features/meetings/create-meeting-button/create-meeting-button.component';
+import { UpcomingMeetingsRowComponent } from './features/meetings/upcoming-meetings-row/upcoming-meetings-row.component';
+import { MeetingDetailsComponent } from './features/meetings/meeting-details/meeting-details.component';
+import { ColorBucketPipe } from './shared/pipes/color-bucket.pipe';
+import { ProfileDrawerComponent } from './features/profile-drawer/profile-drawer.component';
+import { ToastHostComponent } from './shared/toast/toast-host.component';
+import { SuggestionsPanelComponent } from './features/suggestions/suggestions-panel/suggestions-panel.component';
+import { PastMeetingsPanelComponent } from './features/meetings/past-meetings-panel/past-meetings-panel.component';
+import { SearchUserDetailsModalComponent } from './features/search/user-details-modal/search-user-details-modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BaseModalComponent,
     LoginComponent,
     RegisterComponent,
     HomeComponent,
-    ProfileComponent,
     SearchComponent,
     HeaderComponent,
+    BaseModalComponent,
+    MeetingCreateFormComponent,
+    CreateMeetingButtonComponent,
+    UpcomingMeetingsRowComponent,
+    MeetingDetailsComponent,
+    ColorBucketPipe,
+    ProfileDrawerComponent,
+    ToastHostComponent,
+    SuggestionsPanelComponent,
+    PastMeetingsPanelComponent,
+    SearchUserDetailsModalComponent,
   ],
   imports: [
     BrowserModule,

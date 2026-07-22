@@ -1,158 +1,186 @@
 @use '../../../../styles/variables' as v;
+@use '../../../../styles/badges';
 
 .auth-container {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: v.$color-surface-alt;
-  padding: 20px;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #F6F7FB; /* neutral page bg */
 }
 
-/* CARD */
 .auth-card {
-  background: v.$color-surface;
   width: 100%;
-  max-width: 420px;
+  max-width: 520px;
   padding: 32px;
-  border-radius: 16px;
-  box-shadow: v.$shadow-card;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  border-radius: 18px;
+
+  background: v.$color-surface;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+
+  display: grid;
+  gap: 18px;
 }
 
-/* TITLE */
 .auth-card h2 {
+  margin: 0;
   font-size: 1.6rem;
   text-align: center;
   color: v.$color-text;
-  margin-bottom: 12px;
 }
 
-/* LABEL */
+form {
+  display: grid;
+  gap: 14px;
+}
+
 label {
-  font-weight: 400;
-  margin-top: 8px;
-  color: v.$color-text-light;
+  font-size: 13px;
+  font-weight: 600;
+  color: v.$color-text;
 }
 
-/* INPUT + TEXTAREA (same size rules) */
+/* Fields: white (never match page bg) */
 input,
 textarea {
   width: 100%;
   padding: 12px;
-  margin-top: 4px;
-  border: 1px solid v.$color-border;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  background: #ffffff;
+  color: v.$color-text;
   font-size: 14px;
-  background: v.$color-surface-alt;
-  box-sizing: border-box;         /* Ensures exact matching size with button */
-  transition: border-color 0.2s, background 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: v.$color-primary;
-    background: #fff;
-  }
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-input::placeholder {
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
   color: v.$color-text-light;
   opacity: 0.7;
 }
 
-/* SUBMIT BUTTON (same size as input/textarea) */
+input:hover,
+textarea:hover {
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: v.$color-primary;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Interest input row */
+.interest-input {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+
+  button {
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-weight: 700;
+    cursor: pointer;
+
+    background: rgba(0, 0, 0, 0.06);
+    color: v.$color-text;
+
+    transition: background 0.15s, transform 0.08s;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.10);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(0, 0, 0, 0.35);
+      outline-offset: 2px;
+    }
+
+    /* Accent "Add" button */
+    &.is-accent {
+      background: v.$color-accent;
+      color: v.$color-accent-contrast; // e.g. #fff
+
+      &:hover {
+        background: color-mix(in srgb, v.$color-accent 88%, black);
+      }
+
+      &:focus-visible {
+        outline: 2px solid color-mix(in srgb, v.$color-accent 70%, black);
+      }
+    }
+  }
+}
+
+/* Submit */
 button[type='submit'],
 .submit-btn {
   width: 100%;
-  padding: 12px;                 /* matches input */
-  margin-top: 30px;               /* matches input spacing */
-  border: none;
-  border-radius: 8px;            /* matches input */
-  font-size: 14px;               /* matches input */
-  box-sizing: border-box;        /* ensures height alignment */
+  padding: 12px;
+  border: 0;
+  border-radius: 12px;
+
   background: v.$color-primary;
-  color: v.$color-surface;
-  font-weight: 600;
+  color: #fff;
+
+  font-weight: 700;
+  font-size: 14px;
+
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: filter 0.15s, transform 0.08s, box-shadow 0.15s;
 
   &:hover:not(:disabled) {
-    background: v.$color-primary-light;
-    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+    filter: brightness(0.96);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
   }
 
   &:disabled {
-    background: v.$color-border;
+    background: rgba(0, 0, 0, 0.12);
+    color: rgba(0, 0, 0, 0.45);
     cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(0, 0, 0, 0.35);
+    outline-offset: 2px;
   }
 }
 
-/* INTEREST BADGES */
-.interests-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-
-  .badge {
-    background: v.$color-primary-light;
-    padding: 6px 12px;
-    border-radius: 20px;
-    display: inline-flex;
-    align-items: center;
-    color: v.$color-surface;
-    font-size: 14px;
-
-    button {
-      background: none;
-      border: none;
-      margin-left: 6px;
-      color: v.$color-surface;
-      cursor: pointer;
-    }
-  }
-}
-
-/* INTEREST INPUT ROW */
-.interest-input {
-  display: flex;
-  gap: 8px;
-
-  input {
-    flex: 1; /* Does not stretch past its container */
-  }
-
-  button {
-    background: v.$color-secondary;
-    color: v.$color-surface;
-    padding: 10px 14px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-
-    &:hover {
-      background: v.$color-secondary-dark;
-    }
-  }
-}
-
-/* LINK */
+/* Link */
 .auth-card a {
   text-align: center;
   color: v.$color-primary-dark;
-  font-weight: 500;
-  transition: color 0.2s;
+  font-weight: 600;
+  text-decoration: none;
 
   &:hover {
-    color: v.$color-primary;
+    text-decoration: underline;
   }
 }
 
-
 .error-msg {
+  margin: 0;
   text-align: center;
-  color: red;
-  margin-top: 8px;
-  font-weight: 500;
+  color: v.$color-danger;
+  font-weight: 600;
+  font-size: 13px;
 }

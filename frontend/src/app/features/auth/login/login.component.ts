@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from '../../../core/services/auth.service';
-import { SessionService } from '../../../core/services/session.service';
+import { AuthApi } from '../../../core/api/auth.api';
+import { SessionService } from '../../../core/state/session.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,7 +19,7 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private auth: AuthService,
+    private auth: AuthApi,
     private session: SessionService,
     private router: Router
   ) {}

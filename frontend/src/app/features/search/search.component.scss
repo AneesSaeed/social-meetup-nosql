@@ -1,0 +1,178 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/badges';
+
+.search {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+}
+
+.search__input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid v.$color-border;
+  background: v.$color-surface;
+  box-shadow: v.$shadow-header;
+
+  &:focus-within {
+    border-color: v.$color-primary-light;
+    box-shadow: 0 0 0 3px v.$color-hover;
+  }
+
+  input {
+    width: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    padding: 8px 4px;
+    min-width: 0;
+    color: v.$color-text;
+
+    &::placeholder {
+      color: v.$color-text-light;
+    }
+  }
+}
+
+.search__toggle {
+  display: inline-flex;
+  border-radius: 999px;
+  border: 1px solid v.$color-border;
+  overflow: hidden;
+  flex: 0 0 auto;
+  background: v.$color-surface-alt;
+}
+
+.toggle-btn {
+  padding: 6px 10px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  color: v.$color-text-light;
+
+  &:hover {
+    background: v.$color-hover;
+    color: v.$color-text;
+  }
+
+  &.toggle-btn--active {
+    font-weight: 600;
+    background: v.$color-primary;
+    color: v.$color-accent-contrast;
+  }
+}
+
+.search__clear {
+  border: 0;
+  background: transparent;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 6px;
+  color: v.$color-text-light;
+
+  &:hover {
+    color: v.$color-text;
+  }
+}
+
+.search__panel {
+  position: absolute;
+  z-index: 50;
+  width: 100%;
+  margin-top: 8px;
+  background: v.$color-surface;
+  border: 1px solid v.$color-border;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: v.$shadow-card;
+}
+
+/* list */
+.search__list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* improved item */
+.search__item {
+  appearance: none;
+  border: 0;
+  background: v.$color-surface;
+  padding: 12px 14px;
+  text-align: left;
+  cursor: pointer;
+
+  display: grid;
+  gap: 6px;
+
+  /* subtle separators */
+  border-bottom: 1px solid v.$color-border;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  /* hover feels more "card-like" without breaking list */
+  &:hover {
+    background: v.$color-hover;
+  }
+
+  /* pressed state */
+  &:active {
+    transform: translateY(1px);
+  }
+
+  /* keyboard focus */
+  &:focus-visible {
+    outline: 3px solid v.$color-hover;
+    outline-offset: -2px;
+    background: v.$color-hover;
+  }
+}
+
+.name {
+  font-weight: 700;
+  color: v.$color-text;
+  letter-spacing: 0.1px;
+}
+
+/* badges line: slightly tighter + consistent alignment */
+.badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+/* keep one-line behavior */
+.one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Empty state*/
+.search__empty {
+  padding: 16px 14px;
+  display: grid;
+  gap: 4px;
+  background: v.$color-surface;
+}
+
+.search__empty-title {
+  font-weight: 700;
+  color: v.$color-text;
+}
+
+.search__empty-sub {
+  font-size: 13px;
+  color: v.$color-text-light;
+}

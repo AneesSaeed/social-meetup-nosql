@@ -1,0 +1,55 @@
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/meeting-panel';
+
+.section-header {
+  .searchBar {
+    margin-top: 1rem;
+    text-align: center;
+
+    input {
+      width: 100%;
+    }
+  }
+}
+
+.link {
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 10px;
+
+  color: v.$color-primary-dark;
+  font-weight: 600;
+  font-size: 13px;
+
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: v.$color-surface-alt;
+    border-color: v.$color-border;
+    color: v.$color-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(37, 99, 235, 0.35);
+    outline-offset: 2px;
+  }
+}
+
+.interest-search {
+  width: 220px;
+  max-width: 50vw;
+  padding: 8px 10px;
+  border-radius: 12px;
+
+  border: 1px solid v.$color-border;
+  background: v.$color-surface;
+  color: v.$color-text;
+  font-size: 13px;
+
+  &:focus-visible {
+    outline: 2px solid v.$color-primary;
+    outline-offset: 2px;
+  }
+}

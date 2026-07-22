@@ -1,1 +1,35 @@
-<p>home works!</p>
+<div class="home">
+  <div class="fab">
+    <app-create-meeting-button (clicked)="openCreate()"></app-create-meeting-button>
+  </div>
+
+  <main class="content">
+    <section class="panel">
+      <div class="panel-body">
+        <app-suggestions-panel *ngIf="session.currentUser"
+          [userId]="session.currentUser.id">
+        </app-suggestions-panel>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-body">
+        <app-upcoming-meetings-row></app-upcoming-meetings-row>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-body">
+        <app-past-meeting-panel></app-past-meeting-panel>
+      </div>
+    </section>
+  </main>
+</div>
+
+<app-base-modal
+  *ngIf="isCreateOpen && session.currentUser"
+  [title]="modalTitle"
+  [component]="modalComponent"
+  [data]="{ userId: session.currentUser.id }"
+  (closed)="onCreateClosed()">
+</app-base-modal>

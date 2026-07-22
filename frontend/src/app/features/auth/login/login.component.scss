@@ -1,57 +1,71 @@
+/* login.component.scss */
 @use '../../../../styles/variables' as v;
 
 .auth-container {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: v.$color-surface-alt;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+
+  /* neutral page background */
+  background: #F6F7FB;
 }
 
-/* CARD */
 .auth-card {
-  background: v.$color-surface;
   width: 100%;
   max-width: 420px;
   padding: 32px;
-  border-radius: 16px;
-  box-shadow: v.$shadow-card;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  border-radius: 18px;
+
+  background: v.$color-surface;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+
+  display: grid;
+  gap: 18px;
 }
 
-/* TITLE */
 .auth-card h2 {
+  margin: 0;
   font-size: 1.6rem;
   text-align: center;
   color: v.$color-text;
-  margin-bottom: 12px;
 }
 
-/* LABEL */
+.form-group {
+  display: grid;
+  gap: 8px;
+}
+
 label {
-  font-weight: 400;
-  margin-top: 8px;
-  color: v.$color-text-light;
+  font-size: 13px;
+  font-weight: 600;
+  color: v.$color-text;
 }
 
-/* INPUT FIELDS */
+/* Field = white, page = light gray, so they never match */
 input {
   width: 100%;
-  padding: 12px;
-  margin-top: 4px;          // SAME SPACING AS BUTTON SECTION
-  border: 1px solid v.$color-border;
-  border-radius: 8px;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+
+  background: #FFFFFF;
+  color: v.$color-text;
+
   font-size: 14px;
-  background: v.$color-surface-alt;
-  transition: border-color 0.2s, background 0.2s;
-  box-sizing: border-box;   // MATCHES BUTTON EXACTLY
+  box-sizing: border-box;
+
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: rgba(0, 0, 0, 0.18);
+  }
 
   &:focus {
     outline: none;
     border-color: v.$color-primary;
-    background: #fff;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
   }
 }
 
@@ -60,48 +74,60 @@ input::placeholder {
   opacity: 0.7;
 }
 
-/* SUBMIT BUTTON (SAME SIZE AS INPUT) */
 button[type='submit'],
-.submit-btn {
+.btn-primary {
+  margin-top: 1rem;
   width: 100%;
-  padding: 12px;           // SAME AS INPUT
-  margin-top: 4px;         // MATCH INPUT SPACING
-  border: none;
-  border-radius: 8px;      // SAME AS INPUT
-  font-size: 14px;         // SAME AS INPUT
-  box-sizing: border-box;  // SAME BEHAVIOR
+  padding: 12px;
+  border: 0;
+  border-radius: 12px;
+
   background: v.$color-primary;
-  color: v.$color-surface;
-  font-weight: 600;
+  color: #fff;
+
+  font-weight: 700;
+  font-size: 14px;
+
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: filter 0.15s, transform 0.08s, box-shadow 0.15s;
 
   &:hover:not(:disabled) {
-    background: v.$color-primary-light;
-    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+    filter: brightness(0.96);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
   }
 
   &:disabled {
-    background: v.$color-border;
+    background: rgba(0, 0, 0, 0.12);
+    color: rgba(0, 0, 0, 0.45);
     cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(0, 0, 0, 0.35);
+    outline-offset: 2px;
   }
 }
 
-/* LINK */
 .auth-card a {
   text-align: center;
   color: v.$color-primary-dark;
-  font-weight: 500;
-  transition: color 0.2s;
+  font-weight: 600;
+  text-decoration: none;
 
   &:hover {
-    color: v.$color-primary;
+    text-decoration: underline;
   }
 }
 
 .error-msg {
+  margin: 0;
   text-align: center;
-  color: red;
-  margin-top: 8px;
-  font-weight: 500;
+  color: v.$color-danger;
+  font-weight: 600;
+  font-size: 13px;
 }

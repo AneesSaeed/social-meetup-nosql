@@ -1,27 +1,28 @@
-// BRAND COLORS
-$color-primary: #06B6D4;        // Vibrant cyan
-$color-primary-light: #22D3EE;  // Light aqua
-$color-primary-dark: #0891B2;   // Deep teal-blue
+// BRAND COLORS (muted + modern)
+$color-primary: #2563EB;        // Blue 600
+$color-primary-light: #60A5FA;  // Blue 400
+$color-primary-dark: #1D4ED8;   // Blue 700
 
-$color-secondary: #EC4899;      // Magenta pink
-$color-secondary-dark: #BE185D; // Dark rose
+$color-secondary: #10B981;      // Emerald 500 (accent)
+$color-secondary-dark: #059669; // Emerald 600
 
-$color-danger: #EF4444;
+$color-danger: #DC2626;         // Red 600
 
-// NEUTRAL COLORS
-$color-text: #1F2937;
-$color-text-light: #6B7280;
+// NEUTRAL COLORS (cleaner, less contrasty)
+$color-text: #111827;           // Gray 900
+$color-text-light: #6B7280;     // Gray 500
 
 $color-surface: #FFFFFF;
-$color-surface-alt: #dfeffa; // very subtle cyan tint
-
-$color-border: #E5E7EB;
-
+$color-surface-alt: #F3F4F6;    // Gray 100 (no color cast)
+$color-border: #E5E7EB;         // Gray 200
 
 // UI STATES
-$color-hover: #EEF2FF;   // not used yet but ok to keep
+$color-hover: #EFF6FF;          // Blue 50 (subtle)
+
+// SHADOWS (slightly softer)
+$shadow-header: 0 1px 4px rgba(0, 0, 0, 0.10);
+$shadow-card: 0 8px 20px rgba(0, 0, 0, 0.08);
 
 
-// SHADOWS
-$shadow-header: 0 2px 6px rgba(0, 0, 0, 0.12);
-$shadow-card: 0 4px 14px rgba(0, 0, 0, 0.08);
+$color-accent: $color-secondary;
+$color-accent-contrast: #FFFFFF;

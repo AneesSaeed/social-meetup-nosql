@@ -24,6 +24,7 @@ cd backend || { error "Dossier backend introuvable."; exit 1; }
 
 info "Lancement de Docker..."
 docker compose up -d
+#docker compose start
 info "Docker lancé !"
 
 info "Lancement du backend Spring..."

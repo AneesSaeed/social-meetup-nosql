@@ -1,0 +1,18 @@
+<!-- Dark overlay behind the modal. Clicking it closes the modal. -->
+<div class="backdrop" (click)="close()"></div>
+
+<!-- Modal container. Stop click propagation so clicking inside does NOT close it. -->
+<div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+  <!-- Header with title + close button -->
+  <div class="header">
+    <h3>{{ title }}</h3>
+    <button type="button" class="x" (click)="close()">✕</button>
+  </div>
+
+  <!-- Content area: renders the provided component dynamically -->
+  <div class="content">
+    <ng-container
+      *ngComponentOutlet="component; injector: childInjector">
+    </ng-container>
+  </div>
+</div>

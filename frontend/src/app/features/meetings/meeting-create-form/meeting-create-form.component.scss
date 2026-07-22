@@ -1,0 +1,187 @@
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/badges';
+
+.meeting-form {
+  display: grid;
+  gap: 16px;
+}
+
+/* Layout: 2 columns on desktop, 1 on mobile */
+.grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.span-2 {
+  grid-column: 1 / -1;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.60);
+}
+
+/* Inputs */
+input,
+textarea {
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  background: rgba(0, 0, 0, 0.03);
+  color: v.$color-text;
+
+  font-size: 14px;
+  box-sizing: border-box;
+
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: v.$color-text-light;
+  opacity: 0.75;
+}
+
+input:hover,
+textarea:hover {
+  border-color: rgba(0, 0, 0, 0.18);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: v.$color-primary;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+}
+
+.error {
+  margin: 0;
+  text-align: center;
+  color: v.$color-danger;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.08s, box-shadow 0.15s, background 0.15s;
+}
+
+.btn-primary {
+  background: v.$color-primary;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    filter: brightness(0.96);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    background: rgba(0, 0, 0, 0.12);
+    color: rgba(0, 0, 0, 0.45);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(0, 0, 0, 0.35);
+    outline-offset: 2px;
+  }
+}
+
+.btn-ghost {
+  background: rgba(0, 0, 0, 0.06);
+  color: v.$color-text;
+
+  &:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.10);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(0, 0, 0, 0.35);
+    outline-offset: 2px;
+  }
+}
+
+/* ---------- Interests ---------- */
+
+.interest-input {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+
+  input {
+    border-radius: 12px;
+  }
+
+  button {
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+
+    /* accent for the Add button */
+    &.is-accent {
+      background: v.$color-accent;
+      color: v.$color-accent-contrast;
+
+      &:hover:not(:disabled) {
+        background: color-mix(in srgb, v.$color-accent 88%, black);
+      }
+
+      &:focus-visible {
+        outline: 2px solid color-mix(in srgb, v.$color-accent 70%, black);
+        outline-offset: 2px;
+      }
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .span-2 {
+    grid-column: auto;
+  }
+}

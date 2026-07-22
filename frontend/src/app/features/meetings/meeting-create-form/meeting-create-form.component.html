@@ -1,0 +1,71 @@
+<form class="meeting-form" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="grid">
+    <div class="field span-2">
+      <label for="title">Title</label>
+      <input id="title" type="text" formControlName="title" placeholder="e.g. Coffee chat" />
+    </div>
+
+    <div class="field span-2">
+      <label for="description">Description</label>
+      <textarea id="description" rows="3" formControlName="description" placeholder="What’s this meeting about?"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="eventType">Type</label>
+      <input id="eventType" type="text" formControlName="eventType" placeholder="e.g. Casual / Workshop" />
+    </div>
+
+    <div class="field">
+      <label for="date">Date & time</label>
+      <input id="date" type="datetime-local" formControlName="date" />
+    </div>
+
+    <div class="field">
+      <label for="location">Location</label>
+      <input id="location" type="text" formControlName="location" placeholder="e.g. Brussels, Central Station" />
+    </div>
+
+    <div class="field" *ngIf="!isOneToOne">
+      <label for="maxParticipants">Max participants</label>
+      <input id="maxParticipants" type="number" formControlName="maxParticipants" min="1" />
+    </div>
+
+    <!-- INTERESTS -->
+    <div class="field span-2">
+      <label for="interestInput">Interests</label>
+
+      <div class="interest-input" role="group" aria-label="Add an interest">
+        <input
+          id="interestInput"
+          #interestField
+          type="text"
+          placeholder="e.g. football, cooking, coding"
+          (keydown.enter)="addInterest(interestField.value); interestField.value=''; $event.preventDefault();" />
+        <button type="button" class="btn btn-ghost is-accent" (click)="addInterest(interestField.value); interestField.value=''">
+          Add
+        </button>
+      </div>
+
+      <div class="badges" *ngIf="interestsArray.length > 0" aria-label="Selected interests">
+        <span
+          *ngFor="let ctrl of interestsArray.controls; let i = index"
+          class="badge"
+          [ngClass]="'badge--c' + (ctrl.value | colorBucket:8)"
+        >
+          <span class="badge__text">{{ ctrl.value }}</span>
+          <button type="button" class="badge__remove" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+  <div class="actions">
+    <button class="btn btn-ghost" type="button" (click)="cancel()">Cancel</button>
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid || submitting">
+      {{ submitting ? 'Creating...' : 'Create' }}
+    </button>
+  </div>
+</form>

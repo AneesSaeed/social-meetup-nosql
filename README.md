@@ -1,49 +1,59 @@
-# 5DON4D Project
+# Social Meetup NoSQL
 
-## Démarrage du Projet
+## Overview
 
-Le projet peut être démarré facilement en utilisant le script `run.sh` ou manuellement.
+**Social Meetup NoSQL** is a social event platform built to demonstrate a **polyglot NoSQL architecture** combined with **event-driven integration**.
 
-### Prérequis
-
-Pour exécuter le projet, les outils suivants doivent être installés et accessibles :
-
-* **Docker**
-* **Maven** (`mvn`)
-* **Angular CLI** (`ng`)
+The system manages users and meetings while synchronizing data across multiple datastores using 
+**Kafka and the Outbox Pattern** to ensure consistency.
 
 ---
 
-### Lancement
+## Architecture
 
-Le script `run.sh` automatise le lancement de tous les services backend via Docker et des applications Spring Boot et Angular.
+| Component | Technology | Purpose |
+|---------|-----------|---------|
+| Core data | MongoDB | Users and meetings (source of truth) |
+| Social graph | Neo4j | User relationships and recommendations |
+| Search | Elasticsearch | User and meeting search |
+| Cache | Redis | Performance optimization |
+| Messaging | Kafka | Event propagation |
 
-1.  Assurez-vous d'avoir donné les permissions d'exécution au script :
-    ```bash
-    chmod +x run.sh
-    ```
-2.  Lancez le script :
-    ```bash
-    ./run.sh
-    ```
+---
 
-### URLs d'Accès
-Une fois le projet démarré, vous pouvez accéder aux services aux adresses suivantes :
+## Key Concepts
 
-- API Backend (Spring Boot) : http://localhost:8080/
+### Polyglot Persistence
+Each datastore is used where it fits best:
+- MongoDB for transactional data
+- Neo4j for graph queries
+- Elasticsearch for full-text search
+- Redis for caching
 
-- Application Frontend (Angular) : http://localhost:4200/
+---
 
-- Interface Web MongoDB (Mongo Express) : http://localhost:8081/
+### Event-Driven Architecture with Kafka
 
-- Interface Web Neo4j Browser : http://localhost:7474/
+The system uses **Kafka** to propagate domain events such as:
+- User created / updated
+- Meeting created / updated / completed / cancelled
 
-- API Elasticsearch : http://localhost:9200/
+These events are consumed by:
+- Neo4j consumers (update social graph)
+- Elasticsearch consumers (update search indexes)
+
+---
+
+### Outbox Pattern
+
+To avoid dual-write problems, the backend implements the **Outbox Pattern**:
+
+1. Domain change is saved to MongoDB
+2. An `OutboxEvent` is written in the same transaction
+3. `OutboxEventPublisher` publishes the event to Kafka
+4. Kafka consumers update Neo4j and Elasticsearch asynchronously
+
+This guarantees **event delivery without data inconsistency**.
 
 
-### Informations Techniques
-- Backend : Spring Boot
 
-- Frontend : Angular 16
-
-- Bases de données : MongoDB, Neo4j, Redis, Elasticsearch

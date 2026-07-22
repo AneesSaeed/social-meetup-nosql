@@ -3,65 +3,44 @@
     <h2>Create Your Profile</h2>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" placeholder="Enter your full name" autocomplete="name" />
 
-        <!-- NAME -->
-        <label>Name</label>
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="Enter your email" autocomplete="email" />
+
+      <label for="bio">Bio</label>
+      <textarea id="bio" formControlName="bio" placeholder="Tell us something about yourself"></textarea>
+
+      <label>Add Interest</label>
+      <div class="interest-input">
         <input
+          #interestField
           type="text"
-          formControlName="name"
-          placeholder="Enter your full name"
-        />
-
-        <!-- EMAIL -->
-        <label>Email</label>
-        <input
-          type="email"
-          formControlName="email"
-          placeholder="Enter your email"
-        />
-
-        <!-- BIO -->
-        <label>Bio</label>
-        <textarea
-          formControlName="bio"
-          placeholder="Tell us something about yourself"
-        ></textarea>
-
-        <!-- INTERESTS -->
-        <label>Add Interest</label>
-        <div class="interest-input">
-          <!-- #interestField gives a direct reference to this input element -->
-          <input
-            #interestField
-            type="text"
-            placeholder="e.g. football, cooking, coding"
-            (keydown.enter)="addInterest(interestField.value); interestField.value = ''; $event.preventDefault();"
-          />
-          <!-- After adding, we clear the input by setting interestField.value = '' -->
-          <button type="button" (click)="addInterest(interestField.value); interestField.value = '';">
-            Add
-          </button>
-        </div>
-
-        <div class="interests-list">
-          <!-- interestsArray.controls is the list of FormControls inside the FormArray -->
-          <span *ngFor="let interest of interestsArray.controls; let i = index" class="badge">
-            {{ interest.value }}
-            <button type="button" (click)="removeInterest(i)">X</button>
-          </span>
-        </div>
-
-        <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
-
-        <!-- Disabled until form valid; Angular manages this automatically -->
-        <button
-          class="submit-btn"
-          type="submit"
-          [disabled]="form.invalid || interestsArray.length === 0"
-        >
-          Register
+          placeholder="e.g. football, cooking, coding"
+          (keydown.enter)="addInterest(interestField.value); interestField.value = ''; $event.preventDefault();" />
+        <button class="is-accent" type="button" (click)="addInterest(interestField.value); interestField.value = '';">
+          Add
         </button>
-      </form>
+      </div>
+
+      <div class="badges">
+        <span
+          *ngFor="let interest of interestsArray.controls; let i = index"
+          class="badge"
+          [ngClass]="'badge--c' + (interest.value | colorBucket:8)"
+        >
+          {{ interest.value }}
+          <button type="button" class="badge__remove" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
+        </span>
+      </div>
+
+      <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+      <button class="submit-btn" type="submit" [disabled]="form.invalid || interestsArray.length === 0">
+        Register
+      </button>
+    </form>
 
     <a routerLink="/login">Already have an account?</a>
   </div>
