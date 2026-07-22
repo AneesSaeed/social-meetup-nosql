@@ -55,5 +55,12 @@ To avoid dual-write problems, the backend implements the **Outbox Pattern**:
 
 This guarantees **event delivery without data inconsistency**.
 
+---
 
+| Service |  Link | Credentials |
+| :--- | :--- | :--- |
+| **Frontend** | [http://localhost:4200](http://localhost:4200) | *N/A* |
+| **Neo4j** |  [http://localhost:7474](http://localhost:7474) | `neo4j` / `password` |
+| **Mongo Express** | [http://localhost:8081](http://localhost:8081) | `paesync` / `supersecret` |
+| **Elasticsearch** | [http://localhost:9200](http://localhost:9200) | *None* |
 
