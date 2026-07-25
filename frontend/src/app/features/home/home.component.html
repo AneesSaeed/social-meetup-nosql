@@ -6,9 +6,11 @@
   <main class="content">
     <section class="panel">
       <div class="panel-body">
-        <app-suggestions-panel *ngIf="session.currentUser"
-          [userId]="session.currentUser.id">
-        </app-suggestions-panel>
+        @if (session.currentUser) {
+          <app-suggestions-panel
+            [userId]="session.currentUser.id">
+          </app-suggestions-panel>
+        }
       </div>
     </section>
 
@@ -26,10 +28,11 @@
   </main>
 </div>
 
-<app-base-modal
-  *ngIf="isCreateOpen && session.currentUser"
-  [title]="modalTitle"
-  [component]="modalComponent"
-  [data]="{ userId: session.currentUser.id }"
-  (closed)="onCreateClosed()">
-</app-base-modal>
+@if (isCreateOpen && session.currentUser) {
+  <app-base-modal
+    [title]="modalTitle"
+    [component]="modalComponent"
+    [data]="{ userId: session.currentUser.id }"
+    (closed)="onCreateClosed()">
+  </app-base-modal>
+}

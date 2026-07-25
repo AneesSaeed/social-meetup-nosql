@@ -1,28 +1,37 @@
 <div class="user-details">
-  <p class="status" *ngIf="loading">Loading…</p>
-  <p class="status error" *ngIf="!loading && errorMsg">{{ errorMsg }}</p>
-  <p class="status" *ngIf="!loading && !errorMsg && !user">No user loaded</p>
+  @if (loading) {
+    <p class="status">Loading…</p>
+  }
+  @if (!loading && errorMsg) {
+    <p class="status error">{{ errorMsg }}</p>
+  }
+  @if (!loading && !errorMsg && !user) {
+    <p class="status">No user loaded</p>
+  }
 
-  <ng-container *ngIf="!loading && !errorMsg && user as u">
+  @if (!loading && !errorMsg && user; as u) {
     <div class="head">
       <div class="name">{{ u.name }}</div>
       <div class="email">{{ u.email }}</div>
     </div>
-
-    <div class="section" *ngIf="u.bio">
-      <div class="label">Bio</div>
-      <div class="value">{{ u.bio }}</div>
-    </div>
-
-    <div class="section" *ngIf="u.interests?.length">
-      <div class="label">Interests</div>
-      <div class="badges">
-        <span class="badge badge--c{{ it | colorBucket }}" *ngFor="let it of u.interests">
-          {{ it }}
-        </span>
+    @if (u.bio) {
+      <div class="section">
+        <div class="label">Bio</div>
+        <div class="value">{{ u.bio }}</div>
       </div>
-    </div>
-
+    }
+    @if (u.interests?.length) {
+      <div class="section">
+        <div class="label">Interests</div>
+        <div class="badges">
+          @for (it of u.interests; track it) {
+            <span class="badge badge--c{{ it | colorBucket }}">
+              {{ it }}
+            </span>
+          }
+        </div>
+      </div>
+    }
     <div class="stats">
       <div class="stat">
         <div class="k">Total points</div>
@@ -33,18 +42,18 @@
         <div class="v">{{ u.totalMeetings }}</div>
       </div>
     </div>
-
     <div class="actions">
-        <button type="button" class="btn-meet" (click)="meet(u)">Meet</button>
+      <button type="button" class="btn-meet" (click)="meet(u)">Meet</button>
     </div>
-  </ng-container>
+  }
 </div>
 
 
-<app-base-modal
-  *ngIf="isMeetOpen"
-  [title]="meetTitle"
-  [component]="meetComponent"
-  [data]="meetData"
-  (closed)="onMeetClosed()">
-</app-base-modal>
+@if (isMeetOpen) {
+  <app-base-modal
+    [title]="meetTitle"
+    [component]="meetComponent"
+    [data]="meetData"
+    (closed)="onMeetClosed()">
+  </app-base-modal>
+}

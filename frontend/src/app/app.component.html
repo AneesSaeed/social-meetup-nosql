@@ -1,4 +1,6 @@
-<app-header *ngIf="!hideHeader"></app-header>
+@if (!hideHeader) {
+  <app-header></app-header>
+}
 
 <router-outlet></router-outlet>
 <app-toast-host></app-toast-host>

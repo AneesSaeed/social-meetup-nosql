@@ -5,11 +5,13 @@ import { ToastMessage, ToastService } from './toast.service';
 @Component({
   selector: 'app-toast-host',
   template: `
-    <div class="toast-wrap" *ngIf="current" [class.error]="current.type==='error'"
-         [class.success]="current.type==='success'" [class.info]="current.type==='info'">
-      {{ current.text }}
-    </div>
-  `,
+    @if (current) {
+      <div class="toast-wrap" [class.error]="current.type==='error'"
+        [class.success]="current.type==='success'" [class.info]="current.type==='info'">
+        {{ current.text }}
+      </div>
+    }
+    `,
   styleUrls: ['./toast-host.component.scss']
 })
 export class ToastHostComponent implements OnInit, OnDestroy {

@@ -11,15 +11,17 @@
           formControlName="email"
           placeholder="Enter your email"
           autocomplete="email" />
-      </div>
+        </div>
 
-      <button type="submit" [disabled]="form.invalid" class="btn-primary">
-        Login
-      </button>
+        <button type="submit" [disabled]="form.invalid" class="btn-primary">
+          Login
+        </button>
 
-      <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
-    </form>
+        @if (errorMessage) {
+          <p class="error-msg">{{ errorMessage }}</p>
+        }
+      </form>
 
-    <a routerLink="/register">Create an account</a>
+      <a routerLink="/register">Create an account</a>
+    </div>
   </div>
-</div>

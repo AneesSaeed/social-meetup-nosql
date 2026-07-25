@@ -25,10 +25,12 @@
       <input id="location" type="text" formControlName="location" placeholder="e.g. Brussels, Central Station" />
     </div>
 
-    <div class="field" *ngIf="!isOneToOne">
-      <label for="maxParticipants">Max participants</label>
-      <input id="maxParticipants" type="number" formControlName="maxParticipants" min="1" />
-    </div>
+    @if (!isOneToOne) {
+      <div class="field">
+        <label for="maxParticipants">Max participants</label>
+        <input id="maxParticipants" type="number" formControlName="maxParticipants" min="1" />
+      </div>
+    }
 
     <!-- INTERESTS -->
     <div class="field span-2">
@@ -41,31 +43,36 @@
           type="text"
           placeholder="e.g. football, cooking, coding"
           (keydown.enter)="addInterest(interestField.value); interestField.value=''; $event.preventDefault();" />
-        <button type="button" class="btn btn-ghost is-accent" (click)="addInterest(interestField.value); interestField.value=''">
-          Add
-        </button>
-      </div>
+          <button type="button" class="btn btn-ghost is-accent" (click)="addInterest(interestField.value); interestField.value=''">
+            Add
+          </button>
+        </div>
 
-      <div class="badges" *ngIf="interestsArray.length > 0" aria-label="Selected interests">
-        <span
-          *ngFor="let ctrl of interestsArray.controls; let i = index"
-          class="badge"
-          [ngClass]="'badge--c' + (ctrl.value | colorBucket:8)"
-        >
-          <span class="badge__text">{{ ctrl.value }}</span>
-          <button type="button" class="badge__remove" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
-        </span>
+        @if (interestsArray.length > 0) {
+          <div class="badges" aria-label="Selected interests">
+            @for (ctrl of interestsArray.controls; track ctrl; let i = $index) {
+              <span
+                class="badge"
+                [ngClass]="'badge--c' + (ctrl.value | colorBucket:8)"
+                >
+                <span class="badge__text">{{ ctrl.value }}</span>
+                <button type="button" class="badge__remove" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
+              </span>
+            }
+          </div>
+        }
       </div>
     </div>
-  </div>
 
 
-  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+    @if (errorMsg) {
+      <p class="error">{{ errorMsg }}</p>
+    }
 
-  <div class="actions">
-    <button class="btn btn-ghost" type="button" (click)="cancel()">Cancel</button>
-    <button class="btn btn-primary" type="submit" [disabled]="form.invalid || submitting">
-      {{ submitting ? 'Creating...' : 'Create' }}
-    </button>
-  </div>
-</form>
+    <div class="actions">
+      <button class="btn btn-ghost" type="button" (click)="cancel()">Cancel</button>
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid || submitting">
+        {{ submitting ? 'Creating...' : 'Create' }}
+      </button>
+    </div>
+  </form>

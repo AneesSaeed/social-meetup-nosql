@@ -4,45 +4,53 @@
   </div>
 
   <div class="panel-body">
-    <div *ngIf="loading" class="state">Loading suggestions…</div>
+    @if (loading) {
+      <div class="state">Loading suggestions…</div>
+    }
 
-    <div *ngIf="!loading && error" class="state state--error">
-      {{ error }}
-    </div>
+    @if (!loading && error) {
+      <div class="state state--error">
+        {{ error }}
+      </div>
+    }
 
-    <div *ngIf="!loading && !error && items.length === 0" class="state">
-      No suggestions yet. Complete meetings to grow your network.
-    </div>
+    @if (!loading && !error && items.length === 0) {
+      <div class="state">
+        No suggestions yet. Complete meetings to grow your network.
+      </div>
+    }
 
-    <div class="grid" *ngIf="!loading && !error && items.length > 0">
-      <button
-        class="card suggestion-card"
-        type="button"
-        *ngFor="let u of items; trackBy: trackByUserId"
-        (click)="openUser(u.userId)"
-      >
-        <div class="card-header">
-          <div class="title">{{ u.userName }}</div>
-          <span class="pill">Suggested</span>
-        </div>
-
-        <div class="mutual">
-          <span class="mutual__num">{{ u.distance }}</span>
-          <span class="mutual__label">hop(s) away</span>
-        </div>
-
-        <div class="hint">
-          Click to view profile and propose a 1:1 meeting.
-        </div>
-      </button>
-    </div>
+    @if (!loading && !error && items.length > 0) {
+      <div class="grid">
+        @for (u of items; track trackByUserId($index, u)) {
+          <button
+            class="card suggestion-card"
+            type="button"
+            (click)="openUser(u.userId)"
+            >
+            <div class="card-header">
+              <div class="title">{{ u.userName }}</div>
+              <span class="pill">Suggested</span>
+            </div>
+            <div class="mutual">
+              <span class="mutual__num">{{ u.distance }}</span>
+              <span class="mutual__label">hop(s) away</span>
+            </div>
+            <div class="hint">
+              Click to view profile and propose a 1:1 meeting.
+            </div>
+          </button>
+        }
+      </div>
+    }
   </div>
 </section>
 
-<app-base-modal
-  *ngIf="isOpen"
-  [title]="modalTitle"
-  [component]="modalComponent"
-  [data]="modalData"
-  (closed)="onModalClosed()">
-</app-base-modal>
+@if (isOpen) {
+  <app-base-modal
+    [title]="modalTitle"
+    [component]="modalComponent"
+    [data]="modalData"
+    (closed)="onModalClosed()">
+  </app-base-modal>
+}

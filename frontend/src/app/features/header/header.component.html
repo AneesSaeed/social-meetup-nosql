@@ -7,10 +7,12 @@
     <app-search></app-search>
   </div>
 
-  <button class="profile-button" type="button" (click)="openDrawer()" *ngIf="user$ | async as user">
-    <span class="user-name">{{ user.name }}</span>
-    <span class="avatar">{{ user.name[0] }}</span>
-  </button>
+  @if (user$ | async; as user) {
+    <button class="profile-button" type="button" (click)="openDrawer()">
+      <span class="user-name">{{ user.name }}</span>
+      <span class="avatar">{{ user.name[0] }}</span>
+    </button>
+  }
 </header>
 
 <app-profile-drawer

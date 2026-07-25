@@ -19,29 +19,32 @@
           type="text"
           placeholder="e.g. football, cooking, coding"
           (keydown.enter)="addInterest(interestField.value); interestField.value = ''; $event.preventDefault();" />
-        <button class="is-accent" type="button" (click)="addInterest(interestField.value); interestField.value = '';">
-          Add
+          <button class="is-accent" type="button" (click)="addInterest(interestField.value); interestField.value = '';">
+            Add
+          </button>
+        </div>
+
+        <div class="badges">
+          @for (interest of interestsArray.controls; track interest; let i = $index) {
+            <span
+              class="badge"
+              [ngClass]="'badge--c' + (interest.value | colorBucket:8)"
+              >
+              {{ interest.value }}
+              <button type="button" class="badge__remove" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
+            </span>
+          }
+        </div>
+
+        @if (errorMessage) {
+          <p class="error-msg">{{ errorMessage }}</p>
+        }
+
+        <button class="submit-btn" type="submit" [disabled]="form.invalid || interestsArray.length === 0">
+          Register
         </button>
-      </div>
+      </form>
 
-      <div class="badges">
-        <span
-          *ngFor="let interest of interestsArray.controls; let i = index"
-          class="badge"
-          [ngClass]="'badge--c' + (interest.value | colorBucket:8)"
-        >
-          {{ interest.value }}
-          <button type="button" class="badge__remove" (click)="removeInterest(i)" aria-label="Remove interest">×</button>
-        </span>
-      </div>
-
-      <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
-
-      <button class="submit-btn" type="submit" [disabled]="form.invalid || interestsArray.length === 0">
-        Register
-      </button>
-    </form>
-
-    <a routerLink="/login">Already have an account?</a>
+      <a routerLink="/login">Already have an account?</a>
+    </div>
   </div>
-</div>
