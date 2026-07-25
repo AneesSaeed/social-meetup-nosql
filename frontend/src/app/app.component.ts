@@ -1,9 +1,18 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './features/header/header.component';
+import { ToastHostComponent } from './shared/toast/toast-host.component';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [
+    HeaderComponent,
+    ToastHostComponent,
+    RouterOutlet
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
