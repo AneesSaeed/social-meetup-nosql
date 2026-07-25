@@ -3,8 +3,8 @@ import { Subscription } from 'rxjs';
 import { ToastMessage, ToastService } from './toast.service';
 
 @Component({
-  selector: 'app-toast-host',
-  template: `
+    selector: 'app-toast-host',
+    template: `
     @if (current) {
       <div class="toast-wrap" [class.error]="current.type==='error'"
         [class.success]="current.type==='success'" [class.info]="current.type==='info'">
@@ -12,7 +12,8 @@ import { ToastMessage, ToastService } from './toast.service';
       </div>
     }
     `,
-  styleUrls: ['./toast-host.component.scss']
+    styleUrls: ['./toast-host.component.scss'],
+    standalone: true
 })
 export class ToastHostComponent implements OnInit, OnDestroy {
   current: ToastMessage | null = null;

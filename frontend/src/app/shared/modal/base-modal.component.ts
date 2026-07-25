@@ -11,11 +11,14 @@ import {
 } from '@angular/core';
 import { MODAL_DATA } from './modal.tokens';
 import { ModalRef } from './modal-ref';
+import { NgComponentOutlet } from '@angular/common';
 
 @Component({
-  selector: 'app-base-modal',
-  templateUrl: './base-modal.component.html',
-  styleUrls: ['./base-modal.component.scss']
+    selector: 'app-base-modal',
+    templateUrl: './base-modal.component.html',
+    styleUrls: ['./base-modal.component.scss'],
+    standalone: true,
+    imports: [NgComponentOutlet]
 })
 export class BaseModalComponent implements OnChanges {
   @Input() title = '';   // Title shown in the modal header

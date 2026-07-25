@@ -2,9 +2,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { SessionService } from 'src/app/core/state/session.service';
 
 @Component({
-  selector: 'app-create-meeting-button',
-  templateUrl: './create-meeting-button.component.html',
-  styleUrls: ['./create-meeting-button.component.scss']
+    selector: 'app-create-meeting-button',
+    templateUrl: './create-meeting-button.component.html',
+    styleUrls: ['./create-meeting-button.component.scss'],
+    standalone: true
 })
 export class CreateMeetingButtonComponent {
   @Output() clicked = new EventEmitter<void>();

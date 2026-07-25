@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MeetingApi } from 'src/app/core/api/meeting.api';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
@@ -9,11 +9,16 @@ import { ToastService } from 'src/app/shared/toast/toast.service';
 import { SearchApi } from 'src/app/core/api/search.api';
 import { MeetingSearchDocument } from 'src/app/core/models/meeting-search.model';
 import { SessionService } from 'src/app/core/state/session.service';
+import { ColorBucketPipe } from '../../../shared/pipes/color-bucket.pipe';
+import { DatePipe } from '@angular/common';
+import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
 
 @Component({
-  selector: 'app-past-meeting-panel',
-  templateUrl: './past-meetings-panel.component.html',
-  styleUrls: ['./past-meetings-panel.component.scss']
+    selector: 'app-past-meeting-panel',
+    templateUrl: './past-meetings-panel.component.html',
+    styleUrls: ['./past-meetings-panel.component.scss'],
+    standalone: true,
+    imports: [ReactiveFormsModule, BaseModalComponent, DatePipe, ColorBucketPipe]
 })
 export class PastMeetingsPanelComponent implements OnInit, OnDestroy {
   meetings: Meeting[] = [];

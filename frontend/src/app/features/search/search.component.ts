@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   Subject,
   debounceTime,
@@ -15,14 +15,24 @@ import { SearchApi } from 'src/app/core/api/search.api';
 import { UserSearchDocument } from 'src/app/core/models/user-search.model';
 
 import { SearchUserDetailsModalComponent } from './user-details-modal/search-user-details-modal.component';
+import { ColorBucketPipe } from '../../shared/pipes/color-bucket.pipe';
+import { BaseModalComponent } from '../../shared/modal/base-modal.component';
+import { NgClass } from '@angular/common';
 
 // Two search modes: default (users) and interests mode
 type SearchMode = 'users' | 'interests';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
+    selector: 'app-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    standalone: true,
+    imports: [
+        ReactiveFormsModule,
+        NgClass,
+        BaseModalComponent,
+        ColorBucketPipe,
+    ],
 })
 export class SearchComponent implements OnInit, OnDestroy {
   // Current mode (default: users)

@@ -8,6 +8,8 @@ import { ToastService } from 'src/app/shared/toast/toast.service';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { UserApi } from 'src/app/core/api/user.api';
 import { User } from 'src/app/core/models/user.model';
+import { ColorBucketPipe } from '../../../shared/pipes/color-bucket.pipe';
+import { DatePipe } from '@angular/common';
 
 type MeetingDetailsData = {
   meeting: Meeting;
@@ -15,9 +17,11 @@ type MeetingDetailsData = {
 };
 
 @Component({
-  selector: 'app-meeting-details',
-  templateUrl: './meeting-details.component.html',
-  styleUrls: ['./meeting-details.component.scss']
+    selector: 'app-meeting-details',
+    templateUrl: './meeting-details.component.html',
+    styleUrls: ['./meeting-details.component.scss'],
+    standalone: true,
+    imports: [DatePipe, ColorBucketPipe]
 })
 export class MeetingDetailsComponent {
   meeting: Meeting;

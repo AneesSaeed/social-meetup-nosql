@@ -7,11 +7,15 @@ import { User } from 'src/app/core/models/user.model';
 
 import { SessionService } from 'src/app/core/state/session.service';
 import { MeetingCreateFormComponent } from '../../meetings/meeting-create-form/meeting-create-form.component';
+import { ColorBucketPipe } from '../../../shared/pipes/color-bucket.pipe';
+import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
 
 @Component({
-  selector: 'app-search-user-details-modal',
-  templateUrl: './search-user-details-modal.component.html',
-  styleUrls: ['./search-user-details-modal.component.scss']
+    selector: 'app-search-user-details-modal',
+    templateUrl: './search-user-details-modal.component.html',
+    styleUrls: ['./search-user-details-modal.component.scss'],
+    standalone: true,
+    imports: [BaseModalComponent, ColorBucketPipe]
 })
 export class SearchUserDetailsModalComponent implements OnInit {
   loading = false;

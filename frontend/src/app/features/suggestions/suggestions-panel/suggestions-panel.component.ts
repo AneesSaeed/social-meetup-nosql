@@ -5,11 +5,14 @@ import { MeetingEventsService } from 'src/app/core/events/meeting-events.service
 import { ToastService } from 'src/app/shared/toast/toast.service';
 
 import { SearchUserDetailsModalComponent } from 'src/app/features/search/user-details-modal/search-user-details-modal.component';
+import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
 
 @Component({
-  selector: 'app-suggestions-panel',
-  templateUrl: './suggestions-panel.component.html',
-  styleUrls: ['./suggestions-panel.component.scss'],
+    selector: 'app-suggestions-panel',
+    templateUrl: './suggestions-panel.component.html',
+    styleUrls: ['./suggestions-panel.component.scss'],
+    standalone: true,
+    imports: [BaseModalComponent],
 })
 export class SuggestionsPanelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() userId!: string;

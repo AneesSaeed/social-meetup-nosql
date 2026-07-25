@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { Meeting } from 'src/app/core/models/meeting.model';
 import { MeetingApi } from 'src/app/core/api/meeting.api';
@@ -8,11 +8,16 @@ import { MeetingDetailsComponent } from '../meeting-details/meeting-details.comp
 import { SessionService } from 'src/app/core/state/session.service';
 import { SearchApi } from 'src/app/core/api/search.api';
 import { MeetingSearchDocument } from 'src/app/core/models/meeting-search.model';
+import { ColorBucketPipe } from '../../../shared/pipes/color-bucket.pipe';
+import { DatePipe } from '@angular/common';
+import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
 
 @Component({
-  selector: 'app-upcoming-meetings-row',
-  templateUrl: './upcoming-meetings-row.component.html',
-  styleUrls: ['./upcoming-meetings-row.component.scss']
+    selector: 'app-upcoming-meetings-row',
+    templateUrl: './upcoming-meetings-row.component.html',
+    styleUrls: ['./upcoming-meetings-row.component.scss'],
+    standalone: true,
+    imports: [ReactiveFormsModule, BaseModalComponent, DatePipe, ColorBucketPipe]
 })
 export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {
   private allMeetings: Meeting[] = [];

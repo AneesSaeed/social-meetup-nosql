@@ -26,33 +26,31 @@ import { PastMeetingsPanelComponent } from './features/meetings/past-meetings-pa
 import { SearchUserDetailsModalComponent } from './features/search/user-details-modal/search-user-details-modal.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    RegisterComponent,
-    HomeComponent,
-    SearchComponent,
-    HeaderComponent,
-    BaseModalComponent,
-    MeetingCreateFormComponent,
-    CreateMeetingButtonComponent,
-    UpcomingMeetingsRowComponent,
-    MeetingDetailsComponent,
-    ColorBucketPipe,
-    ProfileDrawerComponent,
-    ToastHostComponent,
-    SuggestionsPanelComponent,
-    PastMeetingsPanelComponent,
-    SearchUserDetailsModalComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    ReactiveFormsModule, // required for form
-    CommonModule         // needed for *ngFor and Angular directives
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        ReactiveFormsModule, // required for form
+        CommonModule,
+        LoginComponent,
+        RegisterComponent,
+        HomeComponent,
+        SearchComponent,
+        HeaderComponent,
+        BaseModalComponent,
+        MeetingCreateFormComponent,
+        CreateMeetingButtonComponent,
+        UpcomingMeetingsRowComponent,
+        MeetingDetailsComponent,
+        ColorBucketPipe,
+        ProfileDrawerComponent,
+        ToastHostComponent,
+        SuggestionsPanelComponent,
+        PastMeetingsPanelComponent,
+        SearchUserDetailsModalComponent
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

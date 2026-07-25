@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormArray, FormBuilder, Validators, AbstractControl, ValidationErrors, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MeetingApi } from 'src/app/core/api/meeting.api';
 import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
@@ -8,6 +8,8 @@ import { CreateMeetingRequest, Meeting } from 'src/app/core/models/meeting.model
 import { SessionService } from 'src/app/core/state/session.service';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
+import { ColorBucketPipe } from '../../../shared/pipes/color-bucket.pipe';
+import { NgClass } from '@angular/common';
 
 type MeetingCreateModalData = {
   userId: string;          // organizer
@@ -24,9 +26,11 @@ function minArrayLength(min: number) {
 }
 
 @Component({
-  selector: 'app-meeting-create-form',
-  templateUrl: './meeting-create-form.component.html',
-  styleUrls: ['./meeting-create-form.component.scss']
+    selector: 'app-meeting-create-form',
+    templateUrl: './meeting-create-form.component.html',
+    styleUrls: ['./meeting-create-form.component.scss'],
+    standalone: true,
+    imports: [ReactiveFormsModule, NgClass, ColorBucketPipe]
 })
 export class MeetingCreateFormComponent implements OnInit, OnDestroy {
   submitting = false;

@@ -1,15 +1,19 @@
 
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { AuthApi } from 'src/app/core/api/auth.api';
 import { SessionService } from 'src/app/core/state/session.service';
+import { ColorBucketPipe } from '../../../shared/pipes/color-bucket.pipe';
+import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+    selector: 'app-register',
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.scss'],
+    standalone: true,
+    imports: [ReactiveFormsModule, NgClass, RouterLink, ColorBucketPipe]
 })
 export class RegisterComponent {
 

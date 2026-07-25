@@ -4,13 +4,17 @@ import { SessionService } from 'src/app/core/state/session.service';
 import { User } from 'src/app/core/models/user.model';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
 import { UserApi } from 'src/app/core/api/user.api';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from 'src/app/shared/toast/toast.service';
+import { ColorBucketPipe } from '../../shared/pipes/color-bucket.pipe';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-profile-drawer',
-  templateUrl: './profile-drawer.component.html',
-  styleUrls: ['./profile-drawer.component.scss']
+    selector: 'app-profile-drawer',
+    templateUrl: './profile-drawer.component.html',
+    styleUrls: ['./profile-drawer.component.scss'],
+    standalone: true,
+    imports: [ReactiveFormsModule, NgClass, AsyncPipe, ColorBucketPipe]
 })
 export class ProfileDrawerComponent implements OnInit, OnDestroy {
   @Input() open = false;
