@@ -26,13 +26,12 @@ type SearchMode = 'users' | 'interests';
     selector: 'app-search',
     templateUrl: './search.component.html',
     styleUrls: ['./search.component.scss'],
-    standalone: true,
     imports: [
         ReactiveFormsModule,
         NgClass,
         BaseModalComponent,
         ColorBucketPipe,
-    ],
+    ]
 })
 export class SearchComponent implements OnInit, OnDestroy {
   // Current mode (default: users)

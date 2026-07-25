@@ -11,7 +11,6 @@ import { CreateMeetingButtonComponent } from '../meetings/create-meeting-button/
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
-    standalone: true,
     imports: [CreateMeetingButtonComponent, SuggestionsPanelComponent, UpcomingMeetingsRowComponent, PastMeetingsPanelComponent, BaseModalComponent]
 })
 export class HomeComponent {

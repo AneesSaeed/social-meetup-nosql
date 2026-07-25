@@ -16,7 +16,6 @@ import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
     selector: 'app-upcoming-meetings-row',
     templateUrl: './upcoming-meetings-row.component.html',
     styleUrls: ['./upcoming-meetings-row.component.scss'],
-    standalone: true,
     imports: [ReactiveFormsModule, BaseModalComponent, DatePipe, ColorBucketPipe]
 })
 export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {

@@ -17,7 +17,6 @@ import { NgComponentOutlet } from '@angular/common';
     selector: 'app-base-modal',
     templateUrl: './base-modal.component.html',
     styleUrls: ['./base-modal.component.scss'],
-    standalone: true,
     imports: [NgComponentOutlet]
 })
 export class BaseModalComponent implements OnChanges {

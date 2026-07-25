@@ -17,7 +17,6 @@ import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
     selector: 'app-past-meeting-panel',
     templateUrl: './past-meetings-panel.component.html',
     styleUrls: ['./past-meetings-panel.component.scss'],
-    standalone: true,
     imports: [ReactiveFormsModule, BaseModalComponent, DatePipe, ColorBucketPipe]
 })
 export class PastMeetingsPanelComponent implements OnInit, OnDestroy {

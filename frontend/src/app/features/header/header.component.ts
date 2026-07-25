@@ -10,7 +10,6 @@ import { SearchComponent } from '../search/search.component';
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
-    standalone: true,
     imports: [SearchComponent, ProfileDrawerComponent, AsyncPipe]
 })
 export class HeaderComponent {

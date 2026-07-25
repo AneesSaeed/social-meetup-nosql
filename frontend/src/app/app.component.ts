@@ -6,15 +6,14 @@ import { HeaderComponent } from './features/header/header.component';
 import { ToastHostComponent } from './shared/toast/toast-host.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    HeaderComponent,
-    ToastHostComponent,
-    RouterOutlet
-  ],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    imports: [
+        HeaderComponent,
+        ToastHostComponent,
+        RouterOutlet
+    ],
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   hideHeader = false;

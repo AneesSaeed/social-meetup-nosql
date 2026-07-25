@@ -20,7 +20,6 @@ type MeetingDetailsData = {
     selector: 'app-meeting-details',
     templateUrl: './meeting-details.component.html',
     styleUrls: ['./meeting-details.component.scss'],
-    standalone: true,
     imports: [DatePipe, ColorBucketPipe]
 })
 export class MeetingDetailsComponent {

@@ -11,8 +11,7 @@ import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
     selector: 'app-suggestions-panel',
     templateUrl: './suggestions-panel.component.html',
     styleUrls: ['./suggestions-panel.component.scss'],
-    standalone: true,
-    imports: [BaseModalComponent],
+    imports: [BaseModalComponent]
 })
 export class SuggestionsPanelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() userId!: string;

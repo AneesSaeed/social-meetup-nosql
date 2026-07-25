@@ -13,7 +13,6 @@ import { NgClass, AsyncPipe } from '@angular/common';
     selector: 'app-profile-drawer',
     templateUrl: './profile-drawer.component.html',
     styleUrls: ['./profile-drawer.component.scss'],
-    standalone: true,
     imports: [ReactiveFormsModule, NgClass, AsyncPipe, ColorBucketPipe]
 })
 export class ProfileDrawerComponent implements OnInit, OnDestroy {

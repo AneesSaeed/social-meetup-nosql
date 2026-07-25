@@ -14,7 +14,6 @@ import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
     selector: 'app-search-user-details-modal',
     templateUrl: './search-user-details-modal.component.html',
     styleUrls: ['./search-user-details-modal.component.scss'],
-    standalone: true,
     imports: [BaseModalComponent, ColorBucketPipe]
 })
 export class SearchUserDetailsModalComponent implements OnInit {

@@ -12,7 +12,6 @@ import { NgClass } from '@angular/common';
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
-    standalone: true,
     imports: [ReactiveFormsModule, NgClass, RouterLink, ColorBucketPipe]
 })
 export class RegisterComponent {
