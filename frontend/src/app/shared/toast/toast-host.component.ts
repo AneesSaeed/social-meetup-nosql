@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ToastMessage, ToastService } from './toast.service';
 
@@ -13,6 +13,7 @@ import { ToastMessage, ToastService } from './toast.service';
     }
     `,
     styleUrls: ['./toast-host.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: true
 })
 export class ToastHostComponent implements OnInit, OnDestroy {

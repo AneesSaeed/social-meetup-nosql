@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthApi } from '../../../core/api/auth.api';
 import { SessionService } from '../../../core/state/session.service';
@@ -8,6 +8,7 @@ import { Router, RouterLink } from '@angular/router';
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [ReactiveFormsModule, RouterLink]
 })
 export class LoginComponent {

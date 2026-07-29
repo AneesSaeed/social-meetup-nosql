@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { Meeting } from 'src/app/core/models/meeting.model';
 import { MeetingApi } from 'src/app/core/api/meeting.api';
 import { SessionService } from 'src/app/core/state/session.service';
@@ -20,6 +20,7 @@ type MeetingDetailsData = {
     selector: 'app-meeting-details',
     templateUrl: './meeting-details.component.html',
     styleUrls: ['./meeting-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [DatePipe, ColorBucketPipe]
 })
 export class MeetingDetailsComponent {

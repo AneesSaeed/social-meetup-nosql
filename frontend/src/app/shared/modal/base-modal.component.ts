@@ -7,7 +7,8 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
-  Type
+  Type,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { MODAL_DATA } from './modal.tokens';
 import { ModalRef } from './modal-ref';
@@ -17,6 +18,7 @@ import { NgComponentOutlet } from '@angular/common';
     selector: 'app-base-modal',
     templateUrl: './base-modal.component.html',
     styleUrls: ['./base-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [NgComponentOutlet]
 })
 export class BaseModalComponent implements OnChanges {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { Meeting } from 'src/app/core/models/meeting.model';
@@ -16,6 +16,7 @@ import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
     selector: 'app-upcoming-meetings-row',
     templateUrl: './upcoming-meetings-row.component.html',
     styleUrls: ['./upcoming-meetings-row.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [ReactiveFormsModule, BaseModalComponent, DatePipe, ColorBucketPipe]
 })
 export class UpcomingMeetingsRowComponent implements OnInit, OnDestroy {

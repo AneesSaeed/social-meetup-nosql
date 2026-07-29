@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, catchError, finalize, of } from 'rxjs';
 import { SocialGraphApi, NetworkDto } from 'src/app/core/api/social-graph.api';
 import { MeetingEventsService } from 'src/app/core/events/meeting-events.service';
@@ -11,6 +11,7 @@ import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
     selector: 'app-suggestions-panel',
     templateUrl: './suggestions-panel.component.html',
     styleUrls: ['./suggestions-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [BaseModalComponent]
 })
 export class SuggestionsPanelComponent implements OnInit, OnDestroy, OnChanges {

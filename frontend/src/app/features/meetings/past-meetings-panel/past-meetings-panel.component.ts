@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MeetingApi } from 'src/app/core/api/meeting.api';
@@ -17,6 +17,7 @@ import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
     selector: 'app-past-meeting-panel',
     templateUrl: './past-meetings-panel.component.html',
     styleUrls: ['./past-meetings-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [ReactiveFormsModule, BaseModalComponent, DatePipe, ColorBucketPipe]
 })
 export class PastMeetingsPanelComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionService } from 'src/app/core/state/session.service';
 import { HostListener } from '@angular/core';
@@ -10,6 +10,7 @@ import { SearchComponent } from '../search/search.component';
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [SearchComponent, ProfileDrawerComponent, AsyncPipe]
 })
 export class HeaderComponent {

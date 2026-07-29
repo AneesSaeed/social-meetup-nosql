@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { catchError, filter, Observable, of, Subscription, switchMap } from 'rxjs';
 import { SessionService } from 'src/app/core/state/session.service';
 import { User } from 'src/app/core/models/user.model';
@@ -13,6 +13,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
     selector: 'app-profile-drawer',
     templateUrl: './profile-drawer.component.html',
     styleUrls: ['./profile-drawer.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [ReactiveFormsModule, NgClass, AsyncPipe, ColorBucketPipe]
 })
 export class ProfileDrawerComponent implements OnInit, OnDestroy {

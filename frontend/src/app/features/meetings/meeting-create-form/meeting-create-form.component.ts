@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormArray, FormBuilder, Validators, AbstractControl, ValidationErrors, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MeetingApi } from 'src/app/core/api/meeting.api';
@@ -29,6 +29,7 @@ function minArrayLength(min: number) {
     selector: 'app-meeting-create-form',
     templateUrl: './meeting-create-form.component.html',
     styleUrls: ['./meeting-create-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [ReactiveFormsModule, NgClass, ColorBucketPipe]
 })
 export class MeetingCreateFormComponent implements OnInit, OnDestroy {

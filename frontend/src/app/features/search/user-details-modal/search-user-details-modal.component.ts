@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { take } from 'rxjs';
 
 import { MODAL_DATA } from 'src/app/shared/modal/modal.tokens';
@@ -14,6 +14,7 @@ import { BaseModalComponent } from '../../../shared/modal/base-modal.component';
     selector: 'app-search-user-details-modal',
     templateUrl: './search-user-details-modal.component.html',
     styleUrls: ['./search-user-details-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [BaseModalComponent, ColorBucketPipe]
 })
 export class SearchUserDetailsModalComponent implements OnInit {
