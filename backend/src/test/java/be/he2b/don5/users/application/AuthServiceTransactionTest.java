@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +31,13 @@ class AuthServiceTransactionTest {
 
     @MockitoBean
     private OutboxWriter outboxWriter;
+    
+    @AfterEach
+    void tearDown() {
+        // Clean up test data after execution regardless of test success or failure
+        userRepo.findByEmail("alice-for-transaction-test@gmail.com")
+                .ifPresent(user -> userRepo.deleteById(user.getId()));
+    }
 
     @Test
     void register_shouldRollbackUser_whenOutboxFails() {
