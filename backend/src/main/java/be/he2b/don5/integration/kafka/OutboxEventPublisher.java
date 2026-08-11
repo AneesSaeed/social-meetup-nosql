@@ -54,7 +54,7 @@ public class OutboxEventPublisher {
      * and will be retried later.
      */
     @Scheduled(fixedDelay = 5000)
-    @Transactional
+    @Transactional("mongoTransactionManager")
     public void publishPendingEvents() {
         List<OutboxEvent> pendingEvents = outboxRepo.findByProcessedFalseOrderByCreatedAtAsc();
 

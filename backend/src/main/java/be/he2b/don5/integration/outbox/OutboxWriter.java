@@ -37,7 +37,7 @@ public class OutboxWriter {
      * @param payload event payload object (will be converted to JSON)
      * @throws RuntimeException if JSON conversion fails
      */
-    @Transactional
+    @Transactional("mongoTransactionManager")
     public void addEvent(String aggregateId, AggregateType aggregateType, EventType eventType, Object payload) {
         try {
             String jsonPayload = objectMapper.writeValueAsString(payload);

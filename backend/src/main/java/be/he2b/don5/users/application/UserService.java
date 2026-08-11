@@ -63,7 +63,7 @@ public class UserService {
      * @return updated user
      * @throws RuntimeException if the user does not exist
      */    
-    @Transactional
+    @Transactional("mongoTransactionManager")
     @Caching(evict = {
             @CacheEvict(cacheNames = "user", key = "#id"),
             @CacheEvict(cacheNames = "search", allEntries = true),

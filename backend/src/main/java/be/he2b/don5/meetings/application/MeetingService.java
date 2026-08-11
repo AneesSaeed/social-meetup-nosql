@@ -93,7 +93,7 @@ public class MeetingService {
      * @param request meeting creation request
      * @return created meeting
      */
-    @Transactional
+    @Transactional("mongoTransactionManager")
     public Meeting createMeeting(CreateMeetingRequest request) {
         String organizerId = request.getOrganizer();
         if (organizerId == null || organizerId.isBlank()) {
@@ -236,7 +236,7 @@ public class MeetingService {
      * @param userId user id to join
      * @return updated meeting
      */
-    @Transactional
+    @Transactional("mongoTransactionManager")
     public Meeting joinMeeting(String meetingId, String userId) {
         if (!userRepo.existsById(userId)) {
             throw new RuntimeException("User " + userId + " not found");
@@ -295,7 +295,7 @@ public class MeetingService {
      * @param userId user id to leave
      * @return updated meeting
      */
-    @Transactional
+    @Transactional("mongoTransactionManager")
     public Meeting leaveMeeting(String meetingId, String userId) {
         Meeting meeting = getMeetingById(meetingId);
 
@@ -349,7 +349,7 @@ public class MeetingService {
      * @param meetingId meeting id
      * @return updated meeting
      */
-    @Transactional
+    @Transactional("mongoTransactionManager")
     public Meeting completeMeeting(String meetingId) {
         Meeting meeting = getMeetingById(meetingId);
 
@@ -436,7 +436,7 @@ public class MeetingService {
      * @param meetingId meeting id
      * @return updated meeting
      */
-    @Transactional
+    @Transactional("mongoTransactionManager")
     public Meeting cancelMeeting(String meetingId) {
         Meeting meeting = getMeetingById(meetingId);
 

@@ -52,7 +52,7 @@ public class AuthService {
      * @return the created user
      * @throws RuntimeException if the email is already registered
      */
-    @Transactional
+    @Transactional("mongoTransactionManager")
     public User register(RegisterRequest request) {
         if (userRepo.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered");

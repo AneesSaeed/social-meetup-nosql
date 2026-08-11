@@ -2,14 +2,16 @@ package be.he2b.don5.shared.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 
 @Configuration
 public class MongoConfig {
     
-    @Bean
-    MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
+    @Primary
+    @Bean(name = {"transactionManager", "mongoTransactionManager"})    
+    MongoTransactionManager mongoTransactionManager(MongoDatabaseFactory dbFactory) {
         return new MongoTransactionManager(dbFactory);
     }
 }

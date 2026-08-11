@@ -29,7 +29,7 @@ public class SocialGraphService {
      * Creates a User node in Neo4j if it does not exist yet.
      * Called after user creation in MongoDB (event-driven).
      */
-    @Transactional
+    @Transactional("neo4jTransactionManager")
     public void createUserNode(String userId, String userName) {
         if (!userNodeRepo.existsById(userId)) {
             userNodeRepo.save(new UserNode(userId, userName));
@@ -45,8 +45,7 @@ public class SocialGraphService {
      *
      * interests is stored as a single joined string in the relationship ("interest" property).
      */
-
-    @Transactional
+    @Transactional("neo4jTransactionManager")
     public void createMeetingRelations(
             String meetingId, 
             List<String> participants,
