@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: don5
+
+  mongodb:
+    uri: mongodb://localhost:27017/meetup?directConnection=true
+
+  neo4j:
+    uri: bolt://localhost:7687
+    authentication:
+      username: neo4j
+      password: ${NEO4J_PASSWORD:password}
+
+  elasticsearch:
+    uris: http://localhost:9200
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+    redis:
+      host: localhost
+      port: 6379
+
+  cache:
+    type: redis
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: don5-consumer
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+  task:
+    scheduling:
+      pool:
+        size: 5
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
+server:
+  port: 8080
+
+logging:
+  level:
+    be.he2b.don5: DEBUG
+
+    org.apache.kafka: WARN
+
+    org.springframework.web: INFO
+    org.springframework.transaction: TRACE
+
+    org.springframework.data.neo4j.cypher: DEBUG
+    org.springframework.data.neo4j.core.transaction: TRACE
+    org.springframework.data.mongodb.MongoTransactionManager: TRACE
