@@ -55,7 +55,7 @@ logging:
     org.apache.kafka: WARN
 
     org.springframework.web: INFO
-    org.springframework.transaction: TRACE
+    org.springframework.transaction: INFO
 
     org.springframework.data.neo4j.cypher: DEBUG
     org.springframework.data.neo4j.core.transaction: TRACE
