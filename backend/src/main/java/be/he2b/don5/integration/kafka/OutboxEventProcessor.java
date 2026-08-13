@@ -40,6 +40,7 @@ public class OutboxEventProcessor {
             log.info("Published {} for aggregate {}", type, event.getAggregateId());
         } catch (Exception e) {
             log.error("Failed to publish event {}: {}", event.getId(), e.getMessage(), e);
+            throw new RuntimeException("Failed to process outbox event " + event.getId(), e);
         }
     }
 }
