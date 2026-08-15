@@ -9,6 +9,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,12 +35,14 @@ public class OutboxEventProcessor {
             EventEnvelope envelope = new EventEnvelope(type, dataNode);
             String wrappedPayload = objectMapper.writeValueAsString(envelope);
 
-            kafkaTemplate.send(topic, event.getAggregateId(), wrappedPayload);
+            kafkaTemplate.send(topic, event.getAggregateId(), wrappedPayload)
+                         .get(5, TimeUnit.SECONDS);
 
             event.setProcessed(true);
             outboxRepo.save(event);
 
             log.info("Published {} for aggregate {}", type, event.getAggregateId());
+
         } catch (Exception e) {
             log.error("Failed to publish event {}: {}", event.getId(), e.getMessage(), e);
             throw new RuntimeException("Failed to process outbox event " + event.getId(), e);
