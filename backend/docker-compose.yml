@@ -67,31 +67,41 @@ services:
       - elasticsearch
     restart: unless-stopped
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0
-    container_name: zookeeper
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - "2181:2181"
-
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
-    depends_on:
-      - zookeeper
     ports:
       - "9092:9092"
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      # KRaft Configuration
+      # in kraft mode, each node requires a unique integer ID
+      KAFKA_NODE_ID: 1 
+      # Defines the security protocol for each custom network listener name
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      # Tells Kafka how many copies of the internal __consumer_offsets topic to keep. The default for production clusters is 3, but for a local single-node setup, it must be set to 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      # Sets the minimum number of In-Sync Replicas (ISR) required to write to the internal transaction state log. Set to 1 so local transactions pass on a single broker.
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      # Tells Kafka how many copies of the internal transaction log to maintain. Set to 1 for single-node developmen
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      # Tells this instance to act as both a Broker and a controller (replacing zookeepers job)
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      # This environment variable tells Kafka which nodes are allowed to vote in the controller consensus group and where to reach them
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      # The public metadata addresses Kafka gives to clients (Spring Boot, AKHQ) during their initial handshake, telling them where to send future data requests.
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      # Tells Kafka to bind and listen on three distinct open ports inside the container.
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      # Tells kafka which listner name to use for broker-to-broker communication (data replication and cluster health checks)
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      # Tells Kafka which listener name is reserved exclusively for KRaft controller consensus and metadata traffic.
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      # The physical directory inside the container where Kafka stores KRaft metadata state alongside topic message logs
+      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+      # Cluster ID that i generated using -> docker run --rm confluentinc/cp-kafka:7.5.0 kafka-storage random-uuid
+      CLUSTER_ID: 'pZxsELITTFWNmxvzXlwspw'
+    volumes:
+    - don_project_kafka_data:/var/lib/kafka/data
     
   akhq:
     image: tchiotludo/akhq:0.25.0
@@ -124,3 +134,4 @@ volumes:
   don_project_neo4j_logs:
   don_project_es_data:
   don_project_redis_data:
+  don_project_kafka_data:
