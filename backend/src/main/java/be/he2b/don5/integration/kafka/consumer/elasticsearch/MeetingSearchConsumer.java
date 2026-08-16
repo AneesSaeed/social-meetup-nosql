@@ -43,27 +43,23 @@ public class MeetingSearchConsumer {
      * @param message Kafka message containing an {@link EventEnvelope} as JSON
      */
     @KafkaListener(topics = "meeting-events", groupId = "elasticsearch-meeting-consumer")
-    public void consumeForElasticsearch(String message) {
-        try {
-            EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
+    public void consumeForElasticsearch(String message) throws Exception{
+        EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
 
-            switch (env.getEventType()) {
-                case MEETING_CREATED -> 
-                        handleMeetingCreated(objectMapper.treeToValue(env.getData(), MeetingCreatedEvent.class));
-                case MEETING_UPDATED -> 
-                        handleMeetingUpdated(objectMapper.treeToValue(env.getData(), MeetingUpdatedEvent.class));
-                case MEETING_COMPLETED -> 
-                        handleMeetingCompleted(objectMapper.treeToValue(env.getData(), MeetingCompletedEvent.class));
-                case MEETING_CANCELLED -> 
-                        handleMeetingCancelled(objectMapper.treeToValue(env.getData(), MeetingCancelledEvent.class));
-                default -> log.warn("Ignored event type: {}", env.getEventType());
-            }
-        } catch (Exception e) {
-            log.error("Elasticsearch meeting consumer error: {}", e.getMessage(), e);
+        switch (env.getEventType()) {
+            case MEETING_CREATED -> 
+                    handleMeetingCreated(objectMapper.treeToValue(env.getData(), MeetingCreatedEvent.class));
+            case MEETING_UPDATED -> 
+                    handleMeetingUpdated(objectMapper.treeToValue(env.getData(), MeetingUpdatedEvent.class));
+            case MEETING_COMPLETED -> 
+                    handleMeetingCompleted(objectMapper.treeToValue(env.getData(), MeetingCompletedEvent.class));
+            case MEETING_CANCELLED -> 
+                    handleMeetingCancelled(objectMapper.treeToValue(env.getData(), MeetingCancelledEvent.class));
+            default -> log.warn("Ignored event type: {}", env.getEventType());
         }
     }
 
-    /**
+    /**x
      * Indexes a new meeting document when a meeting is created.
      *
      * @param event meeting created payload

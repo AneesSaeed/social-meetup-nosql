@@ -52,17 +52,13 @@ public class UserEventConsumer {
      * @param message Kafka message containing an {@link EventEnvelope} as JSON
      */
     @KafkaListener(topics = "user-events", groupId = "neo4j-consumer")
-    public void consumeForNeo4j(String message) {
-        try {
-            EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
+    public void consumeForNeo4j(String message) throws Exception{
+        EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
 
-            if (env.getEventType() == EventType.USER_CREATED) {
-                UserCreatedEvent event = objectMapper.treeToValue(env.getData(), UserCreatedEvent.class);
-                socialGraphService.createUserNode(event.getUserId(), event.getName());
-                log.info("Neo4j: Created user node for {}", event.getUserId());
-            }
-        } catch (Exception e) {
-            log.error("Neo4j consumer error: {}", e.getMessage(), e);
+        if (env.getEventType() == EventType.USER_CREATED) {
+            UserCreatedEvent event = objectMapper.treeToValue(env.getData(), UserCreatedEvent.class);
+            socialGraphService.createUserNode(event.getUserId(), event.getName());
+            log.info("Neo4j: Created user node for {}", event.getUserId());
         }
     }
 
@@ -75,39 +71,35 @@ public class UserEventConsumer {
      * @param message Kafka message containing an {@link EventEnvelope} as JSON
      */
     @KafkaListener(topics = "user-events", groupId = "elasticsearch-consumer")
-    public void consumeForElasticsearch(String message) {
-        try {
-            EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
+    public void consumeForElasticsearch(String message) throws Exception{
+        EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
 
-            if (env.getEventType() == EventType.USER_CREATED) {
-                UserCreatedEvent event = objectMapper.treeToValue(env.getData(), UserCreatedEvent.class);
+        if (env.getEventType() == EventType.USER_CREATED) {
+            UserCreatedEvent event = objectMapper.treeToValue(env.getData(), UserCreatedEvent.class);
 
-                UserSearchDocument doc = new UserSearchDocument();
-                doc.setUserId(event.getUserId());
-                doc.setName(event.getName());
-                doc.setEmail(event.getEmail());
+            UserSearchDocument doc = new UserSearchDocument();
+            doc.setUserId(event.getUserId());
+            doc.setName(event.getName());
+            doc.setEmail(event.getEmail());
+            doc.setBio(event.getBio());
+            doc.setInterests(event.getInterests());
+            doc.setTotalScore(event.getTotalPoints());
+            doc.setLastActive(LocalDateTime.now());
+
+            userSearchRepository.save(doc);
+            log.info("Elasticsearch: Indexed user {}", event.getUserId());
+
+        } else if (env.getEventType() == EventType.USER_UPDATED) {
+            UserUpdatedEvent event = objectMapper.treeToValue(env.getData(), UserUpdatedEvent.class);
+
+            userSearchRepository.findById(event.getUserId()).ifPresent(doc -> {
                 doc.setBio(event.getBio());
                 doc.setInterests(event.getInterests());
                 doc.setTotalScore(event.getTotalPoints());
                 doc.setLastActive(LocalDateTime.now());
-
                 userSearchRepository.save(doc);
-                log.info("Elasticsearch: Indexed user {}", event.getUserId());
-
-            } else if (env.getEventType() == EventType.USER_UPDATED) {
-                UserUpdatedEvent event = objectMapper.treeToValue(env.getData(), UserUpdatedEvent.class);
-
-                userSearchRepository.findById(event.getUserId()).ifPresent(doc -> {
-                    doc.setBio(event.getBio());
-                    doc.setInterests(event.getInterests());
-                    doc.setTotalScore(event.getTotalPoints());
-                    doc.setLastActive(LocalDateTime.now());
-                    userSearchRepository.save(doc);
-                    log.info("Elasticsearch: Updated user {}", event.getUserId());
-                });
-            }
-        } catch (Exception e) {
-            log.error("Elasticsearch consumer error: {}", e.getMessage(), e);
+                log.info("Elasticsearch: Updated user {}", event.getUserId());
+            });
         }
     }
 }

@@ -11,6 +11,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.listener.CommonErrorHandler;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +34,7 @@ public class KafkaConfig {
      *      and we have to convert it as JSON
      */
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    ProducerFactory<String, String> producerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -43,7 +47,7 @@ public class KafkaConfig {
      * Helper class that wraps a Producer instance and provides methods for sending messages.
      */
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
+    KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
@@ -52,7 +56,7 @@ public class KafkaConfig {
      * StringDeserializer is necessary since messages are received as strings.
      */
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
+    ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -62,11 +66,24 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(config);
     }
 
+    /**
+     * Error Handler configuration: Retries 3 times, then routes to .DLT topic
+     */
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+    CommonErrorHandler errorHandler(KafkaTemplate<String, String> kafkaTemplate) {
+        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate);
+        // Retry 3 times with a 2-second delay between attempts
+        FixedBackOff backOff = new FixedBackOff(2000L, 3L);
+        return new DefaultErrorHandler(recoverer, backOff);
+    }
+
+    @Bean
+    ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(
+            CommonErrorHandler errorHandler) {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = 
             new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.setCommonErrorHandler(errorHandler);
         return factory;
     }
 
@@ -78,7 +95,7 @@ public class KafkaConfig {
      *          Partitions allow multiple consumers to read from the same topic simultaneously
      */
     @Bean
-    public NewTopic userEventsTopic() {
+    NewTopic userEventsTopic() {
         return TopicBuilder.name("user-events")
                 .partitions(3)
                 .replicas(1)
@@ -86,8 +103,27 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic meetingEventsTopic() {
+    NewTopic meetingEventsTopic() {
         return TopicBuilder.name("meeting-events")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    /**
+     * Dedicated Dead Letter Topics for manual admin reviews
+     */
+    @Bean
+    NewTopic userEventsDltTopic() {
+        return TopicBuilder.name("user-events-dlt")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    NewTopic meetingEventsDltTopic() {
+        return TopicBuilder.name("meeting-events-dlt")
                 .partitions(3)
                 .replicas(1)
                 .build();

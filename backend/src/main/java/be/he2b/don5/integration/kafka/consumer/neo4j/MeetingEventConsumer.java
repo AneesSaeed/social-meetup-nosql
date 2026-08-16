@@ -38,26 +38,22 @@ public class MeetingEventConsumer {
      * @param message Kafka message containing an {@link EventEnvelope} as JSON
      */
     @KafkaListener(topics = "meeting-events", groupId = "neo4j-meeting-consumer")
-    public void consumeMeetingCompleted(String message) {
-        try {
-            EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
+    public void consumeMeetingCompleted(String message) throws Exception {
+        EventEnvelope env = objectMapper.readValue(message, EventEnvelope.class);
 
-            if (env.getEventType() == EventType.MEETING_COMPLETED) {
-                MeetingCompletedEvent event = objectMapper.treeToValue(env.getData(), MeetingCompletedEvent.class);
+        if (env.getEventType() == EventType.MEETING_COMPLETED) {
+            MeetingCompletedEvent event = objectMapper.treeToValue(env.getData(), MeetingCompletedEvent.class);
 
-                socialGraphService.createMeetingRelations(
-                        event.getMeetingId(),
-                        event.getParticipants(),
-                        event.getPointsPerUser(),
-                        event.getDate(),
-                        event.getLocation(),
-                        event.getInterests()
-                );
+            socialGraphService.createMeetingRelations(
+                    event.getMeetingId(),
+                    event.getParticipants(),
+                    event.getPointsPerUser(),
+                    event.getDate(),
+                    event.getLocation(),
+                    event.getInterests()
+            );
 
-                log.info("Neo4j: Created meeting relations for {}", event.getMeetingId());
-            }
-        } catch (Exception e) {
-            log.error("Meeting consumer error: {}", e.getMessage(), e);
+            log.info("Neo4j: Created meeting relations for {}", event.getMeetingId());
         }
     }
 }
