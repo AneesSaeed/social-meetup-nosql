@@ -28,6 +28,8 @@ public class KafkaConfig {
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
+    @Value("${spring.kafka.consumer.auto-offset-reset}")
+    private String autoOffsetReset;
     /**
      * Configuration to produce messages to Kafka topics.
      * StringSerializer is necessary since messages are sent as strings.
@@ -62,7 +64,7 @@ public class KafkaConfig {
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); // Start from the beginning if there's a new consumer
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
         return new DefaultKafkaConsumerFactory<>(config);
     }
 
