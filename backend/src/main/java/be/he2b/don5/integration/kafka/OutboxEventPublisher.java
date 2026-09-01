@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class OutboxEventPublisher {
+
+    private final static int BATCH_SIZE = 100;
 
     private final OutboxEventRepository outboxRepo;
     private final OutboxEventProcessor eventProcessor;
@@ -26,11 +29,15 @@ public class OutboxEventPublisher {
         lockAtMostFor = "4s"
     )
     public void publishPendingEvents() {
-        List<OutboxEvent> pendingEvents = outboxRepo.findByProcessedFalseOrderByCreatedAtAsc();
+        List<OutboxEvent> pendingEvents = outboxRepo.findByProcessedFalseOrderByCreatedAtAsc(
+            PageRequest.of(0, BATCH_SIZE)
+        );
 
         if (pendingEvents.isEmpty()) {
             return;
         }
+
+        log.info("Processing batch of {} pending outbox events", pendingEvents.size());
 
         for (OutboxEvent event : pendingEvents) {
             eventProcessor.processEvent(event);

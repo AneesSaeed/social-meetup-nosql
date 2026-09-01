@@ -1,5 +1,6 @@
 package be.he2b.don5.integration.outbox;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface OutboxEventRepository extends MongoRepository<OutboxEvent, Stri
      *
      * @return pending outbox events
      */
-    List<OutboxEvent> findByProcessedFalseOrderByCreatedAtAsc();
+    List<OutboxEvent> findByProcessedFalseOrderByCreatedAtAsc(Pageable pageable);
 }
